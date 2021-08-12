@@ -15,7 +15,11 @@ import TableADMIN_ROLES from "./ADMIN/TableADMIN_ROLES";
 // import TableTest from "./TableTest";
 // import TableTest2 from "./TableTest2";
 // import TestUseState from "./TestUseState";
-// import TableNew from "./TableNew";
+import ReactTableTest from "./test/ReactTableTest";
+import ReactBootstrapTable from "./test/ReactBootstrapTable";
+import TableADMIN_USERS from "./ADMIN/TableADMIN_USERS";
+import TableADMIN_OPERATIONS from "./ADMIN/TableADMIN_OPERATIONS";
+import TableADMIN_ROLE_OPERATIONS from "./ADMIN/TableADMIN_ROLE_OPERATIONS";
 
 
 
@@ -39,17 +43,271 @@ class CoverTable extends React.Component{
         console.log(this.props);
 
     }
-
+    componentDidUpdate() {
+        console.log('componentDidUpdate');
+        // if ( this.props.store.location.pathname.substr(11) == null || this.props.store.location.pathname.substr(11) == "" ){
+        //
+        // }else{
+        //     // this.requestOperation(this.props.store.userState.token, this.props.store.location.pathname.substr(11))
+        //     this.typeRequest(this.props.store.location.pathname.substr(11));
+        //     this.props.store.operationName(this.activeOperation(this.props.store.userState.OPERATIONS, this.props.store.location.pathname.substr(11)), this.props.store.location.pathname.substr(11));
+        // }
+    }
     componentDidMount() {
-
+        console.log(this.props.store.location.pathname);
         if ( this.props.store.location.pathname.substr(11) == null || this.props.store.location.pathname.substr(11) == "" ){
 
         }else{
-            this.requestOperation(this.props.store.userState.token, this.props.store.location.pathname.substr(11))
+            // this.requestOperation(this.props.store.userState.token, this.props.store.location.pathname.substr(11))
+            this.typeRequest(this.props.store.location.pathname.substr(11));
+            this.props.store.operationName(this.activeOperation(this.props.store.userState.OPERATIONS, this.props.store.location.pathname.substr(11)), this.props.store.location.pathname.substr(11));
         }
 
     }
 
+    typeRequest = (operation) => {
+        let operationType = operation.split('_')[0];
+        console.log( operation.startsWith('DICT') );
+        switch (operation) {
+            case 'ADMIN_USERS':
+                return this.requestADMIN_USERS(this.props.store.userState.token);
+            case 'ADMIN_ROLES':
+                return this.requestADMIN_ROLES(this.props.store.userState.token);
+            case 'ADMIN_OPERATIONS':
+                return this.requestADMIN_OPERATIONS(this.props.store.userState.token);
+            case 'ADMIN_ROLE_OPERATIONS':
+                return this.requestADMIN_ROLE_OPERATIONS(this.props.store.userState.token);
+
+
+
+            case "DICT_PAYMENT_SYSTEM":
+                return this.requestDICT(this.props.store.userState.token, operation);
+            case "DICT_REPORT_FORMAT":
+                return this.requestDICT(this.props.store.userState.token, operation);
+            case "DICT_CURRENCY":
+                return this.requestDICT(this.props.store.userState.token, operation);
+            case "DICT_DATE_TYPE":
+                return this.requestDICT(this.props.store.userState.token, operation);
+            case "DICT_REPORT_ACTION":
+                return this.requestDICT(this.props.store.userState.token, operation);
+            case "DICT_OPERATION_TYPE":
+                return this.requestDICT(this.props.store.userState.token, operation);
+            case "DICT_ACQUIRING_TYPE":
+                return this.requestDICT(this.props.store.userState.token, operation);
+            case "DICT_ACQUIRING_SERVICE":
+                return this.requestDICT(this.props.store.userState.token, operation);
+            case "DICT_INSTITUTION":
+                return this.requestDICT(this.props.store.userState.token, operation);
+            case "DICT_BRANCH":
+                return this.requestDICT(this.props.store.userState.token, operation);
+            case "DICT_REPORT_PERIOD_TYPE":
+                return this.requestDICT(this.props.store.userState.token, operation);
+            case "DICT_REPORT_CHANNEL_TYPE":
+                return this.requestDICT(this.props.store.userState.token, operation);
+
+            default:
+                return '';
+        }
+    }
+    async requestDICT  (token, operation) {
+        this.props.store.changeLoading(true);
+        console.log( token );
+        console.log( operation );
+        const baseUrl = `/api/Dictionary/${operation}`;
+        await axios.get(
+            baseUrl,
+            {
+                headers: {"Token" : `${ token }`}
+            }
+        )
+            .then((response) => {
+                console.log(response.data);
+                console.log(response.data.Table);
+
+
+                //this.props.store.showTable(true);
+
+                this.props.store.addTableData(true, response.data.Table);
+
+                this.props.store.changeLoading(false);
+                //this.props.store.showTable(true);
+
+            })
+            .catch((error) => {
+                console.log(error.response);
+                console.log(error.response.data);
+                //console.log('error_catch');
+
+            });
+
+    }
+
+    //ADMIN
+    async requestADMIN_USERS  (token) {
+        this.props.store.changeLoading(true);
+        console.log( token );
+        const baseUrl = `/api/User`;
+        const userBody = {
+            user_code: "",
+            user_name: "",
+            bank_branch_id: 0,
+            only_active: false
+        };
+        await axios.post(
+            baseUrl,
+            userBody,
+            {
+                headers: {
+                    "Token" : `${ token }`,
+                    'Content-Type': 'application/json'
+                }
+            }
+        )
+            .then((response) => {
+                console.log(response.data);
+                console.log(response.data.users);
+                //console.log(response.data.Table);
+
+
+                //this.props.store.showTable(true);
+
+                this.props.store.addTableData(true, response.data.users);
+
+                this.props.store.changeLoading(false);
+                //this.props.store.showTable(true);
+
+            })
+            .catch((error) => {
+                console.log(error.response);
+                console.log(error.response.data);
+                //console.log('error_catch');
+
+            });
+
+    }
+    async requestADMIN_ROLES  (token) {
+        this.props.store.changeLoading(true);
+        console.log( token );
+        const baseUrl = `/api/Role`;
+        await axios.get(
+            baseUrl,
+            {
+                headers: {
+                    "Token" : `${ token }`
+                }
+            }
+        )
+            .then((response) => {
+                console.log(response.data);
+                //console.log(response.data.users);
+                //console.log(response.data.Table);
+
+
+                //this.props.store.showTable(true);
+
+                this.props.store.addTableData(true, response.data.roles);
+
+                this.props.store.changeLoading(false);
+                //this.props.store.showTable(true);
+
+            })
+            .catch((error) => {
+                console.log(error.response);
+                console.log(error.response.data);
+                //console.log('error_catch');
+
+            });
+
+    }
+    async requestADMIN_OPERATIONS  (token) {
+        this.props.store.changeLoading(true);
+        console.log( token );
+        const baseUrl = `/api/Operations`;
+        await axios.get(
+            baseUrl,
+            {
+                headers: {
+                    "Token" : `${ token }`
+                }
+            }
+        )
+            .then((response) => {
+                console.log(response.data);
+                //console.log(response.data.users);
+                //console.log(response.data.Table);
+
+
+                //this.props.store.showTable(true);
+
+                this.props.store.addTableData(true, response.data.operations);
+
+                this.props.store.changeLoading(false);
+                //this.props.store.showTable(true);
+
+            })
+            .catch((error) => {
+                console.log(error.response);
+                console.log(error.response.data);
+                //console.log('error_catch');
+
+            });
+
+    }
+    async requestADMIN_ROLE_OPERATIONS  (token) {
+        this.props.store.changeLoading(true);
+        console.log( token );
+        const baseUrl = `/api/Role`;
+        await axios.get(
+            baseUrl,
+            {
+                headers: {
+                    "Token" : `${ token }`
+                }
+            }
+        )
+            .then((response) => {
+                console.log(response.data);
+                //console.log(response.data.users);
+                //console.log(response.data.Table);
+
+
+                //this.props.store.showTable(true);
+
+                this.props.store.addRoleData(response.data.roles);
+                this.props.store.addTableData(true, response.data.roles);
+
+                this.props.store.changeLoading(false);
+                //this.props.store.showTable(true);
+
+            })
+            .catch((error) => {
+                console.log(error.response);
+                console.log(error.response.data);
+                //console.log('error_catch');
+
+            });
+
+    }
+
+
+    activeOperation = (operationArr, operation) => {
+        //console.log(operationArr === operation ? 'itemAct' : '');
+        //console.log(operationArr);
+        //console.log(operation);
+        let res;
+        operationArr.map(( item , index) => {
+            //console.log(item);
+            //console.log(item.name);
+            //console.log(item.operation == operation);
+            if(item.operation == operation){
+                res = item.name;
+            }
+        })
+        return res;
+
+        //return operationArr === operation ? 'itemAct' : '';
+        //${ activeOperation(this.props.store.userState.OPERATIONS, item.operation) }
+    }
     async requestOperation  (token, operation) {
         this.props.store.changeLoading(true);
         console.log( token );
@@ -113,9 +371,14 @@ class CoverTable extends React.Component{
         switch (operation) {
 
             case 'ADMIN_USERS':
-                return <TableBootstrapADMIN store={this.props.store}/>
+                return <TableADMIN_USERS store={this.props.store}/>
             case 'ADMIN_ROLES':
                 return <TableADMIN_ROLES store={this.props.store}/>
+            case 'ADMIN_OPERATIONS':
+                return <TableADMIN_OPERATIONS store={this.props.store}/>
+            case 'ADMIN_ROLE_OPERATIONS':
+                return <TableADMIN_ROLE_OPERATIONS store={this.props.store}/>
+
 
             case "DICT_PAYMENT_SYSTEM":
                 return <TableBootstrapDICT store={this.props.store}/>
@@ -157,6 +420,24 @@ class CoverTable extends React.Component{
         return (
             <>
 
+                {/*<div className="coverTable">*/}
+                {/*    <div className="headerTable">*/}
+                {/*        <span>Невибрано жодного звіту</span>*/}
+                {/*        <div className="optionBlock"></div>*/}
+                {/*    </div>*/}
+                {/*    <div className="innerTable">*/}
+                {/*        <div className="Table">*/}
+                {/*            /!*<ReactTableTest/>*!/*/}
+                {/*            /!*<ReactBootstrapTable/>*!/*/}
+                {/*            /!*<TableBootstrapTest store={this.props.store}/>*!/*/}
+
+                {/*        </div>*/}
+                {/*    </div>*/}
+                {/*</div>*/}
+
+
+
+                {/*<EditTable/>*/}
                 {/*{*/}
                 {/*    this.props.store.menuState.showTable*/}
                 {/*        ? <>*/}
@@ -191,7 +472,7 @@ class CoverTable extends React.Component{
                     this.props.store.menuState.tableData == null
                         ? <div className="coverTable">
                             <div className="headerTable">
-                                <span>Невибрано жодного звіту</span>
+                                <span>Не вибрано жодного звіту</span>
                                 <div className="optionBlock"></div>
                             </div>
                             <div className="innerTable">

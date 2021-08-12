@@ -231,7 +231,7 @@ class Menu extends React.Component{
 
     itemLink = (e) => {
         e.preventDefault();
-
+        this.props.store.addTableData(true, null);
         let operationName = e.currentTarget.getAttribute("name");
 
 
@@ -251,8 +251,16 @@ class Menu extends React.Component{
         let operationType = operation.split('_')[0];
         console.log( operation.startsWith('DICT') );
         switch (operation) {
+            case 'ADMIN_USERS':
+                return this.requestADMIN_USERS(this.props.store.userState.token);
             case 'ADMIN_ROLES':
                 return this.requestADMIN_ROLES(this.props.store.userState.token);
+            case 'ADMIN_OPERATIONS':
+                return this.requestADMIN_OPERATIONS(this.props.store.userState.token);
+            case 'ADMIN_ROLE_OPERATIONS':
+                return this.requestADMIN_ROLE_OPERATIONS(this.props.store.userState.token);
+
+
 
             case "DICT_PAYMENT_SYSTEM":
                 return this.requestDICT(this.props.store.userState.token, operation);
@@ -315,10 +323,11 @@ class Menu extends React.Component{
             });
 
     }
-    async requestADMIN  (token, operation) {
+
+    //ADMIN
+    async requestADMIN_USERS  (token) {
         this.props.store.changeLoading(true);
         console.log( token );
-        console.log( operation );
         const baseUrl = `/api/User`;
         const userBody = {
             user_code: "",
@@ -392,9 +401,78 @@ class Menu extends React.Component{
             });
 
     }
-    displayOperation = () => {
+    async requestADMIN_OPERATIONS  (token) {
+        this.props.store.changeLoading(true);
+        console.log( token );
+        const baseUrl = `/api/Operations`;
+        await axios.get(
+            baseUrl,
+            {
+                headers: {
+                    "Token" : `${ token }`
+                }
+            }
+        )
+            .then((response) => {
+                console.log(response.data);
+                //console.log(response.data.users);
+                //console.log(response.data.Table);
+
+
+                //this.props.store.showTable(true);
+
+                this.props.store.addTableData(true, response.data.operations);
+
+                this.props.store.changeLoading(false);
+                //this.props.store.showTable(true);
+
+            })
+            .catch((error) => {
+                console.log(error.response);
+                console.log(error.response.data);
+                //console.log('error_catch');
+
+            });
 
     }
+    async requestADMIN_ROLE_OPERATIONS  (token) {
+        this.props.store.changeLoading(true);
+        console.log( token );
+        const baseUrl = `/api/Role`;
+        await axios.get(
+            baseUrl,
+            {
+                headers: {
+                    "Token" : `${ token }`
+                }
+            }
+        )
+            .then((response) => {
+                console.log(response.data);
+                //console.log(response.data.users);
+                //console.log(response.data.Table);
+
+
+                //this.props.store.showTable(true);
+
+                this.props.store.addRoleData(response.data.roles);
+                this.props.store.addTableData(true, response.data.roles);
+
+                this.props.store.changeLoading(false);
+                //this.props.store.showTable(true);
+
+            })
+            .catch((error) => {
+                console.log(error.response);
+                console.log(error.response.data);
+                //console.log('error_catch');
+
+            });
+
+    }
+    // ADMIN_ROLE_OPERATIONS = () => {
+    //     this.props.store.addTableData(true, null);
+    // }
     listOperation = ( obj ) => {
         //console.log(obj);
         for (var key in obj){

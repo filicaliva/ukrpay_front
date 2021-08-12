@@ -250,6 +250,15 @@ class Profile extends React.Component{
                                             <input
                                                 className="customInput"
                                                 id="phoneInput"
+                                                type="phone"
+                                                apiName="ipphone"
+                                                defaultValue={this.state.data.ipphone}
+                                                onChange={this.changeInput}
+                                                disabled
+                                            />
+                                            <input
+                                                className="customInput"
+                                                id="phoneInput"
                                                 placeholder="+38 000 000 00 00"
                                                 type="phone"
                                                 apiName="mobile"

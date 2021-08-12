@@ -299,12 +299,12 @@ class TableBootstrapTest extends Component {
                 {/*<BootstrapTable hover data={this.state.data}>*/}
                 {/*    {this.tableHeaderColumns}*/}
                 {/*</BootstrapTable>*/}
-                <BootstrapTable
-                    keyField="id"
-                    data={this.state.data}
-                    columns={this.state.columns}
-                    classes="someClass2"
-                />
+                {/*<BootstrapTable*/}
+                {/*    keyField="id"*/}
+                {/*    data={this.state.data}*/}
+                {/*    columns={this.state.columns}*/}
+                {/*    classes="someClass2"*/}
+                {/*/>*/}
                 <div className="headerTable">
                     <div className="titleTable">{this.props.store.menuState.nameOperation}</div>
                     <div className="optionBlock"></div>
@@ -376,6 +376,29 @@ class TableBootstrapTest extends Component {
                         {/*        // })*/}
                         {/*    }*/}
                         {/*</BootstrapTable>*/}
+
+                        <BootstrapTable data={this.state.data}
+                                        insertRow={true}
+                                        deleteRow={true}
+                                        selectRow={selectRowProp}
+                                        options={options}
+                                        cellEdit={cellEditFactory}
+                        >
+
+                            {/*{this.testRendColums}*/}
+
+                            <TableHeaderColumn isKey dataField='id' autoValue editable={false} >
+                                ID
+                            </TableHeaderColumn>
+                            <TableHeaderColumn dataField='name' >
+                                Name
+                            </TableHeaderColumn>
+                            <TableHeaderColumn dataField='animal' >
+                                animal
+                            </TableHeaderColumn>
+
+
+                        </BootstrapTable>
 
 
                     </div>

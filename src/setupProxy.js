@@ -6,7 +6,9 @@ const endpoints = {
         '/api/User',
         '/api/UserCabinet',
         '/api/Auth',
-        '/api/Role'
+        '/api/Role',
+        '/api/Operations',
+        '/api/RoleOperations'
     ],
     8471: ['/api/Dictionary']
 };

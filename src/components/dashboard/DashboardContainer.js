@@ -1,6 +1,12 @@
 import { connect } from "react-redux";
 import { addUserDataCreator } from "../../redux/userReducer";
-import {  addTableDataCreator,changeLoadingCreator, operationNameCreator, showPopupTableCreator } from "../../redux/menuReducer";
+import {
+    addTableDataCreator,
+    changeLoadingCreator,
+    operationNameCreator,
+    roleDataCreator,
+    showPopupTableCreator
+} from "../../redux/menuReducer";
 import {withRouter} from "react-router-dom";
 
 
@@ -34,6 +40,9 @@ let mapDispatchToProps = (dispatch) => {
         },
         operationName: (nameOperation, operation) => {
             dispatch(operationNameCreator( nameOperation, operation ) );
+        },
+        addRoleData: (role) => {
+            dispatch(roleDataCreator( role ) );
         },
 
     }

@@ -4,6 +4,7 @@ let isLoading = 'isLoading';
 let tableData = 'tableData';
 let operationName = 'operationName';
 let showPopupTable = 'showPopupTable';
+let roleData = 'roleData';
 
 let initialState = {
     isLoading: false,
@@ -12,7 +13,8 @@ let initialState = {
     nameOperation: null,
     operation: null,
     showPopupTable: false,
-    typePopup: null
+    typePopup: null,
+    roleData: null
 }
 
 
@@ -50,6 +52,11 @@ const menuReducer = (state = initialState, action ) => {
             stateOperationName.operation = action.operation;
             console.log(stateOperationName);
             return stateOperationName;
+        case 'roleData' :
+            let stateRoleData= {...state};
+            stateRoleData.roleData = action.roleData;
+            console.log(stateRoleData);
+            return stateRoleData;
 
         default:
             return state;
@@ -82,6 +89,13 @@ export const operationNameCreator = (nameOperation, operation) => {
         type: operationName, nameOperation: nameOperation, operation: operation
     }
 }
+export const roleDataCreator = (role) => {
+    console.log(roleData);
+    return {
+        type: roleData, roleData: role
+    }
+}
+
 
 
 export default menuReducer;
