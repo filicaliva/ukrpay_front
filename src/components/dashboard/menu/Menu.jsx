@@ -24,6 +24,7 @@ class Menu extends React.Component{
         //console.log(typeof this.generateUserRoutingMenu(this.props.store.userState.OPERATIONS));
         //this.menu(this.generateUserRoutingMenu(this.props.store.userState.OPERATIONS));
         //this.generateUserRoutingMenu(this.props.store.userState.OPERATIONS);
+
         if ( this.props.store.location.pathname.substr(11) == null || this.props.store.location.pathname.substr(11) == "" ){
 
         }else{
@@ -54,7 +55,7 @@ class Menu extends React.Component{
                             parentIndex++;
                             res.push({...item, children: []});
                         }
-
+                        //console.log(res);
                         return res;
                     }
 
@@ -64,15 +65,17 @@ class Menu extends React.Component{
                         operation: item.operation
                     };
 
-                    res[parentIndexData[item['parent_operation']]].children.push(updatedItem)
+                    res[parentIndexData[item['parent_operation']]].children.push(updatedItem);
+                    //console.log(res);
                 }
-
+                //console.log(res);
                 return res;
             } catch (e) {
-                console.log(e);
+                //console.log(e);
             }
 
         }, []);
+        //console.log(mappedUserConfig);
         return [mappedUserConfig]
     }
     activeOperation = (operationArr, operation) => {
@@ -163,7 +166,7 @@ class Menu extends React.Component{
 
         for (let key in obj) {
             let li = (objItem) => {
-                //console.log(objItem);
+                console.log(objItem);
                 //console.log(typeof objItem);
                 return objItem.map(( item , index) => {
                     //console.log(index);
@@ -238,21 +241,24 @@ class Menu extends React.Component{
 
         let operation = e.currentTarget.getAttribute("operation");
         this.props.store.history.push(`/dashboard/${operation}`);
-        // console.log(operationName);
-        // console.log(operation);
+        console.log(operationName);
+        console.log(operation);
 
         this.props.store.operationName(operationName, operation);
 
 
-        //this.requestDICT(this.props.store.userState.token, operation);
+
         this.typeRequest(operation);
     }
     typeRequest = (operation) => {
         let operationType = operation.split('_')[0];
-        console.log( operation.startsWith('DICT') );
+        console.log( operation );
+       // console.log( operation.startsWith('DICT') );
         switch (operation) {
             case 'ADMIN_USERS':
-                return this.requestADMIN_USERS(this.props.store.userState.token);
+                console.log( "--------ADMIN_USERS------------" );
+                 this.funActionADMIN_USERS();
+                return
             case 'ADMIN_ROLES':
                 return this.requestADMIN_ROLES(this.props.store.userState.token);
             case 'ADMIN_OPERATIONS':
@@ -260,7 +266,12 @@ class Menu extends React.Component{
             case 'ADMIN_ROLE_OPERATIONS':
                 return this.requestADMIN_ROLE_OPERATIONS(this.props.store.userState.token);
 
+            //REPORT
 
+            case 'REPORT_SETTINGS_TSP':
+                console.log( "--------REPORT_SETTINGS_TSP------------" );
+                this.actionREPORT_SETTINGS_TSP();
+                return
 
             case "DICT_PAYMENT_SYSTEM":
                 return this.requestDICT(this.props.store.userState.token, operation);
@@ -325,49 +336,12 @@ class Menu extends React.Component{
     }
 
     //ADMIN
-    async requestADMIN_USERS  (token) {
-        this.props.store.changeLoading(true);
-        console.log( token );
-        const baseUrl = `/api/User`;
-        const userBody = {
-            user_code: "",
-            user_name: "",
-            bank_branch_id: 0,
-            only_active: false
-        };
-        await axios.post(
-            baseUrl,
-            userBody,
-            {
-                headers: {
-                    "Token" : `${ token }`,
-                    'Content-Type': 'application/json'
-                }
-            }
-        )
-            .then((response) => {
-                console.log(response.data);
-                console.log(response.data.users);
-                //console.log(response.data.Table);
-
-
-                //this.props.store.showTable(true);
-
-                this.props.store.addTableData(true, response.data.users);
-
-                this.props.store.changeLoading(false);
-                //this.props.store.showTable(true);
-
-            })
-            .catch((error) => {
-                console.log(error.response);
-                console.log(error.response.data);
-                //console.log('error_catch');
-
-            });
-
+    funActionADMIN_USERS = () => {
+        console.log('=========================funActionADMIN_USERS==================');
+        this.props.store.addTableData(true, "empty")
     }
     async requestADMIN_ROLES  (token) {
+        console.log('=========================requestADMIN_ROLES==================');
         this.props.store.changeLoading(true);
         console.log( token );
         const baseUrl = `/api/Role`;
@@ -394,8 +368,8 @@ class Menu extends React.Component{
 
             })
             .catch((error) => {
-                console.log(error.response);
-                console.log(error.response.data);
+               // console.log(error.response);
+                //console.log(error.response.data);
                 //console.log('error_catch');
 
             });
@@ -470,9 +444,12 @@ class Menu extends React.Component{
             });
 
     }
-    // ADMIN_ROLE_OPERATIONS = () => {
-    //     this.props.store.addTableData(true, null);
-    // }
+
+    //REPORT
+    actionREPORT_SETTINGS_TSP = () => {
+        console.log('=========================actionREPORT_SETTINGS_TSP==================');
+        this.props.store.addTableData(true, 'empty');
+    }
     listOperation = ( obj ) => {
         //console.log(obj);
         for (var key in obj){
@@ -570,8 +547,12 @@ class Menu extends React.Component{
     }
 
     render() {
+        console.log(this.props.store.userState.OPERATIONS);
+        console.log(this.props.params);
+        // console.log(this.generateUserRoutingMenu(this.props.store.userState.OPERATIONS));
         return (
             <div className="menu">
+                <p>{this.props.params == '' ? 'Не вибрано жодного звіту' : this.props.params}</p>
                 <div className="coverList">
                     {this.menuBoo(this.generateUserRoutingMenu(this.props.store.userState.OPERATIONS))}
                 </div>

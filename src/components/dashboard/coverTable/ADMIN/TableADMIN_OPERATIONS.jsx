@@ -95,11 +95,11 @@ class TableADMIN_OPERATIONS extends React.Component {
                 <div className="innerTable">
                     <div className="Table">
                         <BootstrapTable data={this.props.store.menuState.tableData}
-                                        insertRow={true}
-                                        deleteRow={true}
-                                        selectRow={selectRowProp}
-                                        options={options}
-                                        cellEdit={cellEditFactory}
+                                        //insertRow={true}
+                                        //deleteRow={true}
+                                        //selectRow={selectRowProp}
+                                        //options={options}
+                                        //cellEdit={cellEditFactory}
                         >
 
                             {/*{this.testRendColums}*/}

@@ -40,9 +40,10 @@ const menuReducer = (state = initialState, action ) => {
             let stateAddTableData= {...state};
             console.log(action.tableData);
             console.log( action.tableData != 'empty' );
-            if(action.tableData != 'empty') {
-                stateAddTableData.tableData = action.tableData;
-            }
+            stateAddTableData.tableData = action.tableData;
+            // if(action.tableData != 'empty') {
+            //     stateAddTableData.tableData = action.tableData;
+            // }
             stateAddTableData.showTable = action.showTable;
             console.log(stateAddTableData);
             return stateAddTableData;

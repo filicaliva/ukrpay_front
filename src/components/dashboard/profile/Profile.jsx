@@ -174,6 +174,7 @@ class Profile extends React.Component{
     closeProfile = () => {
         this.props.history.push('/dashboard');
     }
+
     render() {
         console.log(this.props);
         console.log(this.state);

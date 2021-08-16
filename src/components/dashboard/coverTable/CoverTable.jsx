@@ -20,6 +20,7 @@ import ReactBootstrapTable from "./test/ReactBootstrapTable";
 import TableADMIN_USERS from "./ADMIN/TableADMIN_USERS";
 import TableADMIN_OPERATIONS from "./ADMIN/TableADMIN_OPERATIONS";
 import TableADMIN_ROLE_OPERATIONS from "./ADMIN/TableADMIN_ROLE_OPERATIONS";
+import REPORT_SETTINGS_TSP from "./REPORT/REPORT_SETTINGS_TSP";
 
 
 
@@ -55,13 +56,13 @@ class CoverTable extends React.Component{
     }
     componentDidMount() {
         console.log(this.props.store.location.pathname);
-        if ( this.props.store.location.pathname.substr(11) == null || this.props.store.location.pathname.substr(11) == "" ){
-
-        }else{
-            // this.requestOperation(this.props.store.userState.token, this.props.store.location.pathname.substr(11))
-            this.typeRequest(this.props.store.location.pathname.substr(11));
-            this.props.store.operationName(this.activeOperation(this.props.store.userState.OPERATIONS, this.props.store.location.pathname.substr(11)), this.props.store.location.pathname.substr(11));
-        }
+        // if ( this.props.store.location.pathname.substr(11) == null || this.props.store.location.pathname.substr(11) == "" ){
+        //
+        // }else{
+        //     // this.requestOperation(this.props.store.userState.token, this.props.store.location.pathname.substr(11))
+        //     this.typeRequest(this.props.store.location.pathname.substr(11));
+        //     this.props.store.operationName(this.activeOperation(this.props.store.userState.OPERATIONS, this.props.store.location.pathname.substr(11)), this.props.store.location.pathname.substr(11));
+        // }
 
     }
 
@@ -379,6 +380,10 @@ class CoverTable extends React.Component{
             case 'ADMIN_ROLE_OPERATIONS':
                 return <TableADMIN_ROLE_OPERATIONS store={this.props.store}/>
 
+            //REPORT
+
+            case "REPORT_SETTINGS_TSP":
+                return <REPORT_SETTINGS_TSP store={this.props.store}/>
 
             case "DICT_PAYMENT_SYSTEM":
                 return <TableBootstrapDICT store={this.props.store}/>
@@ -410,9 +415,32 @@ class CoverTable extends React.Component{
         }
     }
 
+    urlValue = (val) => {
+        console.log(val);
+        switch (val) {
+            case 'ADMIN_USERS':
+                return "ADMIN_USERS";
+            case 'ADMIN_ROLES':
+                return 'ADMIN_ROLES';
+            case 'ADMIN_OPERATIONS':
+                return 'ADMIN_OPERATIONS';
+            case 'ADMIN_ROLE_OPERATIONS':
+                return 'ADMIN_ROLE_OPERATIONS';
 
+
+
+            case "DICT_PAYMENT_SYSTEM":
+                return 'DICT_PAYMENT_SYSTEM';
+            case "DICT_REPORT_FORMAT":
+                return 'DICT_REPORT_FORMAT';
+
+            default:
+                return '';
+        }
+    }
     render() {
         console.log(this.props);
+        console.log(this.urlValue(this.props.store.location.pathname.substr(11)));
         console.log(this.props.store.menuState.showTable);
         console.log(this.props.store.menuState.operation);
         console.log(this.props.store.menuState.tableData);
@@ -466,7 +494,8 @@ class CoverTable extends React.Component{
                 {/*        </div>*/}
                 {/*}*/}
 
-
+                {/*<h1>{this.urlValue(this.props.store.location.pathname.substr(11))}</h1>*/}
+                {/*<h2>{this.props.store.location.pathname.substr(11)}</h2>*/}
 
                 {
                     this.props.store.menuState.tableData == null
@@ -481,7 +510,8 @@ class CoverTable extends React.Component{
                                 </div>
                             </div>
                         </div>
-                        : this.tableType(this.props.store.menuState.operation)
+                       : this.tableType(this.props.store.menuState.operation)
+                        // : this.tableType(this.props.store.location.pathname.substr(11))
                 }
 
 

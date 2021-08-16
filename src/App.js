@@ -46,9 +46,10 @@ class App extends React.Component {
                 <Route exact path="/" render={ () => <MainContainer /> } />
                 <Route  path="/dashboard/" render={ () => <DashboardContainer /> } />
                 <Route  path="/profile" render={ () => <ProfileContainer /> } />
-                {/*<Route  path="/dashboard/:dictionary" render={ () => <DashboardContainer /> } />*/}
+
                 {/*<Route path="/dashboard" render={ () => <Dashboard /> } />*/}
                 <Route path="/login" render={ () => <LoginContainer /> } />
+                {/*<Route path="*" render={ () => <LoginContainer /> } />*/}
             </BrowserRouter>
         )
     }

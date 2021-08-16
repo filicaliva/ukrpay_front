@@ -1,11 +1,12 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import {NavLink, Route} from 'react-router-dom';
 
 import * as axios from "axios";
 import Header from "./header/Header";
 import Menu from "./menu/Menu";
 import CoverTable from "./coverTable/CoverTable";
 import PopupTable from "./popup/PopupTable";
+import DashboardContainer from "./DashboardContainer";
 
 
 
@@ -98,8 +99,9 @@ class Dashboard extends React.Component{
                         : <>
                             <Header store={this.props}></Header>
                             <div className="content">
-                                <Menu  store={this.props}  />
-                                <CoverTable store={this.props} />
+                                <Menu  store={this.props} params={this.props.location.pathname.substr(11)} />
+                                {/*<Route  path="/dashboard/:dictionary" render={ () => <CoverTable store={this.props} /> } />*/}
+                                <CoverTable store={this.props} params={this.props.location.pathname.substr(11)} />
                             </div>
                         </>
                 }

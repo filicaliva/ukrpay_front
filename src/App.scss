@@ -228,10 +228,79 @@ header{
       }
     }
   }
+  .filter{
+    background: #ffffff;
+    padding: 0 15px;
+    .coverInput, .coverCheckbox{
+      label{
+        margin: 0 10px;
+      }
+    }
+    .coverCheckbox{
+      margin-top: 10px;
+    }
+    .search{
+      margin: 10px;
+    }
+  }
+  .coverDeleteBlock{
+    position: fixed;
+    inset: 0px;
+    background-color: rgba(255, 255, 255, 0.75);
+    opacity: 1;
+    transition: opacity 150ms ease-out;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: rgba(0,0,0,.5);
+    z-index: 101;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .deleteBlock{
+      max-width: 500px;
+      background: #ffffff;
+      padding: 30px;
+    }
+  }
+
   .innerTable{
     background: #ffffff;
     padding: 15px;
     position: relative;
+  }
+}
+
+
+.REPORT_SETTINGS_TSP{
+  .filter{
+    display: flex;
+  }
+
+  .coverInputText{
+    display: flex;
+    flex-direction: column;
+    margin-right: 10px;
+  }
+  .coverInputSelect{
+    margin-right: 10px;
+  }
+  .coverInputDate{
+    .coverInputs{
+      display: flex;
+      .coverDate{
+        label, input{
+          margin-right: 10px;
+        }
+      }
+    }
+  }
+  .coverResult{
+    .resultSearch{
+
+    }
+    .typeAcquiring{
+
+    }
   }
 }
 

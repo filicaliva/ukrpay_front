@@ -10,7 +10,8 @@ const endpoints = {
         '/api/Operations',
         '/api/RoleOperations'
     ],
-    8471: ['/api/Dictionary']
+    8471: ['/api/Dictionary'],
+    8472: [`/api/TSPReportSettings`],
 };
 
 module.exports = function (app) {
@@ -29,6 +30,17 @@ module.exports = function (app) {
         endpoints['8471'],
         createProxyMiddleware({
             target: 'http://192.168.65.71:8471',
+            changeOrigin: true,
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+            },
+        })
+    );
+    app.use(
+        endpoints['8472'],
+        createProxyMiddleware({
+            target: 'http://192.168.65.71:8472',
             changeOrigin: true,
             headers: {
                 'Content-Type': 'application/json',
