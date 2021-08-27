@@ -13,10 +13,11 @@ import {withRouter} from "react-router-dom";
 import Dashboard from "./Dashboard";
 
 const mapStateToProps = (state) => {
-    console.log(state);
+    //console.log(state);
     return {
         userState: state.userState,
-        menuState: state.menuState
+        menuState: state.menuState,
+        form: state.form
     }
 }
 

@@ -22,18 +22,18 @@ const email = (value) => {
     return value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value) ?
         'Невірний email' : undefined
 }
-const required = value => value ? undefined : 'Required'
+const required = value => value ? undefined : 'Обовязкове'
 const LoginForm = (props) => {
     console.log(props);
     //console.log(this.props.menuState.isLoading);
     // const { handleSubmit, pristine, reset, submitting } = props
     return (
         <form className="form" onSubmit={props.handleSubmit}>
-            <Field name="username" type="username" autocomplete="off" autocomplete="username"
-                   component={renderField} label="Username"
+            <Field name="username" type="username" autocomplete="off" autocomplete="Логін"
+                   component={renderField} label="Логін"
                    validate={required}
             />
-            <Field name="password" type="password" component={renderField} label="Password"/>
+            <Field name="password" type="password" component={renderField} label="Пароль"/>
 
             <div className="coverBtn">
                 <button type="submit">Увійти</button>

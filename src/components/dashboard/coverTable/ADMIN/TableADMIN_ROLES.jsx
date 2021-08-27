@@ -6,25 +6,18 @@ class TableADMIN_ROLES extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isShowTable: true
+            isShowTable: true,
+
+            selectRow: null,
+
+            isDisableButton: true,
+
+            addRow: {},
+
+            isShowEditBlock: false,
+            isShowAddBlock: false,
+            isShowDeleteBlock: false,
         }
-    }
-    addId = (arr) => {
-        if(arr == 'empty'){
-            arr = [];
-        }
-        //console.log(arr);
-        let newArr = [];
-        let resultObj = arr.reduce((res, item, index) => {
-            //console.log(res);
-            //console.log(item);
-            let newObj = {...item};
-            newObj.id = index;
-            //console.log(newObj);
-            newArr.push(newObj);
-        }, 0);
-        //console.log(newArr);
-        return newArr;
     }
     addNewRole = (obj) => {
         console.log(obj);
@@ -57,9 +50,7 @@ class TableADMIN_ROLES extends Component {
 
                 // this.props.store.addTableData(true, response.data.users);
                 // this.setState({isShowTable: true});
-                this.setState({
-                    isShowTable: false
-                });
+                this.closeEditForm();
                 this.requestADMIN_ROLES(this.props.store.userState.token);
                 this.props.store.changeLoading(false);
                 //this.props.store.showTable(true);
@@ -98,9 +89,10 @@ class TableADMIN_ROLES extends Component {
 
                 // this.props.store.addTableData(true, response.data.users);
                 // this.setState({isShowTable: true});
-                this.setState({
-                    isShowTable: false
-                });
+                // this.setState({
+                //     isShowTable: false
+                // });
+                this.closeEditForm();
                 this.requestADMIN_ROLES(this.props.store.userState.token);
                 this.props.store.changeLoading(false);
                 //this.props.store.showTable(true);
@@ -138,15 +130,16 @@ class TableADMIN_ROLES extends Component {
                 // this.props.store.addTableData(true, response.data.users);
                 // this.setState({isShowTable: true});
                 this.setState({
-                    isShowTable: false
+                    isDisableButton: true
                 });
+                this.closeEditForm();
                 this.requestADMIN_ROLES(this.props.store.userState.token);
                 this.props.store.changeLoading(false);
                 //this.props.store.showTable(true);
 
             })
             .catch((error) => {
-                // console.log(error.response);
+                console.log(error.response);
                 // console.log(error.response.data);
                 //console.log('error_catch');
 
@@ -189,111 +182,183 @@ class TableADMIN_ROLES extends Component {
             });
 
     }
+
+    editHandle = () => {
+        this.setState({
+            isShowEditBlock: true
+        });
+    }
+    addHandle = () => {
+        this.setState({
+            isShowAddBlock: true
+        });
+    }
+    deleteHandle = () => {
+        this.setState({
+            isShowDeleteBlock: true
+        });
+    }
+    closeEditForm = () => {
+        console.log('close');
+        this.setState({
+            selectRow: {},
+            isShowEditBlock: false,
+            isShowAddBlock: false,
+            isShowDeleteBlock: false
+        });
+    }
+
+    changeInput = (e) => {
+        let keyName = e.currentTarget.getAttribute("name");
+        console.log(keyName);
+        let inputValue = e.target.value;
+        console.log(inputValue);
+        let inputDataObj = this.state.selectRow;
+        inputDataObj.[keyName] = inputValue;
+        console.log(inputDataObj);
+        this.setState({
+            selectRow: inputDataObj
+        });
+        console.log(this.state);
+        console.log(this.state.selectRow);
+    }
+    changeInputAdd = (e) => {
+        let keyName = e.currentTarget.getAttribute("name");
+        console.log(keyName);
+        let inputValue = e.target.value;
+        console.log(inputValue);
+        let inputDataObj = this.state.addRow;
+        inputDataObj.[keyName] = inputValue;
+        console.log(inputDataObj);
+        this.setState({
+            addRow: inputDataObj
+        });
+        console.log(this.state);
+        console.log(this.state.addRow);
+    }
+    saveUser = () => {
+        console.log(this.state.selectRow);
+
+        this.requestADMIN_ROLE_edit(this.props.store.userState.token, this.state.selectRow);
+    }
+    addRole = () => {
+
+        console.log(this.state.addRow);
+        this.requestADMIN_ROLE_add(this.props.store.userState.token, this.state.addRow);
+    }
+    deleteRole = () => {
+        console.log(this.state.addRow);
+        this.requestADMIN_ROLE_delete(this.props.store.userState.token, this.state.selectRow.role_id);
+    }
     render() {
-        //console.log(this.state.Table);
+        console.log(this.state);
         console.log(this.props);
         console.log(this.props.store.menuState.tableData);
-        const onDeleteRow = (rowKeys) => {
-            //console.log(rowKeys);
-            //alert('You deleted: ' + rowKeys)
-            let res;
-            for(let i = 0; i != rowKeys.length; i++){
-                res = this.addId(this.props.store.menuState.tableData).filter((item) => {
-                    return item.id == rowKeys[i]
-                })
-            }
-            //localStorage.setItem("rows", JSON.stringify(this.state.columns))
-            console.log(res);
-            console.log(res[0].role_id);
-            this.requestADMIN_ROLE_delete(this.props.store.userState.token, res[0].role_id);
-            //console.log(rowKeys);
-        }
-        const onInsertRow = (row) => {
-            let newRowStr = ''
-            for (const prop in row) {
-                //console.log(row);
-                newRowStr += prop + ': ' + row[prop] + ' \n'
-                //obj.prop.row[prop]
-            }
-            //console.log(newRowStr);
-            console.log(row);
-            this.addNewRole(row);
-            //alert('You inserted:\n ' + newRowStr)
-        }
-        const cellEditFactory = {
-            mode: 'dbclick',
-            blurToSave: true,
-            // nonEditableRows: () => [0, 3],
-            beforeSaveCell(oldValue, newValue, row, column, done) {
-                // console.log( oldValue );
-                // console.log( newValue );
-                // console.log( row );
-                // console.log( column );
-                // console.log( done );
-                // console.log( '-----------------' );
-                // setTimeout(() => {
-                //     if (window.confirm('Do you want to accep this change?')) {
-                //         done(); // contine to save the changes
-                //     } else {
-                //         done(false); // reject the changes
-                //     }
-                // }, 0);
-                // return { async: true };
-            },
-            afterSaveCell: (oldValue, newValue, row, column) => {
-                console.log( oldValue );
-                delete oldValue.id
-                console.log( oldValue );
-                this.requestADMIN_ROLE_edit(this.props.store.userState.token, oldValue);
-                // console.log( newValue );
-                // console.log( row );
-                // console.log( column );
-                // console.log( '-----------------' );
-            }
-        }
         const selectRowProp = {
-            mode: 'radio'
-        }
-        const options = {
-            afterInsertRow: onInsertRow,
-            afterDeleteRow: onDeleteRow
+            mode: 'radio',
+            onSelect: (row, isSelect, rowIndex) => {
+                this.setState({
+                    selectRow: row,
+                    isDisableButton: false
+                });
+            }
         }
         return (
-            <div className="coverTable">
+            <div className="coverTable TableADMIN_ROLES">
                 <div className="headerTable">
                     <div className="titleTable">{this.props.store.menuState.nameOperation}</div>
                     <div className="optionBlock"></div>
                 </div>
+                {
+                    this.state.isShowDeleteBlock
+                        ? <div className="coverDeleteBlock">
+                            <div className="innerBlock">
+                                <div>Ви впевнені, видалити цю роль: <span>{this.state.selectRow.role_id}</span>?</div>
+                                <br/>
+                                <div className="coverBtn">
+                                    <button className="btn btn-danger" onClick={this.deleteRole}>Видалити</button>
+                                    <button className="btn btn-secondary" onClick={this.closeEditForm}>Скасувати</button>
+                                </div>
+
+                            </div>
+                        </div>
+                        : <></>
+                }
+                {
+                    this.state.isShowEditBlock
+                        ? <div className="coverEditBlock">
+                            <div className="innerBlock">
+                                <input onChange={this.changeInput} name="role_id" type="text" placeholder="ID ролі" defaultValue={this.state.selectRow.role_id} disabled/>
+
+                                <input onChange={this.changeInput} name="role_name" type="text" placeholder="Ім'я ролі"
+                                       defaultValue={this.state.selectRow.role_name}/>
+                                <input onChange={this.changeInput} name="role_desc" type="text"  placeholder="Опис"
+                                       defaultValue={this.state.selectRow.role_desc}/>
+                                <input onChange={this.changeInput} name="ad_role" type="text"  placeholder="Ідентифікатор AD ролі" defaultValue={this.state.selectRow.ad_role}/>
+
+                                <div className="coverBtn">
+                                    <button onClick={this.saveUser} className="btn btn-success" >Зберегти</button>
+                                    <button onClick={this.closeEditForm} className="btn btn-secondary">Закрити</button>
+                                </div>
+
+
+
+                             </div>
+                        </div>
+                        : <></>
+                }
+                {
+                    this.state.isShowAddBlock
+                        ? <div className="coverAddBlock">
+                            <div className="innerBlock">
+                                <input onChange={this.changeInputAdd} name="role_id" type="text" placeholder="ID ролі" />
+
+                                <input onChange={this.changeInputAdd} name="role_name" type="text" placeholder="Ім'я ролі"/>
+                                <input onChange={this.changeInputAdd} name="role_desc" type="text"  placeholder="Опис"/>
+                                <input onChange={this.changeInputAdd} name="ad_role" type="text"  placeholder="Ідентифікатор AD ролі"/>
+
+                                <div className="coverBtn">
+                                    <button onClick={this.addRole} className="btn btn-success" >Зберегти</button>
+                                    <button onClick={this.closeEditForm} className="btn btn-secondary">Закрити</button>
+                                </div>
+                            </div>
+                        </div>
+                        : <></>
+                }
                 <div className="innerTable">
                     <div className="Table">
                         {
                             this.state.isShowTable
-                                ? <BootstrapTable data={this.addId(this.props.store.menuState.tableData)}
-                                                  insertRow={true}
-                                                  deleteRow={true}
-                                                  selectRow={selectRowProp}
-                                                  options={options}
-                                                  cellEdit={cellEditFactory}
-                                >
+                                ? <>
+                                    <div className="controlBlock">
+                                        <button
+                                            onClick={this.editHandle}
+                                            disabled={this.state.isDisableButton ? 'disabled' : ''}
+                                            className="btn btn-secondary"
+                                        >Редагування</button>
+                                        <button onClick={this.addHandle} className="btn btn-info">Додавання</button>
+                                        <button onClick={this.deleteHandle} disabled={this.state.isDisableButton ? 'disabled' : ''} className="btn btn-warning">Видалення</button>
+                                    </div>
+                                    <BootstrapTable data={this.props.store.menuState.tableData}
+                                                    selectRow={selectRowProp}
+                                    >
 
-                                    <TableHeaderColumn isKey dataField='id' width="40" tdStyle={{ "text-align": 'center' }} autoValue >
-                                        №
-                                    </TableHeaderColumn>
-                                    <TableHeaderColumn  dataField='role_id'  filter={ { type: 'TextFilter', delay: 1000 } }>
-                                        ID ролі
-                                    </TableHeaderColumn>
-                                    <TableHeaderColumn dataField='role_name'  filter={ { type: 'TextFilter', delay: 1000 } }>
-                                        Ім'я ролі
-                                    </TableHeaderColumn>
-                                    <TableHeaderColumn dataField='role_desc' filter={ { type: 'TextFilter', delay: 1000 } }>
-                                        Опис
-                                    </TableHeaderColumn>
-                                    <TableHeaderColumn dataField='ad_role' filter={ { type: 'TextFilter', delay: 1000 } }>
-                                        Ідентифікатор AD ролі
-                                    </TableHeaderColumn>
+                                        <TableHeaderColumn isKey dataField='role_id'  filter={ { type: 'TextFilter', delay: 1000 } }>
+                                            ID ролі
+                                        </TableHeaderColumn>
+                                        <TableHeaderColumn dataField='role_name'  filter={ { type: 'TextFilter', delay: 1000 } }>
+                                            Ім'я ролі
+                                        </TableHeaderColumn>
+                                        <TableHeaderColumn dataField='role_desc' filter={ { type: 'TextFilter', delay: 1000 } }>
+                                            Опис
+                                        </TableHeaderColumn>
+                                        <TableHeaderColumn dataField='ad_role' filter={ { type: 'TextFilter', delay: 1000 } }>
+                                            Ідентифікатор AD ролі
+                                        </TableHeaderColumn>
 
 
-                                </BootstrapTable>
+                                    </BootstrapTable>
+                                </>
                                 : <>
 
                                 </>

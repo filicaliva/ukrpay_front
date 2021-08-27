@@ -57,7 +57,15 @@ class Dashboard extends React.Component{
             })
             .catch((error) => {
                 console.log(error.response);
-                //console.log(error.response.data);
+                console.log(error.response.data);
+                console.log(error.response.data.ErrorStatus.ErrorMessage);
+                let ErrorMessage = error.response.data.ErrorStatus.ErrorMessage;
+                console.log(ErrorMessage == "Помилка токена.");
+                if(ErrorMessage == "Помилка токена."){
+                    window.localStorage.removeItem('token');
+                    //this.setState({ loading: false });
+                    this.props.history.push('/login');
+                }
                 //console.log('error_catch');
 
             });

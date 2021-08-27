@@ -161,12 +161,12 @@ class Menu extends React.Component{
     //     }
     // }
     menuBoo = (obj) => {
-        console.log(obj);
+        //console.log(obj);
         //console.log(typeof obj);
 
         for (let key in obj) {
             let li = (objItem) => {
-                console.log(objItem);
+                //console.log(objItem);
                 //console.log(typeof objItem);
                 return objItem.map(( item , index) => {
                     //console.log(index);
@@ -515,7 +515,7 @@ class Menu extends React.Component{
             }
 
             let liItem = (arrItem) => {
-                console.log(arrItem);
+                //console.log(arrItem);
                 return arrItem.map(( item , index) => {
                     //console.log(item);
                     //console.log(item.name);
@@ -547,8 +547,8 @@ class Menu extends React.Component{
     }
 
     render() {
-        console.log(this.props.store.userState.OPERATIONS);
-        console.log(this.props.params);
+        //console.log(this.props.store.userState.OPERATIONS);
+        //console.log(this.props.params);
         // console.log(this.generateUserRoutingMenu(this.props.store.userState.OPERATIONS));
         return (
             <div className="menu">

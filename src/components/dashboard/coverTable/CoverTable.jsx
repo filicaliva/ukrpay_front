@@ -41,11 +41,11 @@ class CoverTable extends React.Component{
                 { id: 1, product: 'DevExtreme Reactive', owner: 'DevExpress' },
             ]
         }
-        console.log(this.props);
+        //console.log(this.props);
 
     }
     componentDidUpdate() {
-        console.log('componentDidUpdate');
+        //console.log('componentDidUpdate');
         // if ( this.props.store.location.pathname.substr(11) == null || this.props.store.location.pathname.substr(11) == "" ){
         //
         // }else{
@@ -55,7 +55,7 @@ class CoverTable extends React.Component{
         // }
     }
     componentDidMount() {
-        console.log(this.props.store.location.pathname);
+        //console.log(this.props.store.location.pathname);
         // if ( this.props.store.location.pathname.substr(11) == null || this.props.store.location.pathname.substr(11) == "" ){
         //
         // }else{
@@ -66,50 +66,50 @@ class CoverTable extends React.Component{
 
     }
 
-    typeRequest = (operation) => {
-        let operationType = operation.split('_')[0];
-        console.log( operation.startsWith('DICT') );
-        switch (operation) {
-            case 'ADMIN_USERS':
-                return this.requestADMIN_USERS(this.props.store.userState.token);
-            case 'ADMIN_ROLES':
-                return this.requestADMIN_ROLES(this.props.store.userState.token);
-            case 'ADMIN_OPERATIONS':
-                return this.requestADMIN_OPERATIONS(this.props.store.userState.token);
-            case 'ADMIN_ROLE_OPERATIONS':
-                return this.requestADMIN_ROLE_OPERATIONS(this.props.store.userState.token);
-
-
-
-            case "DICT_PAYMENT_SYSTEM":
-                return this.requestDICT(this.props.store.userState.token, operation);
-            case "DICT_REPORT_FORMAT":
-                return this.requestDICT(this.props.store.userState.token, operation);
-            case "DICT_CURRENCY":
-                return this.requestDICT(this.props.store.userState.token, operation);
-            case "DICT_DATE_TYPE":
-                return this.requestDICT(this.props.store.userState.token, operation);
-            case "DICT_REPORT_ACTION":
-                return this.requestDICT(this.props.store.userState.token, operation);
-            case "DICT_OPERATION_TYPE":
-                return this.requestDICT(this.props.store.userState.token, operation);
-            case "DICT_ACQUIRING_TYPE":
-                return this.requestDICT(this.props.store.userState.token, operation);
-            case "DICT_ACQUIRING_SERVICE":
-                return this.requestDICT(this.props.store.userState.token, operation);
-            case "DICT_INSTITUTION":
-                return this.requestDICT(this.props.store.userState.token, operation);
-            case "DICT_BRANCH":
-                return this.requestDICT(this.props.store.userState.token, operation);
-            case "DICT_REPORT_PERIOD_TYPE":
-                return this.requestDICT(this.props.store.userState.token, operation);
-            case "DICT_REPORT_CHANNEL_TYPE":
-                return this.requestDICT(this.props.store.userState.token, operation);
-
-            default:
-                return '';
-        }
-    }
+    // typeRequest = (operation) => {
+    //     let operationType = operation.split('_')[0];
+    //     console.log( operation.startsWith('DICT') );
+    //     switch (operation) {
+    //         case 'ADMIN_USERS':
+    //             return this.requestADMIN_USERS(this.props.store.userState.token);
+    //         case 'ADMIN_ROLES':
+    //             return this.requestADMIN_ROLES(this.props.store.userState.token);
+    //         case 'ADMIN_OPERATIONS':
+    //             return this.requestADMIN_OPERATIONS(this.props.store.userState.token);
+    //         case 'ADMIN_ROLE_OPERATIONS':
+    //             return this.requestADMIN_ROLE_OPERATIONS(this.props.store.userState.token);
+    //
+    //
+    //
+    //         case "DICT_PAYMENT_SYSTEM":
+    //             return this.requestDICT(this.props.store.userState.token, operation);
+    //         case "DICT_REPORT_FORMAT":
+    //             return this.requestDICT(this.props.store.userState.token, operation);
+    //         case "DICT_CURRENCY":
+    //             return this.requestDICT(this.props.store.userState.token, operation);
+    //         case "DICT_DATE_TYPE":
+    //             return this.requestDICT(this.props.store.userState.token, operation);
+    //         case "DICT_REPORT_ACTION":
+    //             return this.requestDICT(this.props.store.userState.token, operation);
+    //         case "DICT_OPERATION_TYPE":
+    //             return this.requestDICT(this.props.store.userState.token, operation);
+    //         case "DICT_ACQUIRING_TYPE":
+    //             return this.requestDICT(this.props.store.userState.token, operation);
+    //         case "DICT_ACQUIRING_SERVICE":
+    //             return this.requestDICT(this.props.store.userState.token, operation);
+    //         case "DICT_INSTITUTION":
+    //             return this.requestDICT(this.props.store.userState.token, operation);
+    //         case "DICT_BRANCH":
+    //             return this.requestDICT(this.props.store.userState.token, operation);
+    //         case "DICT_REPORT_PERIOD_TYPE":
+    //             return this.requestDICT(this.props.store.userState.token, operation);
+    //         case "DICT_REPORT_CHANNEL_TYPE":
+    //             return this.requestDICT(this.props.store.userState.token, operation);
+    //
+    //         default:
+    //             return '';
+    //     }
+    // }
     async requestDICT  (token, operation) {
         this.props.store.changeLoading(true);
         console.log( token );
@@ -254,41 +254,41 @@ class CoverTable extends React.Component{
             });
 
     }
-    async requestADMIN_ROLE_OPERATIONS  (token) {
-        this.props.store.changeLoading(true);
-        console.log( token );
-        const baseUrl = `/api/Role`;
-        await axios.get(
-            baseUrl,
-            {
-                headers: {
-                    "Token" : `${ token }`
-                }
-            }
-        )
-            .then((response) => {
-                console.log(response.data);
-                //console.log(response.data.users);
-                //console.log(response.data.Table);
-
-
-                //this.props.store.showTable(true);
-
-                this.props.store.addRoleData(response.data.roles);
-                this.props.store.addTableData(true, response.data.roles);
-
-                this.props.store.changeLoading(false);
-                //this.props.store.showTable(true);
-
-            })
-            .catch((error) => {
-                console.log(error.response);
-                console.log(error.response.data);
-                //console.log('error_catch');
-
-            });
-
-    }
+    // async requestADMIN_ROLE_OPERATIONS  (token) {
+    //     this.props.store.changeLoading(true);
+    //     console.log( token );
+    //     const baseUrl = `/api/Role`;
+    //     await axios.get(
+    //         baseUrl,
+    //         {
+    //             headers: {
+    //                 "Token" : `${ token }`
+    //             }
+    //         }
+    //     )
+    //         .then((response) => {
+    //             console.log(response.data);
+    //             //console.log(response.data.users);
+    //             //console.log(response.data.Table);
+    //
+    //
+    //             //this.props.store.showTable(true);
+    //
+    //             this.props.store.addRoleData(response.data.roles);
+    //             this.props.store.addTableData(true, response.data.roles);
+    //
+    //             this.props.store.changeLoading(false);
+    //             //this.props.store.showTable(true);
+    //
+    //         })
+    //         .catch((error) => {
+    //             console.log(error.response);
+    //             console.log(error.response.data);
+    //             //console.log('error_catch');
+    //
+    //         });
+    //
+    // }
 
 
     activeOperation = (operationArr, operation) => {
@@ -367,8 +367,8 @@ class CoverTable extends React.Component{
 
     tableType = (operation) => {
         //let operationType = operation.split('_')[0];
-        console.log( operation );
-        console.log( operation.startsWith('ADMIN') );
+        //console.log( operation );
+        //console.log( operation.startsWith('ADMIN') );
         switch (operation) {
 
             case 'ADMIN_USERS':
@@ -440,10 +440,10 @@ class CoverTable extends React.Component{
     }
     render() {
         console.log(this.props);
-        console.log(this.urlValue(this.props.store.location.pathname.substr(11)));
-        console.log(this.props.store.menuState.showTable);
-        console.log(this.props.store.menuState.operation);
-        console.log(this.props.store.menuState.tableData);
+        //console.log(this.urlValue(this.props.store.location.pathname.substr(11)));
+        //console.log(this.props.store.menuState.showTable);
+        //console.log(this.props.store.menuState.operation);
+        //console.log(this.props.store.menuState.tableData);
 
         return (
             <>
