@@ -71,6 +71,7 @@ export const showPopupTableCreator = (value, typePopup) => {
     }
 }
 export const addTableDataCreator = (showTable, operation) => {
+    console.log(showTable);
     console.log(operation);
     return {
         type: tableData,
@@ -85,7 +86,8 @@ export const changeLoadingCreator = (loading) => {
     }
 }
 export const operationNameCreator = (nameOperation, operation) => {
-    //console.log(operation);
+    console.log(nameOperation);
+    console.log(operation);
     return {
         type: operationName, nameOperation: nameOperation, operation: operation
     }

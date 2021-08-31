@@ -488,19 +488,19 @@ class TableADMIN_ROLE_OPERATIONS extends React.Component {
                                         {/*    enabled*/}
                                         {/*</TableHeaderColumn>*/}
                                         <TableHeaderColumn dataField='cancel' dataFormat={editCancelColumn}  >
-                                            cancel
+                                            Скасування
                                         </TableHeaderColumn>
                                         <TableHeaderColumn dataField='enabled' dataFormat={editCreateColumn}  >
-                                            create
+                                            Створення
                                         </TableHeaderColumn>
                                         <TableHeaderColumn dataField='delete' dataFormat={editDeleteColumn}  >
-                                            delete
+                                            Видалення
                                         </TableHeaderColumn>
                                         <TableHeaderColumn dataField='modify' dataFormat={editModifyColumn}  >
-                                            modify
+                                            Редагування
                                         </TableHeaderColumn>
                                         <TableHeaderColumn dataField='enabled' dataFormat={editEnabledColumn}  >
-                                            enabled
+                                            Активно
                                         </TableHeaderColumn>
 
                                     </BootstrapTable>

@@ -256,7 +256,7 @@ header{
       margin: 10px;
     }
   }
-  .coverDeleteBlock, .coverEditBlock, .coverAddBlock, .coverPopupTable{
+  .coverDeleteBlock, .coverEditBlock, .coverAddBlock, .coverPopupTable, .coverPopupError{
     position: fixed;
     inset: 0px;
     background-color: rgba(255, 255, 255, 0.75);
@@ -288,6 +288,18 @@ header{
         position: fixed;
         right: 20px;
         top: 6px;
+      }
+    }
+  }
+  .coverPopupError{
+    .innerBlock{
+      .title{
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+      .msg{
+        font-size: 12px;
+        margin-bottom: 40px;
       }
     }
   }
@@ -326,14 +338,45 @@ header{
     display: flex;
     background: #ffffff;
     .resultSearch{
-
+      padding: 10px;
+      margin: 10px;
+      //border: 1px solid #333;
     }
     .typeAcquiring{
-
+      .coverBtn{
+        padding: 10px;
+        margin: 10px;
+      }
+      .report{
+        padding: 10px;
+        margin: 10px;
+      }
     }
   }
 }
-
+.REPORT_aquiring{
+  .filter{
+    display: flex;
+  }
+  .coverInput{
+    display: flex;
+    flex-direction: column;
+    margin-right: 10px;
+  }
+  .coverInputSelect{
+    margin-right: 10px;
+  }
+  .coverInputDate{
+    .coverInputs{
+      display: flex;
+      .coverDate{
+        label, input{
+          margin-right: 10px;
+        }
+      }
+    }
+  }
+}
 
 
 table {

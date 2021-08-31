@@ -12,6 +12,7 @@ const endpoints = {
     ],
     8471: ['/api/Dictionary'],
     8472: [`/api/TSPReportSettings`],
+    8473: [`/api/Reports`],
 };
 
 module.exports = function (app) {
@@ -46,6 +47,17 @@ module.exports = function (app) {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
             },
+        })
+    );
+    app.use(
+        endpoints['8473'],
+        createProxyMiddleware({
+            target: 'http://192.168.65.71:8473',
+            changeOrigin: true,
+            // headers: {
+            //     'Content-Type': 'application/json',
+            //     Accept: 'application/json',
+            // },
         })
     );
 };

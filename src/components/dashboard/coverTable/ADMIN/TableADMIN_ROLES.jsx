@@ -349,9 +349,6 @@ class TableADMIN_ROLES extends Component {
                                         <TableHeaderColumn dataField='role_name'  filter={ { type: 'TextFilter', delay: 1000 } }>
                                             Ім'я ролі
                                         </TableHeaderColumn>
-                                        <TableHeaderColumn dataField='role_desc' filter={ { type: 'TextFilter', delay: 1000 } }>
-                                            Опис
-                                        </TableHeaderColumn>
                                         <TableHeaderColumn dataField='ad_role' filter={ { type: 'TextFilter', delay: 1000 } }>
                                             Ідентифікатор AD ролі
                                         </TableHeaderColumn>

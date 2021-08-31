@@ -234,7 +234,7 @@ class Menu extends React.Component{
 
     itemLink = (e) => {
         e.preventDefault();
-        this.props.store.addTableData(true, null);
+        this.props.store.addTableData(false, null);
         let operationName = e.currentTarget.getAttribute("name");
 
 
@@ -272,6 +272,11 @@ class Menu extends React.Component{
                 console.log( "--------REPORT_SETTINGS_TSP------------" );
                 this.actionREPORT_SETTINGS_TSP();
                 return
+
+            case 'REPORTS_ACQUIRING':
+                return this.actionREPORTS_Aacquiring();
+            case 'REPORTS_ACQUIRING_MONITOR':
+                return this.actionREPORTS_ACQUIRING_MONITOR();
 
             case "DICT_PAYMENT_SYSTEM":
                 return this.requestDICT(this.props.store.userState.token, operation);
@@ -450,6 +455,17 @@ class Menu extends React.Component{
         console.log('=========================actionREPORT_SETTINGS_TSP==================');
         this.props.store.addTableData(true, 'empty');
     }
+    actionREPORTS_Aacquiring = () => {
+        console.log('=========================actionREPORTS_Aacquiring==================');
+        this.props.store.addTableData(true, 'empty');
+    }
+    actionREPORTS_ACQUIRING_MONITOR = () => {
+        console.log('=========================actionREPORTS_ACQUIRING_MONITOR==================');
+        this.props.store.addTableData(true, 'empty');
+    }
+
+
+
     listOperation = ( obj ) => {
         //console.log(obj);
         for (var key in obj){
@@ -552,7 +568,7 @@ class Menu extends React.Component{
         // console.log(this.generateUserRoutingMenu(this.props.store.userState.OPERATIONS));
         return (
             <div className="menu">
-                <p>{this.props.params == '' ? 'Не вибрано жодного звіту' : this.props.params}</p>
+                {/*<p>{this.props.params == '' ? 'Не вибрано жодного звіту' : this.props.params}</p>*/}
                 <div className="coverList">
                     {this.menuBoo(this.generateUserRoutingMenu(this.props.store.userState.OPERATIONS))}
                 </div>

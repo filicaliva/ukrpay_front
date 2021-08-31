@@ -113,9 +113,6 @@ class TableADMIN_OPERATIONS extends React.Component {
                             <TableHeaderColumn dataField='parent_operation' filter={ { type: 'TextFilter', delay: 1000 } }>
                                 Відноситься до
                             </TableHeaderColumn>
-                            <TableHeaderColumn dataField='type' filter={ { type: 'TextFilter', delay: 1000 } }>
-                                Тип
-                            </TableHeaderColumn>
 
                         </BootstrapTable>
                     </div>

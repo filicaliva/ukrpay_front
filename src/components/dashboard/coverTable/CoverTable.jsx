@@ -21,6 +21,8 @@ import TableADMIN_USERS from "./ADMIN/TableADMIN_USERS";
 import TableADMIN_OPERATIONS from "./ADMIN/TableADMIN_OPERATIONS";
 import TableADMIN_ROLE_OPERATIONS from "./ADMIN/TableADMIN_ROLE_OPERATIONS";
 import REPORT_SETTINGS_TSP from "./REPORT/REPORT_SETTINGS_TSP";
+import REPORTS_acquiring from "./REPORT/REPORTS_acquiring";
+import REPORTS_ACQUIRING_MONITOR from "./REPORT/REPORTS_ACQUIRING_MONITOR";
 
 
 
@@ -367,7 +369,7 @@ class CoverTable extends React.Component{
 
     tableType = (operation) => {
         //let operationType = operation.split('_')[0];
-        //console.log( operation );
+        console.log( operation );
         //console.log( operation.startsWith('ADMIN') );
         switch (operation) {
 
@@ -384,6 +386,12 @@ class CoverTable extends React.Component{
 
             case "REPORT_SETTINGS_TSP":
                 return <REPORT_SETTINGS_TSP store={this.props.store}/>
+            case "REPORTS_ACQUIRING":
+                console.log( "REPORTS_ACQUIRING" );
+                return <REPORTS_acquiring store={this.props.store}/>
+            case "REPORTS_ACQUIRING_MONITOR":
+                console.log( "REPORTS_ACQUIRING_MONITOR" );
+                return <REPORTS_ACQUIRING_MONITOR store={this.props.store}/>
 
             case "DICT_PAYMENT_SYSTEM":
                 return <TableBootstrapDICT store={this.props.store}/>
