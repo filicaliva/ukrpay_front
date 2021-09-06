@@ -50,13 +50,23 @@ class TableBootstrapADMIN extends Component {
         console.log(res);
         return res;
     }
+    activeOperation = (operationArr, operation) => {
+        let res;
+        operationArr.map(( item , index) => {
+            if(item.operation == operation){
+                console.log(item.name);
+                res = item.name;
+            }
+        })
+        return res;
+    }
     render() {
         console.log(this.props);
         console.log(this.props.store.menuState);
         return (
             <div className="coverTable">
                 <div className="headerTable">
-                    <div className="titleTable">{this.props.store.menuState.nameOperation}</div>
+                    <div className="titleTable">{this.activeOperation(this.props.store.userState.OPERATIONS, this.props.store.location.pathname.substr(11))}</div>
                     <div className="optionBlock"></div>
                 </div>
                 <div className="innerTable">

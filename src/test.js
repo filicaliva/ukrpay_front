@@ -61,6 +61,34 @@ let tt = {
 }
 
 
+
+
+let rr2 = {
+    physical_acquiring_type_id: 1,
+    physical_channel_address: "",
+    physical_channel_type_id: 1,
+    physical_extended_report: false,
+    physical_file_name_mask: "",
+    physical_installment_report: false,
+    physical_report_format_id: 1,
+    physical_report_period_type_id: 1,
+    physical_standard_report: true,
+
+    internet_acquiring_type_id: 2,
+    internet_channel_address: "",
+    internet_channel_type_id: 1,
+    internet_extended_report: false,
+    internet_file_name_mask: "",
+    internet_installment_report: false,
+    internet_report_format_id: 1,
+    internet_report_period_type_id: 1,
+    internet_standard_report: true,
+};
+
+
+
+
+
 let rr = () => {
     return(
         <div className={`${this.state.type_acquiring == acquiring_type_id ? '' : 'd-none'} border report`}>
@@ -169,3 +197,52 @@ Anton2021
 
 
 <a href="blob:http://192.168.65.71:8473/84f031cf-c246-4001-9455-93c1a46ea8a3" download="report.xls">Download file</a>
+
+
+
+
+let arr = [
+    {
+        date_submitted: "2021-08-30T16:03:15",
+        date_updated: "2021-08-30T16:03:15",
+        report_id: 41,
+        report_name: "Звіт Виписка операцій",
+        status: "Сформовано",
+        user: "OKURYLENKO"
+    },
+    {
+        date_submitted: "2021-08-30T16:03:15",
+        date_updated: "2021-08-30T16:03:15",
+        report_id: 42,
+        report_name: "Звіт Виписка операцій",
+        status: "Не сформовано",
+        user: "OKURYLENKO"
+    }
+]
+
+
+
+
+let arr = [
+    {field_name: "TRANS_DATE", field_desc: "Дата транзакції", include_flag: true, order_number: 1},
+    {field_name: "TRANS_TIME", field_desc: "Час транзакції", include_flag: true, order_number: 2},
+    {field_name: "BANKING_DATE", field_desc: "Дата обробки", include_flag: true, order_number: 3},
+    {field_name: "TERMINAL_ID", field_desc: "ID термінала", include_flag: true, order_number: 4},
+    {field_name: "SERIAL_NUMBER", field_desc: "с/н термінала", include_flag: true, order_number: 5},
+    {field_name: "MERCHANT_ID", field_desc: "ID мерчанта", include_flag: true, order_number: 6}
+]
+
+
+
+let arr = [
+    {field_name: "TRANS_DATE", field_desc: "Дата транзакції", include_flag: true, order_number: 1},
+    {field_name: "TRANS_TIME", field_desc: "Час транзакції", include_flag: true, order_number: 2},
+    {field_name: "BANKING_DATE", field_desc: "Дата обробки", include_flag: true, order_number: 3},
+    {field_name: "TERMINAL_ID", field_desc: "ID термінала", include_flag: true, order_number: 4},
+    {field_name: "SERIAL_NUMBER", field_desc: "с/н термінала", include_flag: true, order_number: 5},
+    {field_name: "MERCHANT_ID", field_desc: "ID мерчанта", include_flag: true, order_number: 6}
+]
+let row = {field_name: "MERCHANT_ID", field_desc: "ID мерчанта", include_flag: true, order_number: 99}
+arr.map(( item , index) => {
+
+})

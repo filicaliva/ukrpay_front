@@ -88,7 +88,7 @@ const OptionItemDICT_REPORT_CHANNEL_TYPE = (props) => {
     )
 }
 
-class REPORTS_acquiring extends React.Component {
+class REPORT_OPERATIONS extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -114,7 +114,9 @@ class REPORTS_acquiring extends React.Component {
             DICT_DATE_TYPE: null,
             isShowSelectDICT_DATE_TYPE: false,
 
-            AcquiringReportsCriteria: {}
+            AcquiringReportsCriteria: {
+                report_type_id: 'REPORT_OPERATIONS',
+            }
 
         }
         //console.log(this.data.sort());
@@ -1337,26 +1339,26 @@ class REPORTS_acquiring extends React.Component {
                             }
                         </select>
                         <label htmlFor="tsp_name">Назва ТСП</label>
-                        <input onChange={this.changeInput} apiName="tsp_name" id="tsp_name" type="text"/>
+                        <input onChange={this.changeInput} className="form-control" apiName="tsp_name" id="tsp_name" type="text"/>
                         <label htmlFor="INN">ІНН/ЄДРПОУ</label>
-                        <input onChange={this.changeInput} apiName="ident_code" id="INN" type="text"/>
+                        <input onChange={this.changeInput} className="form-control" apiName="ident_code" id="INN" type="text"/>
                     </div>
                     <div className="coverInput">
 
-                        <label htmlFor="report_type_id">Назва звіту</label>
-                        <select onChange={this.changeInput} apiName="report_type_id" id="report_type_id" className="form-select"
-                                title="">
-                            <option>-</option>
-                            {
-                                this.state.isShowSelectDICT_ACQUIRING_REPORTS
-                                    ?
-                                    this.state.DICT_ACQUIRING_REPORTS.map((item, index) => {
-                                        return < OptionItemDICT_ACQUIRING_REPORTS key={index} optionItem={item}/>
-                                    })
-                                    : <>
-                                    </>
-                            }
-                        </select>
+                        {/*<label htmlFor="report_type_id">Назва звіту</label>*/}
+                        {/*<select onChange={this.changeInput} apiName="report_type_id" id="report_type_id" className="form-select"*/}
+                        {/*        title="">*/}
+                        {/*    <option>-</option>*/}
+                        {/*    {*/}
+                        {/*        this.state.isShowSelectDICT_ACQUIRING_REPORTS*/}
+                        {/*            ?*/}
+                        {/*            this.state.DICT_ACQUIRING_REPORTS.map((item, index) => {*/}
+                        {/*                return < OptionItemDICT_ACQUIRING_REPORTS key={index} optionItem={item}/>*/}
+                        {/*            })*/}
+                        {/*            : <>*/}
+                        {/*            </>*/}
+                        {/*    }*/}
+                        {/*</select>*/}
 
 
                         <label htmlFor="terminal_type_id">Вид термінала</label>
@@ -1375,10 +1377,10 @@ class REPORTS_acquiring extends React.Component {
                         </select>
 
                         <label htmlFor="merchant">merchant ID</label>
-                        <input onChange={this.changeInput} apiName="merchant_id" id="merchant" type="text"/>
+                        <input onChange={this.changeInput} className="form-control" apiName="merchant_id" id="merchant" type="text"/>
 
                         <label htmlFor="terminal_id">Terminal ID</label>
-                        <input onChange={this.changeInput} apiName="terminal_id" id="terminal_id" type="text"/>
+                        <input onChange={this.changeInput} className="form-control" apiName="terminal_id" id="terminal_id" type="text"/>
 
                     </div>
                     <div className="coverInput">
@@ -1399,7 +1401,7 @@ class REPORTS_acquiring extends React.Component {
                             }
                         </select>
                         <label htmlFor="mcc_code">MCC</label>
-                        <input onChange={this.changeInput} apiName="mcc_code" id="mcc_code" type="text"/>
+                        <input onChange={this.changeInput} className="form-control" apiName="mcc_code" id="mcc_code" type="text"/>
                         <label htmlFor="format_type_id">Формат файлу</label>
                         <select onChange={this.changeInput} apiName="format_type_id" id="format_type_id" className="form-select"
                                 title="DICT_REPORT_FORMAT">
@@ -1444,11 +1446,11 @@ class REPORTS_acquiring extends React.Component {
                             <div className="coverInputs">
                                 <div className="coverDate">
                                     <label htmlFor="date_report_from">З</label>
-                                    <input onChange={this.changeInputDateReport_from} apiName="date_from" className="customInput" id="date_from" type="date"/>
+                                    <input onChange={this.changeInputDateReport_from} apiName="date_from" className="customInput form-control" id="date_from" type="date"/>
                                 </div>
                                 <div className="coverDate">
                                     <label htmlFor="date_report_to">По</label>
-                                    <input onChange={this.changeInputDateReport_to} apiName="date_to" className="customInput" id="date_to" type="date"/>
+                                    <input onChange={this.changeInputDateReport_to} apiName="date_to" className="customInput form-control" id="date_to" type="date"/>
                                 </div>
                             </div>
                         </div>
@@ -1456,7 +1458,7 @@ class REPORTS_acquiring extends React.Component {
                     </div>
                 </div>
                 <div className="btnBlock">
-                    <button className="search" onClick={this.search}>Побудувати звіт</button>
+                    <button className="search btn btn-primary" onClick={this.search}>Побудувати звіт</button>
                 </div>
 
 
@@ -1500,4 +1502,4 @@ class REPORTS_acquiring extends React.Component {
     }
 }
 
-export default REPORTS_acquiring
+export default REPORT_OPERATIONS

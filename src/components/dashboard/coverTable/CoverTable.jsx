@@ -23,8 +23,29 @@ import TableADMIN_ROLE_OPERATIONS from "./ADMIN/TableADMIN_ROLE_OPERATIONS";
 import REPORT_SETTINGS_TSP from "./REPORT/REPORT_SETTINGS_TSP";
 import REPORTS_acquiring from "./REPORT/REPORTS_acquiring";
 import REPORTS_ACQUIRING_MONITOR from "./REPORT/REPORTS_ACQUIRING_MONITOR";
+import DICT_NET_BRAND from "./DICT/DICT_NET_BRAND";
+import REPORT_OPERATIONS from "./REPORT/REPORT_OPERATIONS";
 
+class Default extends React.Component{
+    render() {
+        console.log('зайшло default');
+        console.log('зайшло default');
+        return(
+            <div className="coverTable">
 
+                <div className="headerTable">
+                    <span>Не вибрано жодного звіту!!!</span>
+                    <div className="optionBlock"></div>
+                </div>
+                <div className="innerTable">
+                    <div className="Table">
+
+                    </div>
+                </div>
+            </div>
+        )
+    }
+}
 
 class CoverTable extends React.Component{
     constructor(props) {
@@ -58,6 +79,7 @@ class CoverTable extends React.Component{
     }
     componentDidMount() {
         //console.log(this.props.store.location.pathname);
+        //console.log('componentDidMount COVER TABLE');
         // if ( this.props.store.location.pathname.substr(11) == null || this.props.store.location.pathname.substr(11) == "" ){
         //
         // }else{
@@ -369,58 +391,102 @@ class CoverTable extends React.Component{
 
     tableType = (operation) => {
         //let operationType = operation.split('_')[0];
+        console.log( '---------------operation--------------------' );
         console.log( operation );
+        console.log( '---------------operation--------------------' );
         //console.log( operation.startsWith('ADMIN') );
         switch (operation) {
 
             case 'ADMIN_USERS':
                 return <TableADMIN_USERS store={this.props.store}/>
+                break
             case 'ADMIN_ROLES':
                 return <TableADMIN_ROLES store={this.props.store}/>
+                break
             case 'ADMIN_OPERATIONS':
                 return <TableADMIN_OPERATIONS store={this.props.store}/>
+                break
             case 'ADMIN_ROLE_OPERATIONS':
                 return <TableADMIN_ROLE_OPERATIONS store={this.props.store}/>
-
+                break
             //REPORT
 
             case "REPORT_SETTINGS_TSP":
                 return <REPORT_SETTINGS_TSP store={this.props.store}/>
+                break
             case "REPORTS_ACQUIRING":
                 console.log( "REPORTS_ACQUIRING" );
                 return <REPORTS_acquiring store={this.props.store}/>
+                break
             case "REPORTS_ACQUIRING_MONITOR":
                 console.log( "REPORTS_ACQUIRING_MONITOR" );
                 return <REPORTS_ACQUIRING_MONITOR store={this.props.store}/>
+                break
+            case "REPORT_OPERATIONS":
+                console.log( "REPORT_OPERATIONS" );
+                return <REPORT_OPERATIONS store={this.props.store}/>
+                break
 
             case "DICT_PAYMENT_SYSTEM":
                 return <TableBootstrapDICT store={this.props.store}/>
+                break
             case "DICT_REPORT_FORMAT":
                 return <TableBootstrapDICT store={this.props.store}/>
+                break
             case "DICT_CURRENCY":
                 return <TableBootstrapDICT store={this.props.store}/>
+                break
             case "DICT_DATE_TYPE":
                 return <TableBootstrapDICT store={this.props.store}/>
+                break
             case "DICT_REPORT_ACTION":
                 return <TableBootstrapDICT store={this.props.store}/>
+                break
             case "DICT_OPERATION_TYPE":
                 return <TableBootstrapDICT store={this.props.store}/>
+                break
             case "DICT_ACQUIRING_TYPE":
                 return <TableBootstrapDICT store={this.props.store}/>
+                break
             case "DICT_ACQUIRING_SERVICE":
                 return <TableBootstrapDICT store={this.props.store}/>
+                break
             case "DICT_INSTITUTION":
                 return <TableBootstrapDICT store={this.props.store}/>
+                break
             case "DICT_BRANCH":
                 return <TableBootstrapDICT store={this.props.store}/>
+                break
             case "DICT_REPORT_PERIOD_TYPE":
                 return <TableBootstrapDICT store={this.props.store}/>
+                break
             case "DICT_REPORT_CHANNEL_TYPE":
                 return <TableBootstrapDICT store={this.props.store}/>
+                break
+            case "DICT_NET_BRAND":
+                return <DICT_NET_BRAND store={this.props.store}/>
+                break
 
             default:
-                return '';
+                return <Default/>
         }
+    }
+    default = () => {
+        console.log('зайшло default');
+        return(
+            <div className="coverTable">
+
+                <div className="headerTable">
+                    <span>Не вибрано жодного звіту!!!</span>
+                    <div className="optionBlock"></div>
+                </div>
+                <div className="innerTable">
+                    <div className="Table">
+
+                    </div>
+                </div>
+            </div>
+        )
     }
 
     urlValue = (val) => {
@@ -503,26 +569,28 @@ class CoverTable extends React.Component{
                 {/*}*/}
 
                 {/*<h1>{this.urlValue(this.props.store.location.pathname.substr(11))}</h1>*/}
-                {/*<h2>{this.props.store.location.pathname.substr(11)}</h2>*/}
 
-                {
-                    this.props.store.menuState.tableData == null
-                        ? <div className="coverTable">
-                            <div className="headerTable">
-                                <span>Не вибрано жодного звіту</span>
-                                <div className="optionBlock"></div>
-                            </div>
-                            <div className="innerTable">
-                                <div className="Table">
+                <h1 className="testUrl">{this.props.params}</h1>
 
-                                </div>
-                            </div>
-                        </div>
-                       : this.tableType(this.props.store.menuState.operation)
-                        // : this.tableType(this.props.store.location.pathname.substr(11))
-                }
+                {/*{*/}
+                {/*    this.props.store.menuState.tableData == null*/}
+                {/*        ? <div className="coverTable">*/}
 
+                {/*            <div className="headerTable">*/}
+                {/*                <span>Не вибрано жодного звіту</span>*/}
+                {/*                <div className="optionBlock"></div>*/}
+                {/*            </div>*/}
+                {/*            <div className="innerTable">*/}
+                {/*                <div className="Table">*/}
 
+                {/*                </div>*/}
+                {/*            </div>*/}
+                {/*        </div>*/}
+                {/*       : this.tableType(this.props.store.menuState.operation)*/}
+                {/*        // : this.tableType(this.props.store.location.pathname.substr(11))*/}
+                {/*}*/}
+
+                {this.tableType(this.props.params)}
             </>
         )
     }

@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import cellEditFactory from 'react-bootstrap-table2-editor';
+import * as axios from "axios";
 
 class TableBootstrapDICT extends Component {
     constructor(props) {
@@ -43,6 +44,41 @@ class TableBootstrapDICT extends Component {
             }
         }
     }
+    componentDidMount () {
+        this.requestDICT(this.props.store.userState.token, this.params)
+    }
+    async requestDICT  (token, operation) {
+        this.props.store.changeLoading(true);
+        console.log( token );
+        console.log( operation );
+        const baseUrl = `/api/Dictionary/${operation}`;
+        await axios.get(
+            baseUrl,
+            {
+                headers: {"Token" : `${ token }`}
+            }
+        )
+            .then((response) => {
+                console.log(response.data);
+                console.log(response.data.Table);
+
+
+                //this.props.store.showTable(true);
+
+                this.props.store.addTableData(true, response.data.Table);
+
+                this.props.store.changeLoading(false);
+                //this.props.store.showTable(true);
+
+            })
+            .catch((error) => {
+                console.log(error.response);
+                console.log(error.response.data);
+                //console.log('error_catch');
+
+            });
+
+    }
     columnsData = (data) => {
         console.log(data);
         let res=[];
@@ -56,14 +92,25 @@ class TableBootstrapDICT extends Component {
         console.log(row);
         console.log(column);
     }
+    activeOperation = (operationArr, operation) => {
+        let res;
+        operationArr.map(( item , index) => {
+            if(item.operation == operation){
+                console.log(item.name);
+                res = item.name;
+            }
+        })
+        return res;
+    }
     render() {
+        console.log(this.params);
         console.log(this.state.Table);
         console.log(this.props);
         console.log(this.props.store.menuState.tableData);
         return (
             <div className="coverTable">
                 <div className="headerTable">
-                    <div className="titleTable">{this.props.store.menuState.nameOperation}</div>
+                    <div className="titleTable">{this.activeOperation(this.props.store.userState.OPERATIONS, this.props.store.location.pathname.substr(11))}</div>
                     <div className="optionBlock"></div>
                 </div>
                 <div className="innerTable">

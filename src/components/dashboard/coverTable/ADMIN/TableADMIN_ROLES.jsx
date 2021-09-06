@@ -6,6 +6,7 @@ class TableADMIN_ROLES extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            roles: null,
             isShowTable: true,
 
             selectRow: null,
@@ -19,12 +20,58 @@ class TableADMIN_ROLES extends Component {
             isShowDeleteBlock: false,
         }
     }
+    componentDidMount() {
+        this.requestADMIN_ROLES(this.props.store.userState.token);
+        // this.rr(this.props.store.userState.token);
+        // console.log( 'componentDidMount' );
+    }
+    async requestADMIN_ROLES  (token) {
+        console.log('=========================requestADMIN_ROLES==================');
+        this.props.store.changeLoading(true);
+        console.log( token );
+        const baseUrl = `/api/Role`;
+        await axios.get(
+            baseUrl,
+            {
+                headers: {
+                    "Token" : `${ token }`
+                }
+            }
+        )
+            .then((response) => {
+                console.log(response.data);
+                //console.log(response.data.users);
+                //console.log(response.data.Table);
+
+
+                //this.props.store.showTable(true);
+
+                //this.props.store.addTableData(true, response.data.roles);
+                this.setState({
+                    roles: response.data.roles,
+                    isShowTable: true
+                });
+
+                this.props.store.changeLoading(false);
+                //this.props.store.showTable(true);
+
+            })
+            .catch((error) => {
+                // console.log(error.response);
+                //console.log(error.response.data);
+                //console.log('error_catch');
+
+            });
+
+    }
+
     addNewRole = (obj) => {
         console.log(obj);
         delete obj.id
         console.log(obj);
         this.requestADMIN_ROLE_add(this.props.store.userState.token, obj);
     }
+
     async requestADMIN_ROLE_add  (token, userBody) {
         this.props.store.changeLoading(true);
         console.log( token );
@@ -146,42 +193,42 @@ class TableADMIN_ROLES extends Component {
             });
 
     }
-    async requestADMIN_ROLES  (token) {
-        this.props.store.changeLoading(true);
-        console.log( token );
-        const baseUrl = `/api/Role`;
-        await axios.get(
-            baseUrl,
-            {
-                headers: {
-                    "Token" : `${ token }`
-                }
-            }
-        )
-            .then((response) => {
-                console.log(response.data);
-                //console.log(response.data.users);
-                //console.log(response.data.Table);
-
-
-                //this.props.store.showTable(true);
-
-                this.props.store.addTableData(true, response.data.roles);
-                this.setState({
-                    isShowTable: true
-                });
-                this.props.store.changeLoading(false);
-                //this.props.store.showTable(true);
-
-            })
-            .catch((error) => {
-                console.log(error.response);
-                console.log(error.response.data);
-                //console.log('error_catch');
-
-            });
-
-    }
+    // async requestADMIN_ROLES  (token) {
+    //     this.props.store.changeLoading(true);
+    //     console.log( token );
+    //     const baseUrl = `/api/Role`;
+    //     await axios.get(
+    //         baseUrl,
+    //         {
+    //             headers: {
+    //                 "Token" : `${ token }`
+    //             }
+    //         }
+    //     )
+    //         .then((response) => {
+    //             console.log(response.data);
+    //             //console.log(response.data.users);
+    //             //console.log(response.data.Table);
+    //
+    //
+    //             //this.props.store.showTable(true);
+    //
+    //             this.props.store.addTableData(true, response.data.roles);
+    //             this.setState({
+    //                 isShowTable: true
+    //             });
+    //             this.props.store.changeLoading(false);
+    //             //this.props.store.showTable(true);
+    //
+    //         })
+    //         .catch((error) => {
+    //             console.log(error.response);
+    //             console.log(error.response.data);
+    //             //console.log('error_catch');
+    //
+    //         });
+    //
+    // }
 
     editHandle = () => {
         this.setState({
@@ -250,8 +297,20 @@ class TableADMIN_ROLES extends Component {
         console.log(this.state.addRow);
         this.requestADMIN_ROLE_delete(this.props.store.userState.token, this.state.selectRow.role_id);
     }
+    activeOperation = (operationArr, operation) => {
+        let res;
+        operationArr.map(( item , index) => {
+            if(item.operation == operation){
+                console.log(item.name);
+                res = item.name;
+            }
+        })
+        return res;
+    }
     render() {
         console.log(this.state);
+        console.log('=====roles=====');
+        console.log(this.state.roles);
         console.log(this.props);
         console.log(this.props.store.menuState.tableData);
         const selectRowProp = {
@@ -266,7 +325,7 @@ class TableADMIN_ROLES extends Component {
         return (
             <div className="coverTable TableADMIN_ROLES">
                 <div className="headerTable">
-                    <div className="titleTable">{this.props.store.menuState.nameOperation}</div>
+                    <div className="titleTable">{this.activeOperation(this.props.store.userState.OPERATIONS, this.props.store.location.pathname.substr(11))}</div>
                     <div className="optionBlock"></div>
                 </div>
                 {
@@ -339,7 +398,7 @@ class TableADMIN_ROLES extends Component {
                                         <button onClick={this.addHandle} className="btn btn-info">Додавання</button>
                                         <button onClick={this.deleteHandle} disabled={this.state.isDisableButton ? 'disabled' : ''} className="btn btn-warning">Видалення</button>
                                     </div>
-                                    <BootstrapTable data={this.props.store.menuState.tableData}
+                                    <BootstrapTable data={this.state.roles}
                                                     selectRow={selectRowProp}
                                     >
 

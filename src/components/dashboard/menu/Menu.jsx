@@ -17,6 +17,7 @@ class Menu extends React.Component{
         console.log(this.props);
     }
     componentDidMount() {
+        //this.activeOperation(this.props.store.userState.OPERATIONS, this.props.params);
         //this.requestADMIN(this.props.store.userState.token, 'ADMIN_USERS');
        // this.listoperation(this.props);
        //console.log(this.props.store.userState.OPERATIONS);
@@ -25,13 +26,13 @@ class Menu extends React.Component{
         //this.menu(this.generateUserRoutingMenu(this.props.store.userState.OPERATIONS));
         //this.generateUserRoutingMenu(this.props.store.userState.OPERATIONS);
 
-        if ( this.props.store.location.pathname.substr(11) == null || this.props.store.location.pathname.substr(11) == "" ){
-
-        }else{
-            console.log(this.activeOperation(this.props.store.userState.OPERATIONS, this.props.store.location.pathname.substr(11)));
-            this.props.store.operationName(this.activeOperation(this.props.store.userState.OPERATIONS, this.props.store.location.pathname.substr(11)), this.props.store.location.pathname.substr(11));
-
-        }
+        // if ( this.props.store.location.pathname.substr(11) == null || this.props.store.location.pathname.substr(11) == "" ){
+        //
+        // }else{
+        //     console.log(this.activeOperation(this.props.store.userState.OPERATIONS, this.props.store.location.pathname.substr(11)));
+        //     this.props.store.operationName(this.activeOperation(this.props.store.userState.OPERATIONS, this.props.store.location.pathname.substr(11)), this.props.store.location.pathname.substr(11));
+        //
+        // }
     }
     generateUserRoutingMenu = (menuItems) => {
         //console.log(menuItems);
@@ -88,6 +89,7 @@ class Menu extends React.Component{
             //console.log(item.name);
             //console.log(item.operation == operation);
             if(item.operation == operation){
+                console.log(item.name);
                 res = item.name;
             }
         })
@@ -188,12 +190,16 @@ class Menu extends React.Component{
                                 return(
                                     <Accordion.Body>
                                         { objItem.map(( item , index) => {
-                                            //console.log(this.props.store.menuState.operation );
-                                            //console.log(item.operation );
-                                            //console.log(this.props.store.menuState.operation === item.operation ? 'itemAct' : '' );
+                                            // console.log('-------objItem------' );
+                                            // console.log(this.props.store.menuState.operation );
+                                            // console.log(item.operation );
+                                            // console.log( this.props.store.location.pathname.substr(11) );
+                                            // console.log(this.props.store.menuState.operation === item.operation );
+                                            // console.log(this.props.store.location.pathname.substr(11) === item.operation );
+                                            // console.log(this.props.store.menuState.operation === item.operation ? 'itemAct' : '' );
 
                                             return(
-                                                    <div className={`dropdownMenuItemLink ${ this.props.store.menuState.operation === item.operation ? 'itemAct' : '' }`}  name={item.name}  operation={item.operation} onClick={this.itemLink}>
+                                                    <div className={`dropdownMenuItemLink ${ this.props.store.location.pathname.substr(11) === item.operation ? 'itemAct' : '' }`}  name={item.name}  operation={item.operation} onClick={this.itemLink}>
                                                         <span>{item.name}</span>
                                                     </div>
                                             )
@@ -234,7 +240,7 @@ class Menu extends React.Component{
 
     itemLink = (e) => {
         e.preventDefault();
-        this.props.store.addTableData(false, null);
+        //this.props.store.addTableData(false, null);
         let operationName = e.currentTarget.getAttribute("name");
 
 
@@ -244,11 +250,11 @@ class Menu extends React.Component{
         console.log(operationName);
         console.log(operation);
 
-        this.props.store.operationName(operationName, operation);
+        //this.props.store.operationName(operationName, operation);
 
 
 
-        this.typeRequest(operation);
+        //this.typeRequest(operation);
     }
     typeRequest = (operation) => {
         let operationType = operation.split('_')[0];
@@ -259,12 +265,12 @@ class Menu extends React.Component{
                 console.log( "--------ADMIN_USERS------------" );
                  this.funActionADMIN_USERS();
                 return
-            case 'ADMIN_ROLES':
-                return this.requestADMIN_ROLES(this.props.store.userState.token);
-            case 'ADMIN_OPERATIONS':
-                return this.requestADMIN_OPERATIONS(this.props.store.userState.token);
-            case 'ADMIN_ROLE_OPERATIONS':
-                return this.requestADMIN_ROLE_OPERATIONS(this.props.store.userState.token);
+            // case 'ADMIN_ROLES':
+            //     return this.requestADMIN_ROLES(this.props.store.userState.token);
+            // case 'ADMIN_OPERATIONS':
+            //     return this.requestADMIN_OPERATIONS(this.props.store.userState.token);
+            // case 'ADMIN_ROLE_OPERATIONS':
+            //     return this.requestADMIN_ROLE_OPERATIONS(this.props.store.userState.token);
 
             //REPORT
 
@@ -277,7 +283,7 @@ class Menu extends React.Component{
                 return this.actionREPORTS_Aacquiring();
             case 'REPORTS_ACQUIRING_MONITOR':
                 return this.actionREPORTS_ACQUIRING_MONITOR();
-
+            //DICT
             case "DICT_PAYMENT_SYSTEM":
                 return this.requestDICT(this.props.store.userState.token, operation);
             case "DICT_REPORT_FORMAT":
@@ -302,6 +308,8 @@ class Menu extends React.Component{
                 return this.requestDICT(this.props.store.userState.token, operation);
             case "DICT_REPORT_CHANNEL_TYPE":
                 return this.requestDICT(this.props.store.userState.token, operation);
+            case "DICT_NET_BRAND":
+                return this.actionDICT_NET_BRAND(this.props.store.userState.token, operation);
 
             default:
                 return '';
@@ -463,7 +471,11 @@ class Menu extends React.Component{
         console.log('=========================actionREPORTS_ACQUIRING_MONITOR==================');
         this.props.store.addTableData(true, 'empty');
     }
-
+    //DICT
+    actionDICT_NET_BRAND = () => {
+        console.log('=========================actionDICT_NET_BRAND==================');
+        this.props.store.addTableData(true, 'empty');
+    }
 
 
     listOperation = ( obj ) => {
@@ -564,7 +576,8 @@ class Menu extends React.Component{
 
     render() {
         //console.log(this.props.store.userState.OPERATIONS);
-        //console.log(this.props.params);
+        console.log(this.props.params);
+        console.log(this.activeOperation(this.props.store.userState.OPERATIONS, this.props.params));
         // console.log(this.generateUserRoutingMenu(this.props.store.userState.OPERATIONS));
         return (
             <div className="menu">

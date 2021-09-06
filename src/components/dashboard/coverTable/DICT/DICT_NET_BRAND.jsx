@@ -1,3 +1,4 @@
+
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table'
 import React from "react";
 import * as axios from "axios";
@@ -19,6 +20,13 @@ const OptionItemDICT_BRANCH = (props) => {
         // <Dropdown.Item  onClick={() => this.selectRoleID} value={props.optionItem.role_id} >{props.optionItem.role_name}</Dropdown.Item>
     )
 }
+const OptionItemDICT_NET_CLIENT_STATUS= (props) => {
+    //console.log( props )
+    return(
+        <option   value={props.optionItem.status_code} >{props.optionItem.status_name}</option>
+        // <Dropdown.Item  onClick={() => this.selectRoleID} value={props.optionItem.role_id} >{props.optionItem.role_name}</Dropdown.Item>
+    )
+}
 const OptionItem = (props) => {
     console.log( props )
     return(
@@ -30,9 +38,9 @@ const OptionItem = (props) => {
     )
 }
 const OptionItemDICT_REPORT_PERIOD_TYPE = (props) => {
-   // console.log( props );
-   // console.log( props.optionItem.report_period_type_id );
-   // console.log( props.report_period_type_id );
+    // console.log( props );
+    // console.log( props.optionItem.report_period_type_id );
+    // console.log( props.report_period_type_id );
     //console.log( props.optionItem.report_period_type_id == props.report_period_type_id  );
 
     return(
@@ -52,7 +60,7 @@ const OptionItemDICT_REPORT_CHANNEL_TYPE = (props) => {
     )
 }
 
-class REPORT_SETTINGS_TSP extends React.Component {
+class DICT_NET_BRAND extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -97,6 +105,9 @@ class REPORT_SETTINGS_TSP extends React.Component {
 
             isShowTableTSPReportSettingsSTD: false,
             TSPReportSettingsSTD: null,
+
+            DICT_NET_CLIENT_STATUS: null,
+            isShowDICT_NET_CLIENT_STATUS: false,
 
 
             responseTSPReportSettings: {
@@ -233,7 +244,8 @@ class REPORT_SETTINGS_TSP extends React.Component {
         //console.log(this.data.sort());
     }
     componentDidMount() {
-        this.requestDICT_INSTITUTION( this.props.store.userState.token );
+        console.log('test');
+        this.requestDICT_NET_CLIENT_STATUS( this.props.store.userState.token );
     }
     selectDICT_INSTITUTION = (e) => {
         console.log(e.target.value);
@@ -405,6 +417,37 @@ class REPORT_SETTINGS_TSP extends React.Component {
                 this.setState({
                     DICT_REPORT_CHANNEL_TYPE: response.data.Table.TableRows,
                     isShowDICT_REPORT_CHANNEL_TYPE: true
+                });
+
+                this.props.store.changeLoading(false);
+
+
+            })
+            .catch((error) => {
+                console.log(error.response);
+                console.log(error.response.data);
+                //console.log('error_catch');
+
+            });
+
+    }
+
+    async requestDICT_NET_CLIENT_STATUS  (token) {
+        this.props.store.changeLoading(true);
+        console.log( token );
+        const baseUrl = `/api/Dictionary/DICT_NET_CLIENT_STATUS`;
+        await axios.get(
+            baseUrl,
+            {
+                headers: {"Token" : `${ token }`}
+            }
+        )
+            .then((response) => {
+                console.log(response.data);
+
+                this.setState({
+                    DICT_NET_CLIENT_STATUS: response.data.Table.TableRows,
+                    isShowDICT_NET_CLIENT_STATUS: true
                 });
 
                 this.props.store.changeLoading(false);
@@ -660,9 +703,9 @@ class REPORT_SETTINGS_TSP extends React.Component {
         //     institution_id: "824"
         // }
         // this.requestTSPReportSettings(this.props.store.userState.token, obj);
-        
-        
-        
+
+
+
         //this.requestTSPReportSettings_test(this.props.store.userState.token, this.state.TSPReportSettingsSearchObj);
 
         // this.setState({
@@ -1268,71 +1311,71 @@ class REPORT_SETTINGS_TSP extends React.Component {
                             <div className="title">{this.state.type_acquiring == 1 ? "Фізичний" :"Інтернет"}</div>
 
                             <div className={`${this.state.type_acquiring == 1 ? '' : 'd-none'} border report`}>
-                                        <div className="title">Перелік полів звіту ТСП</div>
+                                <div className="title">Перелік полів звіту ТСП</div>
 
-                                        <button className="btn btn-secondary" disabled={this.state.standard_report ? '' : 'disabled'} onClick={this.openStandardReport} >Стандартний звіт</button>
-                                        <button className="btn btn-secondary" disabled={this.state.extended_report ? '' : 'disabled'} >Розширений звіт</button>
-                                        <button className="btn btn-secondary" disabled={this.state.installment_report ? '' : 'disabled'} >Звіт по операціям Installment</button>
-                                        <br/>
-                                        <div className="coverInput">
-                                            <label htmlFor="file_format">Формат файлу</label>
-                                            {
-                                                this.state.isShowREPORT_FORMAT
-                                                    ? <select className="form-select" onChange={this.changeReport_format_id} name="DICT_REPORT_FORMAT" id="DICT_REPORT_FORMAT">
+                                <button className="btn btn-secondary" disabled={this.state.standard_report ? '' : 'disabled'} onClick={this.openStandardReport} >Стандартний звіт</button>
+                                <button className="btn btn-secondary" disabled={this.state.extended_report ? '' : 'disabled'} >Розширений звіт</button>
+                                <button className="btn btn-secondary" disabled={this.state.installment_report ? '' : 'disabled'} >Звіт по операціям Installment</button>
+                                <br/>
+                                <div className="coverInput">
+                                    <label htmlFor="file_format">Формат файлу</label>
+                                    {
+                                        this.state.isShowREPORT_FORMAT
+                                            ? <select className="form-select" onChange={this.changeReport_format_id} name="DICT_REPORT_FORMAT" id="DICT_REPORT_FORMAT">
 
-                                                        { this.state.DICT_REPORT_FORMAT.map( ( item , index) => {
-                                                            return < OptionItem key={index} optionItem={item} report_format_id={this.state.report_format_id} />
-                                                        }) }
-                                                    </select>
-                                                    : <span>Завантаження...</span>
-                                            }
+                                                { this.state.DICT_REPORT_FORMAT.map( ( item , index) => {
+                                                    return < OptionItem key={index} optionItem={item} report_format_id={this.state.report_format_id} />
+                                                }) }
+                                            </select>
+                                            : <span>Завантаження...</span>
+                                    }
 
 
 
-                                        </div>
-                                        <div className="coverInput">
-                                            <label htmlFor="report_period">Період звіту</label>
-                                            {
-                                                this.state.isShowDICT_REPORT_PERIOD_TYPE
-                                                    ? <select className="form-select" onChange={this.changeReport_period_type_id} name="DICT_REPORT_PERIOD_TYPE" id="DICT_REPORT_PERIOD_TYPE">
+                                </div>
+                                <div className="coverInput">
+                                    <label htmlFor="report_period">Період звіту</label>
+                                    {
+                                        this.state.isShowDICT_REPORT_PERIOD_TYPE
+                                            ? <select className="form-select" onChange={this.changeReport_period_type_id} name="DICT_REPORT_PERIOD_TYPE" id="DICT_REPORT_PERIOD_TYPE">
 
-                                                        { this.state.DICT_REPORT_PERIOD_TYPE.map( ( item , index) => {
-                                                            return < OptionItemDICT_REPORT_PERIOD_TYPE key={index} optionItem={item} report_period_type_id={this.state.report_period_type_id} />
-                                                        }) }
-                                                    </select>
-                                                    : <span>Завантаження...</span>
-                                            }
-                                        </div>
-                                        <div className="coverInput">
-                                            <label htmlFor="file_name_mask">Маска назви файлу</label>
-                                            <input defaultValue={this.state.file_name_mask} onChange={this.changeFile_name_mask} apiName="file_name_mask" className="customInput form-control" id="file_name_mask" type="text"/>
-                                        </div>
-                                        <div className="coverInput">
-                                            <label htmlFor="сatalog">Каталог</label>
-                                            <input disabled onChange={this.changeInput} apiName="сatalog" className="customInput form-control" id="сatalog" type="text"/>
-                                        </div>
-                                        <div className="coverInput">
-                                            <label htmlFor="сhannel">Канал</label>
-                                            {
-                                                this.state.isShowDICT_REPORT_CHANNEL_TYPE
-                                                    ? <select className="form-select" onChange={this.changeChannel_type_id} name="DICT_REPORT_CHANNEL_TYPE" id="DICT_REPORT_CHANNEL_TYPE">
+                                                { this.state.DICT_REPORT_PERIOD_TYPE.map( ( item , index) => {
+                                                    return < OptionItemDICT_REPORT_PERIOD_TYPE key={index} optionItem={item} report_period_type_id={this.state.report_period_type_id} />
+                                                }) }
+                                            </select>
+                                            : <span>Завантаження...</span>
+                                    }
+                                </div>
+                                <div className="coverInput">
+                                    <label htmlFor="file_name_mask">Маска назви файлу</label>
+                                    <input defaultValue={this.state.file_name_mask} onChange={this.changeFile_name_mask} apiName="file_name_mask" className="customInput form-control" id="file_name_mask" type="text"/>
+                                </div>
+                                <div className="coverInput">
+                                    <label htmlFor="сatalog">Каталог</label>
+                                    <input disabled onChange={this.changeInput} apiName="сatalog" className="customInput form-control" id="сatalog" type="text"/>
+                                </div>
+                                <div className="coverInput">
+                                    <label htmlFor="сhannel">Канал</label>
+                                    {
+                                        this.state.isShowDICT_REPORT_CHANNEL_TYPE
+                                            ? <select className="form-select" onChange={this.changeChannel_type_id} name="DICT_REPORT_CHANNEL_TYPE" id="DICT_REPORT_CHANNEL_TYPE">
 
-                                                        { this.state.DICT_REPORT_CHANNEL_TYPE.map( ( item , index) => {
-                                                            return < OptionItemDICT_REPORT_CHANNEL_TYPE key={index} optionItem={item} channel_type_id={this.state.channel_type_id} />
-                                                        }) }
-                                                    </select>
-                                                    : <span>Завантаження...</span>
-                                            }
+                                                { this.state.DICT_REPORT_CHANNEL_TYPE.map( ( item , index) => {
+                                                    return < OptionItemDICT_REPORT_CHANNEL_TYPE key={index} optionItem={item} channel_type_id={this.state.channel_type_id} />
+                                                }) }
+                                            </select>
+                                            : <span>Завантаження...</span>
+                                    }
 
-                                        </div>
-                                        <div className="coverInput">
-                                            <input defaultValue={this.state.channel_address} onChange={this.changeFile_name_mask} apiName="channel_address" className="customInput form-control"  type="text"/>
-                                        </div>
-                                        <br/>
-                                        <div className="reportCoverBtn">
-                                            <button className="btn btn-secondary" onClick={this.saveReport}>Зберегти</button>
-                                        </div>
-                                    </div>
+                                </div>
+                                <div className="coverInput">
+                                    <input defaultValue={this.state.channel_address} onChange={this.changeFile_name_mask} apiName="channel_address" className="customInput form-control"  type="text"/>
+                                </div>
+                                <br/>
+                                <div className="reportCoverBtn">
+                                    <button className="btn btn-secondary" onClick={this.saveReport}>Зберегти</button>
+                                </div>
+                            </div>
 
                             <div className={`${this.state.type_acquiring == 1 ? 'd-none' : ''} border report`}>
                                 <div className="title">Перелік полів звіту ТСП</div>
@@ -1987,313 +2030,121 @@ class REPORT_SETTINGS_TSP extends React.Component {
         return res;
     }
     render() {
-        // console.log(this.props.store.menuState.tableData);
-        // console.log(this.state.DICT_INSTITUTION);
-        // console.log(this.state.DICT_BRANCH);
-        console.log(this.state.TSPReportSettingsSTD);
+
         console.log(this.state);
-        //console.log(this.showReport(595999));
-        const selectRowProp = {
-            mode: 'radio',
-            onSelect: (row, isSelect, rowIndex) => {
-                this.setState({
-                    selectRow: row,
-                    isDisableButton: false
-                });
-            }
-        }
-        const editInclude_flagColumn = (cell,row, newValue) => {
+        console.log('test2');
 
-            const test5 = (e) => {
-                //console.log(cell);
-               // console.log(row);
-                //console.log(oldValue);
-                //console.log(newValue);
-                //console.log(column);
-                //console.log(done);
-               // console.log('---');
-                //console.log(e);
-                let nameRole = e.currentTarget.getAttribute("name");
-                //console.log(nameRole);
-                let inputValue = e.target.checked;
-                //console.log(inputValue);
-                //console.log(this.state.TSPReportSettingsSTD);
-                //console.log(row);
-                let TSPReportSettingsSTD = this.state.TSPReportSettingsSTD;
-                row.[nameRole] = inputValue;
-                let index = TSPReportSettingsSTD.findIndex(el => el.field_name === row.field_name);
-                //console.log(row);
-
-                TSPReportSettingsSTD[index] = row;
-                console.log(TSPReportSettingsSTD);
-                this.setState({
-                    TSPReportSettingsSTD: TSPReportSettingsSTD
-                });
-
-                //this.requestADMIN_ROLE_OPERATIONS_edit(this.props.store.userState.token, obj);
-
-            }
-            return (
-                <>
-                    <input onChange={ test5 } checked={cell} name="include_flag" type="checkbox" />
-                </>
-            )
-        }
-        const editOrder_numberColumn = (cell,row, newValue) => {
-            //console.log(newValue);
-            const test5 = (e) => {
-                let nameRole = e.currentTarget.getAttribute("name");
-                //console.log(nameRole);
-                let inputValue =  Number(e.target.value);
-                //console.log(inputValue);
-                let TSPReportSettingsSTD = this.state.TSPReportSettingsSTD;
-                //console.log(TSPReportSettingsSTD);
-                //console.log(row);
-
-
-                // let cloneTSPReportSettingsSTD = Object.assign({}, TSPReportSettingsSTD);
-                // console.log(TSPReportSettingsSTD);
-
-
-                let cloneTSPReportSettingsSTD = TSPReportSettingsSTD.map(a => Object.assign({}, a));
-                //console.log(cloneTSPReportSettingsSTD);
-
-
-
-                //console.log(row.field_name);
-                let indexRow = cloneTSPReportSettingsSTD.findIndex(el => el.field_name === row.field_name);
-                //console.log(indexRow);
-
-
-                let defineOrder_number = (arr, inputValue, indexRow) => {
-                    let cloneArr = arr.map(a => Object.assign({}, a));
-                    //console.log(arr == cloneArr);
-                    //console.log(arr == arr);
-                    //console.log(arr === cloneArr);
-                    //console.log(cloneArr);
-                    //console.log(arr);
-
-                    cloneArr.splice(indexRow, 1);
-                    let numberArr = [];
-                    cloneArr.map(( item , index) => {
-                        numberArr.push(item.order_number);
-                    });
-                    //console.log(numberArr);
-
-                    //console.log(arr);
-                    //console.log(cloneArr);
-
-                    //console.log(numberArr.indexOf( inputValue ) != -1);
-                    return numberArr.indexOf( inputValue ) != -1;
-                    // if(numberArr.indexOf( inputValue ) != -1){
-                    //     return false
-                    // }else if(){
-                    //
-                    // }
-                }
-                //console.log(defineOrder_number(cloneTSPReportSettingsSTD, inputValue,indexRow ));
-
-                if(defineOrder_number(cloneTSPReportSettingsSTD, inputValue,indexRow )){
-                    // row.[nameRole] = inputValue;
-                    // cloneTSPReportSettingsSTD[indexRow] = row;
-                    console.log(cloneTSPReportSettingsSTD);
-                    this.setState({
-                        isShowBootstrapTable: false,
-                        isShowOrder_numberError: true,
-                        TSPReportSettingsSTD: TSPReportSettingsSTD,
-                    });
-
-                    // setTimeout(
-                    //     () => this.setState({ isShowOrder_numberError: false }),
-                    //     6000
-                    // );
-                }else{
-                    row.[nameRole] = inputValue;
-                    //console.log(row);
-                    cloneTSPReportSettingsSTD[indexRow] = row;
-                    console.log(cloneTSPReportSettingsSTD);
-
-
-                    this.setState({
-                        TSPReportSettingsSTD: cloneTSPReportSettingsSTD
-                    });
-                }
-
-
-
-
-            }
-            const rr = (e) => {
-                if (e.keyCode === 13) {
-                    console.log(e.keyCode === 13);
-                    let nameRole = e.currentTarget.getAttribute("name");
-                    //console.log(nameRole);
-                    let inputValue = e.target.value;
-                    //console.log(inputValue);
-                    //console.log(this.state.TSPReportSettingsSTD);
-                    //console.log(row);
-                    row.[nameRole] = Number(inputValue);
-                    //console.log(row);
-                    let TSPReportSettingsSTD = this.state.TSPReportSettingsSTD;
-                    TSPReportSettingsSTD[newValue] = row;
-                    console.log(TSPReportSettingsSTD);
-                    this.setState({
-                        TSPReportSettingsSTD: TSPReportSettingsSTD
-                    });
-                }
-            }
-            return (
-                <>
-
-                    <input onBlur={ test5 }  defaultValue={cell} name="order_number" type="text" />
-
-                </>
-            )
-        }
 
         return (
-            <div className="coverTable REPORT_SETTINGS_TSP">
+            <div className="coverTable DICT_NET_BRAND">
                 <div className="headerTable">
                     <div className="titleTable">{this.activeOperation(this.props.store.userState.OPERATIONS, this.props.store.location.pathname.substr(11))}</div>
                     <div className="optionBlock">
 
                     </div>
                 </div>
-                <div className="filter">
-                    <div className="coverInputSelect">
-                        <label htmlFor="DICT_INSTITUTION">Регіональні управління</label>
-                        <select onChange={this.selectDICT_INSTITUTION} apiName="institution_id" id="dropdown-basic-button" className="form-select"
-                                title="Регіональні управління">
-                                <option>-</option>
+                <div className="addblock">
+                    <div className="coverInputs">
+                        <label htmlFor="DICT_INSTITUTION">Найменування мережі</label>
+                        <input onChange={this.changeInput} apiName="tsp_name" id="TPS" type="text" className="form-control"/>
+                        <label htmlFor="TVBV">ID мережі</label>
+                        <input disabled={this.state.isDisableTVBV ? 'disabled' : ''} onChange={this.changeInput} apiName="tsp_name" id="TPS" type="text" className="form-control"/>
+
+                    </div>
+                    <div className="coverInputs">
+
+                        <label htmlFor="INN">Статус</label>
+                        <select  id="dropdown-basic-button" onChange={this.changeInput} apiName="bank_branch_id" className="form-select"
+
+                                 title="ТВБВ">
+                            <option>-</option>
                             {
-                                this.state.isShowSelectDICT_INSTITUTION
-                                    ?
-                                        this.state.DICT_INSTITUTION.map((item, index) => {
-                                            return < OptionItemDICT_INSTITUTION key={index} optionItem={item}/>
-                                        })
-                                    : <>
-                                    </>
+                                this.state.isShowDICT_NET_CLIENT_STATUS
+                                    ? this.state.DICT_NET_CLIENT_STATUS.map((item, index) => {
+                                        return < OptionItemDICT_NET_CLIENT_STATUS key={index} optionItem={item}/>
+                                    })
+                                    : <></>
+
                             }
                         </select>
-                        <label htmlFor="TVBV">ТВБВ</label>
-                        <select  id="dropdown-basic-button" onChange={this.changeInput} apiName="bank_branch_id" className="form-select"
-                                disabled={this.state.isDisableTVBV ? 'disabled' : ''}
-                                title="ТВБВ">
-                            <option>-</option>
-                                {
-                                    this.state.isShowSelectTVBV
-                                        ? this.state.DICT_BRANCH.map((item, index) => {
-                                            return < OptionItemDICT_BRANCH key={index} optionItem={item}/>
-                                        })
-                                        : <></>
-
-                                }
-                        </select>
-                     </div>
-                    <div className="coverInputText">
-                        <label htmlFor="INN">ІНН/ЄДРПОУ</label>
-                        <input onChange={this.changeInput} apiName="ident_code" id="INN" type="text" className="form-control"/>
-                        <label htmlFor="TPS">Назва ТСП</label>
+                        <label htmlFor="TPS">Менеджер мережі</label>
                         <input onChange={this.changeInput} apiName="tsp_name" id="TPS" type="text" className="form-control"/>
-                        <label htmlFor="merchant">merchant ID</label>
+                        <label htmlFor="merchant">РУ</label>
                         <input onChange={this.changeInput} apiName="merchant_id" id="merchant" type="text" className="form-control"/>
                     </div>
-                    <div className="coverInputDate">
-                        <span>Період відкриття ТСП</span>
-                        <div className="coverInputs">
-                            <div className="coverDate">
-                                <label htmlFor="date_from">З</label>
-                                <input onChange={this.changeInput} apiName="date_from" className="customInput form-control" id="date_from" type="date"/>
+                    <div className="coverInputs">
+                        <span>Контактна особа</span>
+                        <div className="innerBlock">
+                            <div className="coverInput">
+                                <label htmlFor="date_from">ПІБ</label>
+                                <input onChange={this.changeInput} apiName="date_from" className="customInput form-control" id="date_from" type="text"/>
                             </div>
-                            <div className="coverDate">
-                                <label htmlFor="date_to">По</label>
-                                <input onChange={this.changeInput} apiName="date_to" className="customInput form-control" id="date_to" type="date"/>
+                            <div className="coverInput">
+                                <label htmlFor="date_to">Посада</label>
+                                <input onChange={this.changeInput} apiName="date_to" className="customInput form-control" id="date_to" type="text"/>
                             </div>
-                        </div>
-                        <button className="search btn btn-primary" onClick={this.search}>Пошук</button>
-                    </div>
-                </div>
-                <div className="coverResult">
-                    <div className="resultSearch border">
-                        {
-                            this.state.isShowTsp
-                                ? <>
-                                    <div className="title">Результат пошуку</div>
-                                    <ul className="blockTsp_list">
-                                        {
-                                            this.Tsp_list(this.state.tsp_list)
-                                        }
-                                    </ul>
-                                </>
-                                :<>Не вибрано даних пошуку</>
-                        }
-                    </div>
-                    <div className="typeAcquiring">
-                        {
-                            this.state.isShowTypeAcquiring
-                                ? <>
-
-                                    {/*<div className="coverBtn border">*/}
-                                    {/*    <div className="title">Вид екварингу</div>*/}
-                                    {/*    <button*/}
-                                    {/*        className="btn btn-secondary"*/}
-                                    {/*        disabled={this.state.type_acquiring == 1 ? 'disabled' : ''}*/}
-                                    {/*        onClick={this.changeTypeAcquiringPhysical}*/}
-                                    {/*        type_acquiring={1}>Фізичний</button>*/}
-                                    {/*    <button*/}
-                                    {/*        className="btn btn-secondary"*/}
-                                    {/*        disabled={this.state.type_acquiring == 2 ? 'disabled' : ''}*/}
-                                    {/*        onClick={this.changeTypeAcquiringInternet}*/}
-                                    {/*        type_acquiring={2}>Інтернет</button>*/}
-                                    {/*</div>*/}
-
-
-                                    {/*{this.showReport(this.state.currentTsp)}*/}
-                                    {this.showHtmlReport()}
-                                </>
-
-                                : <></>
-                        }
-                    </div>
-                </div>
-
-                {
-                    this.state.isShowTableTSPReportSettingsSTD
-                        ? <>
-                        <div className="coverPopupTable">
-                            <div className="innerBlock">
-                                <button onClick={this.closePopupTable} type="button" className="btn-close" aria-label="Close"></button>
-                                {
-                                    this.state.isShowBootstrapTable
-                                        ? <BootstrapTable data={this.state.TSPReportSettingsSTD}
-                                            // selectRow={selectRowProp}
-                                        >
-
-                                            {/*{this.testRendColums}*/}
-
-                                            <TableHeaderColumn isKey dataField='field_desc' filter={ { type: 'TextFilter', delay: 1000 } }>
-                                                Ідентифікатор поля
-                                            </TableHeaderColumn>
-                                            <TableHeaderColumn dataField='include_flag' dataFormat={editInclude_flagColumn} filter={ { type: 'TextFilter', delay: 1000 } }>
-                                                Включити поле
-                                            </TableHeaderColumn>
-                                            <TableHeaderColumn dataField='order_number' dataFormat={editOrder_numberColumn} filter={ { type: 'TextFilter', delay: 1000 } }>
-                                                Порядковий номер поля
-                                            </TableHeaderColumn>
-
-                                        </BootstrapTable>
-                                        : <>
-                                            <div className="coverloader">
-                                                <div className="loader"></div>
-                                            </div>
-                                        </>
-                                }
+                            <div className="coverInput">
+                                <label htmlFor="date_to">Телефон</label>
+                                <input onChange={this.changeInput} apiName="date_to" className="customInput form-control" id="date_to" type="text"/>
+                            </div>
+                            <div className="coverInput">
+                                <label htmlFor="date_to">Email</label>
+                                <input onChange={this.changeInput} apiName="date_to" className="customInput form-control" id="date_to" type="text"/>
                             </div>
                         </div>
-                        </>
-                        : <>
-                        </>
-                }
+                    </div>
+                </div>
+                <div className="addblock1">
+                    <div className="title">2-й рівень</div>
+
+                    <input type="checkbox" id="yes"/>
+                    <label htmlFor="yes">так</label>
+                </div>
+                {/*<div className="coverResult">*/}
+                {/*    <div className="resultSearch border">*/}
+                {/*        {*/}
+                {/*            this.state.isShowTsp*/}
+                {/*                ? <>*/}
+                {/*                    <div className="title">Результат пошуку</div>*/}
+                {/*                    <ul className="blockTsp_list">*/}
+                {/*                        {*/}
+                {/*                            this.Tsp_list(this.state.tsp_list)*/}
+                {/*                        }*/}
+                {/*                    </ul>*/}
+                {/*                </>*/}
+                {/*                :<>Не вибрано даних пошуку</>*/}
+                {/*        }*/}
+                {/*    </div>*/}
+                {/*    <div className="typeAcquiring">*/}
+                {/*        {*/}
+                {/*            this.state.isShowTypeAcquiring*/}
+                {/*                ? <>*/}
+
+                {/*                    /!*<div className="coverBtn border">*!/*/}
+                {/*                    /!*    <div className="title">Вид екварингу</div>*!/*/}
+                {/*                    /!*    <button*!/*/}
+                {/*                    /!*        className="btn btn-secondary"*!/*/}
+                {/*                    /!*        disabled={this.state.type_acquiring == 1 ? 'disabled' : ''}*!/*/}
+                {/*                    /!*        onClick={this.changeTypeAcquiringPhysical}*!/*/}
+                {/*                    /!*        type_acquiring={1}>Фізичний</button>*!/*/}
+                {/*                    /!*    <button*!/*/}
+                {/*                    /!*        className="btn btn-secondary"*!/*/}
+                {/*                    /!*        disabled={this.state.type_acquiring == 2 ? 'disabled' : ''}*!/*/}
+                {/*                    /!*        onClick={this.changeTypeAcquiringInternet}*!/*/}
+                {/*                    /!*        type_acquiring={2}>Інтернет</button>*!/*/}
+                {/*                    /!*</div>*!/*/}
+
+
+                {/*                    /!*{this.showReport(this.state.currentTsp)}*!/*/}
+                {/*                    {this.showHtmlReport()}*/}
+                {/*                </>*/}
+
+                {/*                : <></>*/}
+                {/*        }*/}
+                {/*    </div>*/}
+                {/*</div>*/}
+
+
                 {
                     this.state.isShowPopupError
                         ? <>
@@ -2306,7 +2157,7 @@ class REPORT_SETTINGS_TSP extends React.Component {
                             </div>
                         </>
                         : <>
-                            </>
+                        </>
                 }
                 {
                     this.state.isShowPopupErrorSave
@@ -2346,4 +2197,4 @@ class REPORT_SETTINGS_TSP extends React.Component {
     }
 }
 
-export default REPORT_SETTINGS_TSP
+export default DICT_NET_BRAND

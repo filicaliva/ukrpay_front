@@ -80,7 +80,16 @@ class REPORTS_ACQUIRING_MONITOR extends React.Component {
     }
 
 
-
+    activeOperation = (operationArr, operation) => {
+        let res;
+        operationArr.map(( item , index) => {
+            if(item.operation == operation){
+                console.log(item.name);
+                res = item.name;
+            }
+        })
+        return res;
+    }
 
     render() {
         console.log(this.props.store);
@@ -93,18 +102,40 @@ class REPORTS_ACQUIRING_MONITOR extends React.Component {
                 console.log(row);
                 this.requestReports_GetReport(this.props.store.userState.token, cell);
 
-
             }
+            const statusBtn = (report_id) => {
+                console.log(report_id);
+                // return this.state.ReportsMonitor.map(( item , index) => {
+                //     console.log(item.report_id);
+                //     if(item.report_id == report_id){
+                //         console.log(item.status);
+                //         if(item.status == 'Не сформовано')
+                //         return true
+                //     }
+                // });
+                    for(let i=0; i < this.state.ReportsMonitor.length; i++){
+                        if(this.state.ReportsMonitor[i].report_id == report_id) {
+                            console.log('-----status-----');
+                            console.log(i);
+                            console.log(this.state.ReportsMonitor[i].status);
+                            if(this.state.ReportsMonitor[i].status_code == 'C'){
+                                return true
+                            }
+
+                        }
+                    }
+            }
+            //console.log(statusBtn(cell));
             return (
                 <>
-                    <button onClick={ btnDownload } className="btn btn-primary" type="button">Скачати</button>
+                    <button onClick={ btnDownload } disabled={statusBtn(cell) ? '' : 'disabled'} className="btn btn-primary" type="button">Скачати</button>
                 </>
             )
         }
         return (
             <div className="coverTable REPORTS_ACQUIRING_MONITOR">
                 <div className="headerTable">
-                    <div className="titleTable">{this.props.store.menuState.nameOperation}</div>
+                    <div className="titleTable">{this.activeOperation(this.props.store.userState.OPERATIONS, this.props.store.location.pathname.substr(11))}</div>
                     <div className="optionBlock">
 
                     </div>

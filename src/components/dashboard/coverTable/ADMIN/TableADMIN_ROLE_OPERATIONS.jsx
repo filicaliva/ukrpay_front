@@ -11,12 +11,59 @@ class TableADMIN_ROLE_OPERATIONS extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            roles: null,
+            isShowSelectRoles: false,
+            operations: null,
             isShowTable: false,
             isSelected: null,
             isDisableButton: true,
             selectRow: null
         }
         //console.log(this.data.sort());
+    }
+    componentDidMount() {
+        this.requestADMIN_ROLES(this.props.store.userState.token);
+
+        console.log( 'componentDidMount' );
+    }
+    async requestADMIN_ROLES  (token) {
+        console.log('=========================requestADMIN_ROLES==================');
+        this.props.store.changeLoading(true);
+        console.log( token );
+        const baseUrl = `/api/Role`;
+        await axios.get(
+            baseUrl,
+            {
+                headers: {
+                    "Token" : `${ token }`
+                }
+            }
+        )
+            .then((response) => {
+                console.log(response.data);
+                //console.log(response.data.users);
+                //console.log(response.data.Table);
+
+
+                //this.props.store.showTable(true);
+
+                //this.props.store.addTableData(true, response.data.roles);
+                this.setState({
+                    roles: response.data.roles,
+                    isShowSelectRoles: true
+                });
+
+                this.props.store.changeLoading(false);
+                //this.props.store.showTable(true);
+
+            })
+            .catch((error) => {
+                // console.log(error.response);
+                //console.log(error.response.data);
+                //console.log('error_catch');
+
+            });
+
     }
     async requestADMIN_ROLE_OPERATIONS  (token, roleID) {
         this.props.store.changeLoading(true);
@@ -39,8 +86,11 @@ class TableADMIN_ROLE_OPERATIONS extends React.Component {
                 //this.props.store.showTable(true);
 
                 //this.props.store.addRoleData(response.data.operations);
-                this.props.store.addTableData(true, response.data.operations);
-                this.setState({ isShowTable: true });
+                //this.props.store.addTableData(true, response.data.operations);
+                this.setState({
+                    operations: response.data.operations,
+                    isShowTable: true
+                });
 
                 this.props.store.changeLoading(false);
                 //this.props.store.showTable(true);
@@ -139,6 +189,16 @@ class TableADMIN_ROLE_OPERATIONS extends React.Component {
         // console.log(row);
         // console.log( oldValue );
         // console.log( newValue );
+    }
+    activeOperation = (operationArr, operation) => {
+        let res;
+        operationArr.map(( item , index) => {
+            if(item.operation == operation){
+                console.log(item.name);
+                res = item.name;
+            }
+        })
+        return res;
     }
     render() {
         console.log(this.state);
@@ -427,20 +487,33 @@ class TableADMIN_ROLE_OPERATIONS extends React.Component {
         return (
             <div className="coverTable">
                 <div className="headerTable">
-                    <div className="titleTable">{this.props.store.menuState.nameOperation}</div>
+                    <div className="titleTable">{this.activeOperation(this.props.store.userState.OPERATIONS, this.props.store.location.pathname.substr(11))}</div>
                     <div className="optionBlock">
                         {/*<input onChange={ () => {test3()} } checked={true} in_val={true} value={true} type="checkbox"/>*/}
                         {/*<input type="checkbox" onChange={ this.test4 } checked={true}  />*/}
                         {/*<input type="checkbox" onChange={ this.test4 } checked={false}  />*/}
                         {/*<input type="radio" onChange={ this.test4 } checked={false}  />*/}
                         <span htmlFor="dropdown-basic-button">Виберіть роль</span>
-                        <select onChange={this.selectRoleID}  id="dropdown-basic-button" class="form-select" title="Виберіть роль">
-                            <option >-</option>
-                            { this.props.store.menuState.roleData.map( ( item , index) => {
-                                return < OptionItem key={index} optionItem={item} />
-                            }) }
-                            {/*<Dropdown.Item onClick={this.logOut} as="button">Вийти</Dropdown.Item>*/}
+                        <select onChange={this.selectRoleID} apiName="institution_id" id="dropdown-basic-button" className="form-select"
+                                title="Виберіть роль">
+                            <option>-</option>
+                            {
+                                this.state.isShowSelectRoles
+                                    ?
+                                    this.state.roles.map((item, index) => {
+                                        return < OptionItem key={index} optionItem={item}/>
+                                    })
+                                    : <>
+                                    </>
+                            }
                         </select>
+                        {/*<select onChange={this.selectRoleID}  id="dropdown-basic-button" class="form-select" title="Виберіть роль">*/}
+                        {/*    <option >-</option>*/}
+                        {/*    { this.state.roles.map( ( item , index) => {*/}
+                        {/*        return < OptionItem key={index} optionItem={item} />*/}
+                        {/*    }) }*/}
+                        {/*    /!*<Dropdown.Item onClick={this.logOut} as="button">Вийти</Dropdown.Item>*!/*/}
+                        {/*</select>*/}
                         {/*<DropdownButton  id="dropdown-basic-button" title="Виберіть роль">*/}
                         {/*    { this.props.store.menuState.roleData.map( ( item , index) => {*/}
                         {/*        return < OptionItem key={index} optionItem={item} />*/}
@@ -468,7 +541,7 @@ class TableADMIN_ROLE_OPERATIONS extends React.Component {
                                     {/*        className="btn btn-secondary"*/}
                                     {/*    >Редагування</button>*/}
                                     {/*</div>*/}
-                                    <BootstrapTable data={this.props.store.menuState.tableData}
+                                    <BootstrapTable data={this.state.operations}
                                                     //selectRow={selectRowProp}
                                                     // cellEdit={cellEditProp}
                                     >

@@ -581,6 +581,16 @@ class TableADMIN_USERS extends React.Component {
         console.log(this.state.addRow);
         this.requestADMIN_USERS_delete(this.props.store.userState.token);
     }
+    activeOperation = (operationArr, operation) => {
+        let res;
+        operationArr.map(( item , index) => {
+            if(item.operation == operation){
+                console.log(item.name);
+                res = item.name;
+            }
+        })
+        return res;
+    }
     render() {
         //console.log(this.props.store.menuState.tableData);
         // console.log(this.addId(this.props.store.menuState.tableData));
@@ -673,7 +683,7 @@ class TableADMIN_USERS extends React.Component {
         return (
             <div className="coverTable TableADMIN_USERS">
                 <div className="headerTable">
-                    <div className="titleTable">{this.props.store.menuState.nameOperation}</div>
+                    <div className="titleTable">{this.activeOperation(this.props.store.userState.OPERATIONS, this.props.store.location.pathname.substr(11))}</div>
 
                 </div>
                 <div className="filter">

@@ -1,5 +1,6 @@
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table'
 import React from "react";
+import * as axios from "axios";
 
 const cellEditProp = {
     mode: 'click'
@@ -9,6 +10,7 @@ class TableADMIN_OPERATIONS extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            tableData:null,
             columns: [
                 { id: 'id', text: 'Id' },
                 { id: 'name', text: 'Name' },
@@ -23,6 +25,57 @@ class TableADMIN_OPERATIONS extends React.Component {
 
         }
         //console.log(this.data.sort());
+    }
+    componentDidMount() {
+        this.requestADMIN_OPERATIONS(this.props.store.userState.token);
+
+    }
+    async requestADMIN_OPERATIONS  (token) {
+        this.props.store.changeLoading(true);
+        console.log( token );
+        const baseUrl = `/api/Operations`;
+        await axios.get(
+            baseUrl,
+            {
+                headers: {
+                    "Token" : `${ token }`
+                }
+            }
+        )
+            .then((response) => {
+                console.log(response.data);
+                //console.log(response.data.users);
+                //console.log(response.data.Table);
+
+
+                //this.props.store.showTable(true);
+
+                //this.props.store.addTableData(true, response.data.operations);
+                this.setState({
+                    tableData: response.data.operations
+                });
+
+                this.props.store.changeLoading(false);
+                //this.props.store.showTable(true);
+
+            })
+            .catch((error) => {
+                console.log(error.response);
+                console.log(error.response.data);
+                //console.log('error_catch');
+
+            });
+
+    }
+    activeOperation = (operationArr, operation) => {
+        let res;
+        operationArr.map(( item , index) => {
+            if(item.operation == operation){
+                console.log(item.name);
+                res = item.name;
+            }
+        })
+        return res;
     }
 
     render() {
@@ -89,12 +142,12 @@ class TableADMIN_OPERATIONS extends React.Component {
         return (
             <div className="coverTable">
                 <div className="headerTable">
-                    <div className="titleTable">{this.props.store.menuState.nameOperation}</div>
+                    <div className="titleTable">{this.activeOperation(this.props.store.userState.OPERATIONS, this.props.store.location.pathname.substr(11))}</div>
                     <div className="optionBlock"></div>
                 </div>
                 <div className="innerTable">
                     <div className="Table">
-                        <BootstrapTable data={this.props.store.menuState.tableData}
+                        <BootstrapTable data={this.state.tableData}
                                         //insertRow={true}
                                         //deleteRow={true}
                                         //selectRow={selectRowProp}
