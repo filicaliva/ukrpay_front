@@ -570,7 +570,7 @@ class CoverTable extends React.Component{
 
                 {/*<h1>{this.urlValue(this.props.store.location.pathname.substr(11))}</h1>*/}
 
-                <h1 className="testUrl">{this.props.params}</h1>
+                {/*<h1 className="testUrl">{this.props.params}</h1>*/}
 
                 {/*{*/}
                 {/*    this.props.store.menuState.tableData == null*/}

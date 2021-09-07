@@ -405,12 +405,40 @@ header{
       }
     }
   }
-  .addblock1{
+  .addBlockRadio{
+    margin-right: 10px;
+    padding: 10px;
+    background: #ffffff;
+    .title{
+      //text-align: center;
+    }
+    .coverRadioBtn{
+      input{
+        margin: 5px;
+      }
+    }
+  }
+  .coverBtn{
     margin-right: 10px;
     padding: 10px;
     background: #ffffff;
   }
+  .coverTwoLevel{
+    margin-right: 10px;
+    padding: 10px;
+    background: #ffffff;
+    .twoLevel{
+      margin-top: 30px;
+      display: flex;
+      .innerBlock{
+        &:first-child{
+          margin: 0 134px 0 65px;
+        }
+      }
+    }
+  }
 }
+
 
 table {
   width: 100%;
