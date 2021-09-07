@@ -276,7 +276,7 @@ header{
     }
   }
   .coverPopupTable{
-    padding-top: 40px;
+    padding-top: 50px;
     overflow: hidden;
     background: #fff;
     .innerBlock{
@@ -288,6 +288,11 @@ header{
         position: fixed;
         right: 20px;
         top: 6px;
+      }
+      .btn-save{
+        position: fixed;
+        left: 20px;
+        top: 5px;
       }
     }
   }

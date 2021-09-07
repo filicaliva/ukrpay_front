@@ -566,7 +566,7 @@ class REPORT_SETTINGS_TSP extends React.Component {
 
             })
             .catch((error) => {
-                // console.log(error.response);
+                console.log(error.response);
                 // console.log(error.response.data);
                 //console.log('error_catch');
 
@@ -954,6 +954,12 @@ class REPORT_SETTINGS_TSP extends React.Component {
         this.requestTSPReportSettingsSTD(this.props.store.userState.token);
     }
     closePopupTable = () => {
+        this.setState({
+            isShowTableTSPReportSettingsSTD: false,
+            TSPReportSettingsSTD: null
+        });
+    }
+    seveTSPReportSettingsSTD = () => {
         this.setState({
             isShowTableTSPReportSettingsSTD: false
         });
@@ -2304,6 +2310,7 @@ class REPORT_SETTINGS_TSP extends React.Component {
                         ? <>
                         <div className="coverPopupTable">
                             <div className="innerBlock">
+                                <button onClick={this.seveTSPReportSettingsSTD} type="button" className="btn btn-primary btn-save">Зберегти</button>
                                 <button onClick={this.closePopupTable} type="button" className="btn-close" aria-label="Close"></button>
                                 {
                                     this.state.isShowBootstrapTable
