@@ -347,6 +347,12 @@ header{
       .coverBtn{
         padding: 10px;
         margin: 10px;
+        .customBtnAc{
+          opacity: .5;
+        }
+        .customBtnAc:disabled{
+          opacity: 1!important;
+        }
       }
       .report{
         padding: 10px;

@@ -1011,47 +1011,89 @@ class REPORT_SETTINGS_TSP extends React.Component {
     }
 
     saveReport = () => {
+        let acquiring_type = (type_acquiring) => {
+            if(type_acquiring == 1){
+                return(
+                    {
+                        acquiring_type_id: 1,//type_acquiring
+                        // "standard_report": true,
+                        // "extended_report": true,
+                        // "installment_report": true,
+                        report_format_id: this.state.physical_report_format_id, //report_format_id
+                        // "report_format_name": "string",
+                        report_period_type_id: this.state.physical_report_period_type_id, //report_period_type_id
+                        // "report_period_type_name": "string",
+                        channel_type_id: this.state.physical_channel_type_id, //channel_type_id
+                        // "channel_type_name": "string",
+                        file_name_mask: this.state.physical_file_name_mask, //file_name_mask
+                        // "file_path": "string"
+                        channel_address: this.state.physical_channel_address, //file_name_mask
+
+                    }
+                )
+            }else if(type_acquiring == 2){
+                return(
+                    {
+                        acquiring_type_id: 2,//type_acquiring
+                        // "standard_report": true,
+                        // "extended_report": true,
+                        // "installment_report": true,
+                        report_format_id: this.state.internet_report_format_id, //report_format_id
+                        // "report_format_name": "string",
+                        report_period_type_id: this.state.internet_report_period_type_id, //report_period_type_id
+                        // "report_period_type_name": "string",
+                        channel_type_id: this.state.internet_channel_type_id, //channel_type_id
+                        // "channel_type_name": "string",
+                        file_name_mask: this.state.internet_file_name_mask, //file_name_mask
+                        // "file_path": "string"
+                        channel_address: this.state.internet_channel_address, //file_name_mask
+
+                    }
+                )
+            }
+        }
         let dody = {
             tsp_list: [
                 {
                     tsp_id: this.state.currentTsp     //tsp_id
                 }
             ],
-            main_settings: [
-                {
-                    acquiring_type_id: 1,//type_acquiring
-                    // "standard_report": true,
-                    // "extended_report": true,
-                    // "installment_report": true,
-                    report_format_id: this.state.physical_report_format_id, //report_format_id
-                    // "report_format_name": "string",
-                    report_period_type_id: this.state.physical_report_period_type_id, //report_period_type_id
-                    // "report_period_type_name": "string",
-                    channel_type_id: this.state.physical_channel_type_id, //channel_type_id
-                    // "channel_type_name": "string",
-                    file_name_mask: this.state.physical_file_name_mask, //file_name_mask
-                    // "file_path": "string"
-                    channel_address: this.state.physical_channel_address, //file_name_mask
-
-                },
-                {
-                    acquiring_type_id: 1,//type_acquiring
-                    // "standard_report": true,
-                    // "extended_report": true,
-                    // "installment_report": true,
-                    report_format_id: this.state.internet_report_format_id, //report_format_id
-                    // "report_format_name": "string",
-                    report_period_type_id: this.state.internet_report_period_type_id, //report_period_type_id
-                    // "report_period_type_name": "string",
-                    channel_type_id: this.state.internet_channel_type_id, //channel_type_id
-                    // "channel_type_name": "string",
-                    file_name_mask: this.state.internet_file_name_mask, //file_name_mask
-                    // "file_path": "string"
-                    channel_address: this.state.internet_channel_address, //file_name_mask
-
-                }
-
-            ],
+            main_settings: acquiring_type(this.state.type_acquiring),
+            //     [
+            //     {
+            //         acquiring_type_id: 1,//type_acquiring
+            //         // "standard_report": true,
+            //         // "extended_report": true,
+            //         // "installment_report": true,
+            //         report_format_id: this.state.physical_report_format_id, //report_format_id
+            //         // "report_format_name": "string",
+            //         report_period_type_id: this.state.physical_report_period_type_id, //report_period_type_id
+            //         // "report_period_type_name": "string",
+            //         channel_type_id: this.state.physical_channel_type_id, //channel_type_id
+            //         // "channel_type_name": "string",
+            //         file_name_mask: this.state.physical_file_name_mask, //file_name_mask
+            //         // "file_path": "string"
+            //         channel_address: this.state.physical_channel_address, //file_name_mask
+            //
+            //     },
+            //     {
+            //         acquiring_type_id: 2,//type_acquiring
+            //         // "standard_report": true,
+            //         // "extended_report": true,
+            //         // "installment_report": true,
+            //         report_format_id: this.state.internet_report_format_id, //report_format_id
+            //         // "report_format_name": "string",
+            //         report_period_type_id: this.state.internet_report_period_type_id, //report_period_type_id
+            //         // "report_period_type_name": "string",
+            //         channel_type_id: this.state.internet_channel_type_id, //channel_type_id
+            //         // "channel_type_name": "string",
+            //         file_name_mask: this.state.internet_file_name_mask, //file_name_mask
+            //         // "file_path": "string"
+            //         channel_address: this.state.internet_channel_address, //file_name_mask
+            //
+            //     }
+            //
+            // ],
 
         };
         if( this.state.TSPReportSettingsSTD != null){
@@ -1069,12 +1111,12 @@ class REPORT_SETTINGS_TSP extends React.Component {
                 <div className="coverBtn border">
                     <div className="title">Вид екварингу</div>
                     <button
-                        className="btn btn-secondary"
+                        className="btn btn-secondary customBtnAc"
                         disabled={this.state.type_acquiring == 1 ? 'disabled' : ''}
                         onClick={  this.changeTypeAcquiring }
                         type_acquiring={1}>Фізичний</button>
                     <button
-                        className="btn btn-secondary"
+                        className="btn btn-secondary customBtnAc"
                         disabled={this.state.type_acquiring == 2 ? 'disabled' : ''}
                         onClick={ this.changeTypeAcquiring }
                         type_acquiring={2}>Інтернет</button>
@@ -2313,8 +2355,8 @@ class REPORT_SETTINGS_TSP extends React.Component {
                         ? <>
                             <div className="coverPopupError">
                                 <div className="innerBlock">
-                                    <div className="title alert alert-primary">Упс1 Сталася помилка</div>
-                                    <div className="msg">:(</div>
+                                    <div className="title alert alert-primary">Сталася помилка при збереженні</div>
+                                    <div className="msg"></div>
                                     <button className="btn btn-secondary" onClick={this.closePopupErrorSave}>Закрити</button>
                                 </div>
                             </div>

@@ -49,6 +49,14 @@ class REPORTS_ACQUIRING_MONITOR extends React.Component {
             });
 
     }
+    formatDateFile = (date) => {
+        let day = date.getDate();
+        let month = ("0" + (date.getMonth() + 1)).slice(-2)
+        let year = date.getFullYear();
+        let hou = date.getHours();
+        let min = date.getMinutes();
+        return `Report.${day}.${month}.${year}.${hou}-${min}.xlsx`
+    }
 
     async requestReports_GetReport  (token, reportId) {
         this.props.store.changeLoading(true);
@@ -59,12 +67,16 @@ class REPORTS_ACQUIRING_MONITOR extends React.Component {
             responseType: 'blob',
             headers: {
                 "Token" : `${ token }`,
+                "Access-Control-Expose-Headers": "Content-Disposition"
             }
         })
             .then((response) => {
                 console.log(response);
                 console.log(response.data);
-                fileDownload( response.data, 'report.xls');
+                //07.09.2021.12-47    Report.07.09.2021.12-47.xlsx
+                // let filename;
+                // filename = this.formatDateFile(new Date());
+                fileDownload( response.data, this.formatDateFile(new Date()));
 
                 this.props.store.changeLoading(false);
 

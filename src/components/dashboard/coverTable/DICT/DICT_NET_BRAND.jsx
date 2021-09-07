@@ -881,7 +881,8 @@ class DICT_NET_BRAND extends React.Component {
             });
         } else if( apiName == 'manager_name'){
             this.setState({
-                manager_name: inputValue
+                manager_name: inputValue,
+                //manager_id: inputValue,
             });
         }
 
