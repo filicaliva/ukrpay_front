@@ -362,6 +362,16 @@ header{
       .report{
         padding: 10px;
         margin: 10px;
+        .coverInput{
+          .errorEmail{
+            border: 1px solid red;
+          }
+          .errorEmail ~ p{
+            color: red;
+            font-size: 10px;
+            margin: 0;
+           }
+        }
       }
     }
   }
@@ -396,7 +406,7 @@ header{
 }
 
 .DICT_NET_BRAND{
-  .addblock{
+  .addbBlock{
     display: flex;
     margin-right: 10px;
     padding: 10px;
@@ -411,6 +421,16 @@ header{
           align-items: center;
           label{
             width: 100px;
+          }
+        }
+      }
+    }
+    .contactPerson{
+      .innerBlock{
+        .coverInput{
+          margin: 5px 0;
+          .errorEmail{
+            border: 1px solid red;
           }
         }
       }
@@ -431,7 +451,7 @@ header{
   }
   .coverBtn{
     margin-right: 10px;
-    padding: 10px;
+    padding: 25px 10px 10px 10px;
     background: #ffffff;
   }
   .coverTwoLevel{
@@ -447,6 +467,24 @@ header{
         }
       }
     }
+    button{
+      margin-top: 30px;
+    }
+  }
+}
+
+
+.spanEmptyError{
+  color: red;
+  font-size: 10px;
+}
+.errorEmpty{
+  border: 1px solid red!important;
+}
+.autocompleteOption{
+  color: #000;
+  span{
+    font-size: 10px;
   }
 }
 
