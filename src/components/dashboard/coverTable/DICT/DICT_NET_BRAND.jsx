@@ -189,7 +189,7 @@ class DICT_NET_BRAND extends React.Component {
         let inputValue = e.target.value;
         console.log(inputValue);
         let inputDataObj = this.state.TSPReportSettingsSearchObj;
-        inputDataObj.[apiName] = inputValue;
+        inputDataObj[apiName] = inputValue;
 
         console.log(inputDataObj);
         this.setState({

@@ -532,7 +532,7 @@ class TableADMIN_USERS extends React.Component {
         let inputValue = e.target.value;
         console.log(inputValue);
         let inputDataObj = this.state.selectRow;
-        inputDataObj.[keyName] = inputValue;
+        inputDataObj[keyName] = inputValue;
         console.log(inputDataObj);
         this.setState({
             selectRow: inputDataObj
@@ -546,7 +546,7 @@ class TableADMIN_USERS extends React.Component {
         let inputValue = e.target.value;
         console.log(inputValue);
         let inputDataObj = this.state.selectRow;
-        inputDataObj.[keyName] = inputValue;
+        inputDataObj[keyName] = inputValue;
         console.log(inputDataObj);
         this.setState({
             selectRow: inputDataObj
@@ -560,7 +560,7 @@ class TableADMIN_USERS extends React.Component {
         let inputValue = e.target.value;
         console.log(inputValue);
         let inputDataObj = this.state.addRow;
-        inputDataObj.[keyName] = inputValue;
+        inputDataObj[keyName] = inputValue;
         console.log(inputDataObj);
         this.setState({
             addRow: inputDataObj

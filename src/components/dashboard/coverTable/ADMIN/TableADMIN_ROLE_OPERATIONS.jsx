@@ -347,7 +347,7 @@ class TableADMIN_ROLE_OPERATIONS extends React.Component {
                 let inputValue = e.target.checked;
                 console.log(inputValue);
                 console.log(row);
-                row.[nameRole] = inputValue;
+                row[nameRole] = inputValue;
                 console.log(row);
 
                 let obj = {
@@ -376,7 +376,7 @@ class TableADMIN_ROLE_OPERATIONS extends React.Component {
                 let inputValue = e.target.checked;
                 console.log(inputValue);
                 console.log(row);
-                row.[nameRole] = inputValue;
+                row[nameRole] = inputValue;
                 console.log(row);
 
                 let obj = {
@@ -405,7 +405,7 @@ class TableADMIN_ROLE_OPERATIONS extends React.Component {
                 let inputValue = e.target.checked;
                 console.log(inputValue);
                 console.log(row);
-                row.[nameRole] = inputValue;
+                row[nameRole] = inputValue;
                 console.log(row);
 
                 let obj = {
@@ -434,7 +434,7 @@ class TableADMIN_ROLE_OPERATIONS extends React.Component {
                 let inputValue = e.target.checked;
                 console.log(inputValue);
                 console.log(row);
-                row.[nameRole] = inputValue;
+                row[nameRole] = inputValue;
                 console.log(row);
 
                 let obj = {
@@ -463,7 +463,7 @@ class TableADMIN_ROLE_OPERATIONS extends React.Component {
                 let inputValue = e.target.checked;
                 console.log(inputValue);
                 console.log(row);
-                row.[nameRole] = inputValue;
+                row[nameRole] = inputValue;
                 console.log(row);
 
                 let obj = {

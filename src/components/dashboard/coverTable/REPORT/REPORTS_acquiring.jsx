@@ -444,7 +444,7 @@ class REPORTS_acquiring extends React.Component {
         let inputValue = e.target.value;
         console.log(inputValue);
         let inputDataObj = this.state.AcquiringReportsCriteria;
-        inputDataObj.[apiName] = inputValue;
+        inputDataObj[apiName] = inputValue;
 
         console.log(inputDataObj);
         this.setState({
@@ -467,7 +467,7 @@ class REPORTS_acquiring extends React.Component {
         let inputDataObj = this.state.AcquiringReportsCriteria;
 
 
-        inputDataObj.[apiName] = this.formatDate(new Date(inputValue));
+        inputDataObj[apiName] = this.formatDate(new Date(inputValue));
 
         console.log(inputDataObj);
         this.setState({
@@ -484,7 +484,7 @@ class REPORTS_acquiring extends React.Component {
         let inputDataObj = this.state.AcquiringReportsCriteria;
 
 
-        inputDataObj.[apiName] = this.formatDate(new Date(inputValue));
+        inputDataObj[apiName] = this.formatDate(new Date(inputValue));
 
         console.log(inputDataObj);
         this.setState({
@@ -501,7 +501,7 @@ class REPORTS_acquiring extends React.Component {
         let inputDataObj = this.state.AcquiringReportsCriteria;
 
 
-        inputDataObj.[apiName] = this.formatDate(new Date(inputValue));
+        inputDataObj[apiName] = this.formatDate(new Date(inputValue));
 
         console.log(inputDataObj);
         this.setState({
@@ -518,7 +518,7 @@ class REPORTS_acquiring extends React.Component {
         console.log(inputValue);
         let inputDataObj = this.state.AcquiringReportsCriteria;
 
-        inputDataObj.[apiName] = inputValue;
+        inputDataObj[apiName] = inputValue;
 
         console.log(inputDataObj);
         this.setState({
@@ -535,9 +535,9 @@ class REPORTS_acquiring extends React.Component {
         let inputDataObj = this.state.AcquiringReportsCriteria;
 
         if(apiName == 'date_type_id' || apiName == 'format_type_id' || apiName == 'mcc_code' || apiName == 'payment_system_id' || apiName == 'terminal_id' || apiName == 'merchant_id' || apiName == 'bank_branch_id' || apiName == 'institution_id'){
-            inputDataObj.[apiName] = Number(inputValue);
+            inputDataObj[apiName] = Number(inputValue);
         }else{
-            inputDataObj.[apiName] = inputValue;
+            inputDataObj[apiName] = inputValue;
         }
 
         console.log(inputDataObj);
@@ -764,7 +764,7 @@ class REPORTS_acquiring extends React.Component {
                 // "extended_report": true,
                 // "installment_report": true,
                 report_format_id: this.state.report_format_id, //report_format_id
-                // "report_format_name": "string",
+                // "report_format_name": "s tring",
                 report_period_type_id: this.state.report_period_type_id, //report_period_type_id
                 // "report_period_type_name": "string",
                 channel_type_id: this.state.channel_type_id, //channel_type_id

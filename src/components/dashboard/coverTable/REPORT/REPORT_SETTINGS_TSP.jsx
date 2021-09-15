@@ -244,7 +244,7 @@ class REPORT_SETTINGS_TSP extends React.Component {
         let inputValue = e.target.value;
         console.log(inputValue);
         let inputDataObj = this.state.TSPReportSettingsSearchObj;
-        inputDataObj.[apiName] = inputValue;
+        inputDataObj[apiName] = inputValue;
 
         console.log(inputDataObj);
         this.setState({
@@ -632,9 +632,9 @@ class REPORT_SETTINGS_TSP extends React.Component {
         let inputDataObj = this.state.TSPReportSettingsSearchObj;
 
         if(apiName == 'date_from' || apiName == 'date_to'){
-            inputDataObj.[apiName] = this.formatDate(new Date(inputValue));
+            inputDataObj[apiName] = this.formatDate(new Date(inputValue));
         }else{
-            inputDataObj.[apiName] = inputValue;
+            inputDataObj[apiName] = inputValue;
         }
         console.log(inputDataObj);
         this.setState({
@@ -2068,7 +2068,7 @@ class REPORT_SETTINGS_TSP extends React.Component {
                 //console.log(this.state.TSPReportSettingsSTD);
                 //console.log(row);
                 let TSPReportSettingsSTD = this.state.TSPReportSettingsSTD;
-                row.[nameRole] = inputValue;
+                row[nameRole] = inputValue;
                 let index = TSPReportSettingsSTD.findIndex(el => el.field_name === row.field_name);
                 //console.log(row);
 
@@ -2142,7 +2142,7 @@ class REPORT_SETTINGS_TSP extends React.Component {
                 //console.log(defineOrder_number(cloneTSPReportSettingsSTD, inputValue,indexRow ));
 
                 if(defineOrder_number(cloneTSPReportSettingsSTD, inputValue,indexRow )){
-                    // row.[nameRole] = inputValue;
+                    // row[nameRole] = inputValue;
                     // cloneTSPReportSettingsSTD[indexRow] = row;
                     console.log(cloneTSPReportSettingsSTD);
                     this.setState({
@@ -2156,7 +2156,7 @@ class REPORT_SETTINGS_TSP extends React.Component {
                     //     6000
                     // );
                 }else{
-                    row.[nameRole] = inputValue;
+                    row[nameRole] = inputValue;
                     //console.log(row);
                     cloneTSPReportSettingsSTD[indexRow] = row;
                     console.log(cloneTSPReportSettingsSTD);
@@ -2180,7 +2180,7 @@ class REPORT_SETTINGS_TSP extends React.Component {
                     //console.log(inputValue);
                     //console.log(this.state.TSPReportSettingsSTD);
                     //console.log(row);
-                    row.[nameRole] = Number(inputValue);
+                    row[nameRole] = Number(inputValue);
                     //console.log(row);
                     let TSPReportSettingsSTD = this.state.TSPReportSettingsSTD;
                     TSPReportSettingsSTD[newValue] = row;

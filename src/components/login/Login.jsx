@@ -19,7 +19,7 @@ const aol = (value) => {
         'Really? You still use AOL for your email?' : undefined
 }
 const email = (value) => {
-    return value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value) ?
+    return value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\[A-Z]{2,4}$/i.test(value) ?
         'Невірний email' : undefined
 }
 const required = value => value ? undefined : 'Обовязкове'

@@ -120,7 +120,7 @@ class Profile extends React.Component{
         let inputValue = e.target.value;
         console.log(inputValue);
         let inputDataObj = this.state.inputsData;
-        inputDataObj.[apiName] = inputValue;
+        inputDataObj[apiName] = inputValue;
         console.log(inputDataObj);
         this.setState({
             isDisableBtnSave: false,
