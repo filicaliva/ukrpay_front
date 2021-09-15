@@ -1,8 +1,9 @@
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table'
 import React from "react";
 import * as axios from "axios";
-
+import InputMask from 'react-input-mask';
 import {Field, reduxForm} from "redux-form";
+import MaskedInput from "react-text-mask";
 
 
 const OptionItemDICT_INSTITUTION = (props) => {
@@ -224,7 +225,9 @@ class REPORT_SETTINGS_TSP extends React.Component {
 
 
 
-
+            internetEmailMaskError: false,
+            physicalEmailMaskError: false,
+            isDisabledSaveBtn: true,
 
             isShowOrder_numberError: false,
             isShowBootstrapTable: true
@@ -651,6 +654,7 @@ class REPORT_SETTINGS_TSP extends React.Component {
         return year + month + day;
     }
     search = () => {
+        // main
         this.requestTSPReportSettings(this.props.store.userState.token, this.state.TSPReportSettingsSearchObj);
 
 
@@ -672,9 +676,9 @@ class REPORT_SETTINGS_TSP extends React.Component {
         // });
     }
     Tsp_list = (tsp_list) => {
-        console.log(tsp_list);
+        //console.log(tsp_list);
         return tsp_list.map(( item , index) => {
-            console.log(item);
+            //console.log(item);
             return(
                 <li className="dropdownMenuItem">
                     <p><input name="tsp_list" id={item.tsp_name} type="radio" onClick={this.itemTsp} value={item.tsp_id}/> {item.tsp_name}</p>
@@ -724,13 +728,13 @@ class REPORT_SETTINGS_TSP extends React.Component {
 
                 }else if(item.main_settings.length){
                     item.main_settings.map( ( item , index) => {
-                        console.log('-----------start---------------');
-                        console.log(item);
-                        console.log(item.file_name_mask);
-                        console.log(item.acquiring_type_id);
+                        //console.log('-----------start---------------');
+                        //console.log(item);
+                        //console.log(item.file_name_mask);
+                        //console.log(item.acquiring_type_id);
                         if(item.acquiring_type_id == 1){
                             console.log('item.acquiring_type_id == 1');
-                            console.log(item.file_name_mask);
+                            //console.log(item.file_name_mask);
                             this.setState({
                                 physical_acquiring_type_id: item.acquiring_type_id,
                                 physical_channel_address: item.channel_address,
@@ -862,7 +866,13 @@ class REPORT_SETTINGS_TSP extends React.Component {
         //     isShowReport: true
         // });
         this.setState({
-            type_acquiring: Number(typeAcquiring)
+            type_acquiring: Number(typeAcquiring),
+            isDisabledSaveBtn: true,
+            physicalEmailMaskError: false,
+            internetEmailMaskError: false,
+
+            internet_channel_address: '' ,
+            physical_channel_address: ''
         });
         // this.state.settings.map( ( item , index) => {
         //     console.log(this.state.currentTsp);
@@ -933,7 +943,10 @@ class REPORT_SETTINGS_TSP extends React.Component {
             file_name_mask: this.state.settings[0].main_settings[1].file_name_mask,
 
             type_acquiring: Number(typeAcquiring),
-            isShowReport: true
+            isShowReport: true,
+            isDisabledSaveBtn: true,
+            physicalEmailMaskError: false,
+            internetEmailMaskError: false
         });
 
     }
@@ -972,12 +985,28 @@ class REPORT_SETTINGS_TSP extends React.Component {
         console.log(name_input);
         console.log(inputValue);
         if(name_input == 'physical_acquiring_type_id')this.setState({physical_acquiring_type_id: Number(inputValue)});
-        if(name_input == 'physical_channel_type_id')this.setState({physical_channel_type_id: Number(inputValue)});
+        if(name_input == 'physical_channel_type_id'){
+            this.setState({
+                physical_channel_type_id: Number(inputValue),
+                physical_channel_address: '',
+                isDisabledSaveBtn: true,
+                physicalEmailMaskError: false,
+                internetEmailMaskError: false,
+            });
+        }
         if(name_input == 'physical_report_format_id')this.setState({physical_report_format_id: Number(inputValue)});
         if(name_input == 'physical_report_period_type_id')this.setState({physical_report_period_type_id: Number(inputValue)});
 
         if(name_input == 'internet_acquiring_type_id')this.setState({internet_acquiring_type_id: Number(inputValue)});
-        if(name_input == 'internet_channel_type_id')this.setState({internet_channel_type_id: Number(inputValue)});
+        if(name_input == 'internet_channel_type_id'){
+            this.setState({
+                internet_channel_type_id: Number(inputValue),
+                internet_channel_address: '' ,
+                isDisabledSaveBtn: true,
+                physicalEmailMaskError: false,
+                internetEmailMaskError: false,
+            });
+        }
         if(name_input == 'internet_report_format_id')this.setState({internet_report_format_id: Number(inputValue)});
         if(name_input == 'internet_report_period_type_id')this.setState({internet_report_period_type_id: Number(inputValue)});
     }
@@ -991,6 +1020,108 @@ class REPORT_SETTINGS_TSP extends React.Component {
         if(name_input == 'internet_channel_address')this.setState({internet_channel_address: inputValue});
         if(name_input == 'internet_file_name_mask')this.setState({internet_file_name_mask: inputValue});
     }
+    changeInputTspEmail = (e) => {
+        let name_input = e.currentTarget.getAttribute("name");
+        let inputValue = e.target.value;
+        console.log(name_input);
+        console.log(inputValue);
+        if(name_input == 'physical_channel_address'){
+            console.log(/.+@.+\.[A-Za-z]+$/.test(inputValue));
+            if (/.+@.+\.[A-Za-z]+$/.test(inputValue)) {
+                console.log('/.+@.+\.[A-Za-z]+$/.test(inputValue)');
+                this.setState({
+                    physicalEmailMaskError: false,
+                    isDisabledSaveBtn: true
+                });
+            } else {
+                console.log('pfqikj');
+                this.setState({
+                    physicalEmailMaskError: true,
+                    isDisabledSaveBtn: false
+                });
+            }
+            this.setState({physical_channel_address: inputValue});
+        }else if(name_input == 'internet_channel_address'){
+            console.log(/.+@.+\.[A-Za-z]+$/.test(inputValue));
+            if (/.+@.+\.[A-Za-z]+$/.test(inputValue)) {
+                console.log('/.+@.+\.[A-Za-z]+$/.test(inputValue)');
+                this.setState({
+                    internetEmailMaskError: false,
+                    isDisabledSaveBtn: true
+                });
+            } else {
+                console.log('pfqikj');
+                this.setState({
+                    internetEmailMaskError: true,
+                    isDisabledSaveBtn: false
+                });
+            }
+            this.setState({internet_channel_address: inputValue});
+        }
+
+        // if(name_input == 'internet_channel_address'){
+        //     console.log(/.\.[A-Za-z]+$/.test(inputValue));
+        //     if (/.\.[A-Za-z]+$/.test(inputValue)) {
+        //         console.log('/.\\.[A-Za-z]+$/.test(inputValue)');
+        //         this.setState({
+        //             physicalEmailMaskError: false,
+        //             isDisabledSaveBtn: true
+        //         });
+        //     } else {
+        //         console.log('pfqikj2');
+        //         this.setState({
+        //             physicalEmailMaskError: true,
+        //             isDisabledSaveBtn: false
+        //         });
+        //     }
+        //     this.setState({internet_channel_address: inputValue});
+        // }
+
+    }
+    changeInputTspFtp = (e) => {
+        let name_input = e.currentTarget.getAttribute("name");
+        let inputValue = e.target.value;
+        console.log(name_input);
+        console.log(inputValue);
+
+        if(name_input == 'physical_channel_address'){
+            console.log(inputValue.indexOf("."));
+            console.log(inputValue.indexOf(".") != -1);
+            if(inputValue.indexOf(".") != -1) {
+                //console.log('/.\\.[A-Za-z]+$/.test(inputValue)');
+                this.setState({
+                    physicalEmailMaskError: false,
+                    isDisabledSaveBtn: true
+                });
+            } else {
+                console.log('pfqikj2');
+                this.setState({
+                    physicalEmailMaskError: true,
+                    isDisabledSaveBtn: false
+                });
+            }
+            this.setState({physical_channel_address: inputValue});
+        }else if(name_input == 'internet_channel_address'){
+            console.log(inputValue.indexOf("."));
+            console.log(inputValue.indexOf(".") != -1);
+            if(inputValue.indexOf(".") != -1) {
+                //console.log('/.\\.[A-Za-z]+$/.test(inputValue)');
+                this.setState({
+                    internetEmailMaskError: false,
+                    isDisabledSaveBtn: true
+                });
+            } else {
+                console.log('pfqikj2');
+                this.setState({
+                    internetEmailMaskError: true,
+                    isDisabledSaveBtn: false
+                });
+            }
+            this.setState({internet_channel_address: inputValue});
+        }
+
+    }
+
 
     changeReport_format_id = (e) => {
         let inputValue = e.target.value;
@@ -1110,7 +1241,7 @@ class REPORT_SETTINGS_TSP extends React.Component {
     }
     showHtmlReport = () => {
         console.log('this.state.physical_file_name_mask');
-        console.log(this.state.physical_file_name_mask);
+        console.log(this.state.physical_channel_address);
         return(
             <div className="">
 
@@ -1195,11 +1326,34 @@ class REPORT_SETTINGS_TSP extends React.Component {
 
                     </div>
                     <div className="coverInput">
-                        <input value={this.state.physical_channel_address} onChange={this.changeInputTsp} name="physical_channel_address" className="customInput form-control"  type="text"/>
+                        {
+                            this.state.physical_channel_type_id == 1
+                                ? <>
+                                    <input placeholder="ftp" value={this.state.physical_channel_address} onChange={ this.changeInputTspFtp} name="physical_channel_address" className={`${this.state.physicalEmailMaskError ? 'errorEmail' : ''} customInput form-control`}  type="text"/>
+                                    {
+                                        this.state.physicalEmailMaskError
+                                            ? <p>Невалідний ftp</p>
+                                            : <></>
+                                    }
+                                    {/*<MaskedInput name="physical_channel_address" label="Email" type="email" placeholder="email" value={this.state.physical_channel_address} onChange={() => this.changeInputTsp} className="customInput form-control"  type="text"/>*/}
+                                </>
+
+                                : <>
+                                    <input name="physical_channel_address" label="Email"  placeholder="email@email.com" value={this.state.physical_channel_address} onChange={ this.changeInputTspEmail} className={`${this.state.physicalEmailMaskError ? 'errorEmail' : ''} customInput form-control`}  type="text"/>
+                                    {
+                                        this.state.physicalEmailMaskError
+                                            ? <p>Невалідний email</p>
+                                            : <></>
+                                    }
+                                    {/*<MaskedInput name="physical_channel_address" label="Email" type="email" placeholder="email" value={this.state.physical_channel_address} onChange={() => this.changeInputTsp} className="customInput form-control"  type="text"/>*/}
+                                </>
+
+                        }
+                        {/*<input placeholder="ftp" value={this.state.physical_channel_address} onChange={ this.changeInputTsp} name="physical_channel_address" className="customInput form-control"  type="text"/>*/}
                     </div>
                     <br/>
                     <div className="reportCoverBtn">
-                        <button className="btn btn-secondary" onClick={this.saveReport}>Зберегти</button>
+                        <button className="btn btn-secondary" disabled={this.state.isDisabledSaveBtn ? '' : 'disabled'} onClick={this.saveReport}>Зберегти</button>
                     </div>
                 </div>
 
@@ -1262,11 +1416,40 @@ class REPORT_SETTINGS_TSP extends React.Component {
 
                     </div>
                     <div className="coverInput">
-                        <input value={this.state.internet_channel_address} onChange={this.changeInputTsp} name="internet_channel_address" className="customInput form-control"  type="text"/>
+                        {
+                            this.state.internet_channel_type_id == 1
+                                ? <>
+                                    <input placeholder="ftp" value={this.state.internet_channel_address} onChange={ this.changeInputTspFtp} name="internet_channel_address" className={`${this.state.internetEmailMaskError ? 'errorEmail' : ''} customInput form-control`}  type="text"/>
+                                    {
+                                        this.state.internetEmailMaskError
+                                            ? <p>Невалідний ftp</p>
+                                            : <></>
+                                    }
+                                    {/*<MaskedInput name="physical_channel_address" label="Email" type="email" placeholder="email" value={this.state.physical_channel_address} onChange={() => this.changeInputTsp} className="customInput form-control"  type="text"/>*/}
+                                </>
+
+                                : <>
+                                    <input name="internet_channel_address" label="Email"  placeholder="email@email.com" value={this.state.internet_channel_address} onChange={ this.changeInputTspEmail} className={`${this.state.internetEmailMaskError ? 'errorEmail' : ''} customInput form-control`}  type="text"/>
+                                    {
+                                        this.state.internetEmailMaskError
+                                            ? <p>Невалідний email</p>
+                                            : <></>
+                                    }
+                                    {/*<MaskedInput name="physical_channel_address" label="Email" type="email" placeholder="email" value={this.state.physical_channel_address} onChange={() => this.changeInputTsp} className="customInput form-control"  type="text"/>*/}
+                                </>
+
+                        }
+                        {/*{*/}
+                        {/*    this.state.internet_channel_type_id == 1*/}
+                        {/*        ? <input placeholder="ftp" value={this.state.internet_channel_address} onChange={this.changeInputTsp} name="internet_channel_address" className="customInput form-control"  type="text"/>*/}
+                        {/*        : <input placeholder="email" value={this.state.internet_channel_address} onChange={this.changeInputTsp} name="internet_channel_address" className="customInput form-control"  type="text"/>*/}
+                        {/*}*/}
+
+                        {/*<input value={this.state.internet_channel_address} onChange={this.changeInputTsp} name="internet_channel_address" className="customInput form-control"  type="text"/>*/}
                     </div>
                     <br/>
                     <div className="reportCoverBtn">
-                        <button className="btn btn-secondary" onClick={this.saveReport}>Зберегти</button>
+                        <button className="btn btn-secondary" disabled={this.state.isDisabledSaveBtn ? '' : 'disabled'} onClick={this.saveReport}>Зберегти</button>
                     </div>
                 </div>
 
@@ -1275,738 +1458,738 @@ class REPORT_SETTINGS_TSP extends React.Component {
         )
     }
 
-    showReport = (currentTsp) => {
-        console.log(currentTsp);
-        return this.state.settings.map( ( item , index) => {
-            console.log(item);
-
-
-            console.log(item.tsp_id);
-            console.log(item.tsp_id == currentTsp);
-            if(item.tsp_id == currentTsp){
-                console.log(item.main_settings);
-                if(item.main_settings == null){
-                    // let report_period_type_id = 1;
-                    // let report_format_id = 1;
-                    // let channel_type_id = 1;
-                    // let file_name_mask = "";
-                    // let channel_address = "";
-                    // console.log(acquiring_type_id);
-                    // console.log(report_period_type_id);
-                    // console.log(report_format_id);
-                    // console.log(channel_type_id);
-                    // console.log(file_name_mask);
-                    // console.log(channel_address);
-                    console.log(this.state.type_acquiring);
-                    return(
-                        <div className="">
-                            <div className="coverBtn border">
-                                <div className="title">Вид екварингу</div>
-                                <button
-                                    className="btn btn-secondary"
-                                    disabled={this.state.type_acquiring == 1 ? 'disabled' : ''}
-                                    onClick={  this.changeTypeAcquiring }
-                                    type_acquiring={1}>Фізичний</button>
-                                <button
-                                    className="btn btn-secondary"
-                                    disabled={this.state.type_acquiring == 2 ? 'disabled' : ''}
-                                    onClick={ this.changeTypeAcquiring }
-                                    type_acquiring={2}>Інтернет</button>
-                            </div>
-                            <div className="title">{this.state.type_acquiring == 1 ? "Фізичний" :"Інтернет"}</div>
-
-                            <div className={`${this.state.type_acquiring == 1 ? '' : 'd-none'} border report`}>
-                                        <div className="title">Перелік полів звіту ТСП</div>
-
-                                        <button className="btn btn-secondary" disabled={this.state.standard_report ? '' : 'disabled'} onClick={this.openStandardReport} >Стандартний звіт</button>
-                                        <button className="btn btn-secondary" disabled={this.state.extended_report ? '' : 'disabled'} >Розширений звіт</button>
-                                        <button className="btn btn-secondary" disabled={this.state.installment_report ? '' : 'disabled'} >Звіт по операціям Installment</button>
-                                        <br/>
-                                        <div className="coverInput">
-                                            <label htmlFor="file_format">Формат файлу</label>
-                                            {
-                                                this.state.isShowREPORT_FORMAT
-                                                    ? <select className="form-select" onChange={this.changeReport_format_id} name="DICT_REPORT_FORMAT" id="DICT_REPORT_FORMAT">
-
-                                                        { this.state.DICT_REPORT_FORMAT.map( ( item , index) => {
-                                                            return < OptionItem key={index} optionItem={item} report_format_id={this.state.report_format_id} />
-                                                        }) }
-                                                    </select>
-                                                    : <span>Завантаження...</span>
-                                            }
-
-
-
-                                        </div>
-                                        <div className="coverInput">
-                                            <label htmlFor="report_period">Період звіту</label>
-                                            {
-                                                this.state.isShowDICT_REPORT_PERIOD_TYPE
-                                                    ? <select className="form-select" onChange={this.changeReport_period_type_id} name="DICT_REPORT_PERIOD_TYPE" id="DICT_REPORT_PERIOD_TYPE">
-
-                                                        { this.state.DICT_REPORT_PERIOD_TYPE.map( ( item , index) => {
-                                                            return < OptionItemDICT_REPORT_PERIOD_TYPE key={index} optionItem={item} report_period_type_id={this.state.report_period_type_id} />
-                                                        }) }
-                                                    </select>
-                                                    : <span>Завантаження...</span>
-                                            }
-                                        </div>
-                                        <div className="coverInput">
-                                            <label htmlFor="file_name_mask">Маска назви файлу</label>
-                                            <input defaultValue={this.state.file_name_mask} onChange={this.changeFile_name_mask} apiName="file_name_mask" className="customInput form-control" id="file_name_mask" type="text"/>
-                                        </div>
-                                        <div className="coverInput">
-                                            <label htmlFor="сatalog">Каталог</label>
-                                            <input disabled onChange={this.changeInput} apiName="сatalog" className="customInput form-control" id="сatalog" type="text"/>
-                                        </div>
-                                        <div className="coverInput">
-                                            <label htmlFor="сhannel">Канал</label>
-                                            {
-                                                this.state.isShowDICT_REPORT_CHANNEL_TYPE
-                                                    ? <select className="form-select" onChange={this.changeChannel_type_id} name="DICT_REPORT_CHANNEL_TYPE" id="DICT_REPORT_CHANNEL_TYPE">
-
-                                                        { this.state.DICT_REPORT_CHANNEL_TYPE.map( ( item , index) => {
-                                                            return < OptionItemDICT_REPORT_CHANNEL_TYPE key={index} optionItem={item} channel_type_id={this.state.channel_type_id} />
-                                                        }) }
-                                                    </select>
-                                                    : <span>Завантаження...</span>
-                                            }
-
-                                        </div>
-                                        <div className="coverInput">
-                                            <input defaultValue={this.state.channel_address} onChange={this.changeFile_name_mask} apiName="channel_address" className="customInput form-control"  type="text"/>
-                                        </div>
-                                        <br/>
-                                        <div className="reportCoverBtn">
-                                            <button className="btn btn-secondary" onClick={this.saveReport}>Зберегти</button>
-                                        </div>
-                                    </div>
-
-                            <div className={`${this.state.type_acquiring == 1 ? 'd-none' : ''} border report`}>
-                                <div className="title">Перелік полів звіту ТСП</div>
-
-                                <button className="btn btn-secondary" disabled={this.state.standard_report ? '' : 'disabled'} onClick={this.openStandardReport} >Стандартний звіт</button>
-                                <button className="btn btn-secondary" disabled={this.state.extended_report ? '' : 'disabled'} >Розширений звіт</button>
-                                <button className="btn btn-secondary" disabled={this.state.installment_report ? '' : 'disabled'} >Звіт по операціям Installment</button>
-                                <br/>
-                                <div className="coverInput">
-                                    <label htmlFor="file_format">Формат файлу</label>
-                                    {
-                                        this.state.isShowREPORT_FORMAT
-                                            ? <select className="form-select" onChange={this.changeReport_format_id} name="DICT_REPORT_FORMAT" id="DICT_REPORT_FORMAT">
-
-                                                { this.state.DICT_REPORT_FORMAT.map( ( item , index) => {
-                                                    return < OptionItem key={index} optionItem={item} report_format_id={this.state.report_format_id} />
-                                                }) }
-                                            </select>
-                                            : <span>Завантаження...</span>
-                                    }
-
-
-
-                                </div>
-                                <div className="coverInput">
-                                    <label htmlFor="report_period">Період звіту</label>
-                                    {
-                                        this.state.isShowDICT_REPORT_PERIOD_TYPE
-                                            ? <select className="form-select" onChange={this.changeReport_period_type_id} name="DICT_REPORT_PERIOD_TYPE" id="DICT_REPORT_PERIOD_TYPE">
-
-                                                { this.state.DICT_REPORT_PERIOD_TYPE.map( ( item , index) => {
-                                                    return < OptionItemDICT_REPORT_PERIOD_TYPE key={index} optionItem={item} report_period_type_id={this.state.report_period_type_id} />
-                                                }) }
-                                            </select>
-                                            : <span>Завантаження...</span>
-                                    }
-                                </div>
-                                <div className="coverInput">
-                                    <label htmlFor="file_name_mask">Маска назви файлу</label>
-                                    <input defaultValue={this.state.file_name_mask} onChange={this.changeFile_name_mask} apiName="file_name_mask" className="customInput form-control" id="file_name_mask" type="text"/>
-                                </div>
-                                <div className="coverInput">
-                                    <label htmlFor="сatalog">Каталог</label>
-                                    <input disabled onChange={this.changeInput} apiName="сatalog" className="customInput form-control" id="сatalog" type="text"/>
-                                </div>
-                                <div className="coverInput">
-                                    <label htmlFor="сhannel">Канал</label>
-                                    {
-                                        this.state.isShowDICT_REPORT_CHANNEL_TYPE
-                                            ? <select className="form-select" onChange={this.changeChannel_type_id} name="DICT_REPORT_CHANNEL_TYPE" id="DICT_REPORT_CHANNEL_TYPE">
-
-                                                { this.state.DICT_REPORT_CHANNEL_TYPE.map( ( item , index) => {
-                                                    return < OptionItemDICT_REPORT_CHANNEL_TYPE key={index} optionItem={item} channel_type_id={this.state.channel_type_id} />
-                                                }) }
-                                            </select>
-                                            : <span>Завантаження...</span>
-                                    }
-
-                                </div>
-                                <div className="coverInput">
-                                    <input defaultValue={this.state.channel_address} onChange={this.changeFile_name_mask} apiName="channel_address" className="customInput form-control"  type="text"/>
-                                </div>
-                                <br/>
-                                <div className="reportCoverBtn">
-                                    <button className="btn btn-secondary" onClick={this.saveReport}>Зберегти</button>
-                                </div>
-                            </div>
-
-
-                        </div>
-                    )
-                }else if(false){
-                    //item.main_settings.length
-                    let physicalAcquiringData =  item.main_settings[1]
-
-
-                    let report_period_type_id = item.report_period_type_id;
-                    let report_format_id = item.report_format_id;
-                    let channel_type_id = item.channel_type_id;
-                    let file_name_mask = item.file_name_mask;
-                    let acquiring_type_id = item.acquiring_type_id;
-                    let standard_report = item.standard_report;
-                    let extended_report = item.extended_report;
-                    let installment_report = item.installment_report;
-                    let channel_address = item.channel_address;
-                    console.log(acquiring_type_id);
-                    console.log(report_period_type_id);
-                    console.log(report_format_id);
-                    console.log(channel_type_id);
-                    console.log(file_name_mask);
-                    console.log(channel_address);
-                    console.log(this.state.type_acquiring);
-                    return(
-                        <div className="">
-                            <div className="coverBtn border">
-                                <div className="title">Вид екварингу</div>
-                                <button
-                                    className="btn btn-secondary"
-                                    disabled={this.state.type_acquiring == 1 ? 'disabled' : ''}
-                                    onClick={  this.changeTypeAcquiring }
-                                    type_acquiring={1}>Фізичний</button>
-                                <button
-                                    className="btn btn-secondary"
-                                    disabled={this.state.type_acquiring == 2 ? 'disabled' : ''}
-                                    onClick={ this.changeTypeAcquiring }
-                                    type_acquiring={2}>Інтернет</button>
-                            </div>
-                            <div className={`${this.state.type_acquiring == acquiring_type_id ? '' : 'd-none'} border report`}>
-                                <div className="title">Перелік полів звіту ТСП</div>
-
-                                <button className="btn btn-secondary" disabled={standard_report ? '' : 'disabled'} onClick={this.openStandardReport} >Стандартний звіт</button>
-                                <button className="btn btn-secondary" disabled={extended_report ? '' : 'disabled'} >Розширений звіт</button>
-                                <button className="btn btn-secondary" disabled={installment_report ? '' : 'disabled'} >Звіт по операціям Installment</button>
-                                <br/>
-                                <div className="coverInput">
-                                    <label htmlFor="file_format">Формат файлу</label>
-                                    {
-                                        this.state.isShowREPORT_FORMAT
-                                            ? <select className="form-select" onChange={this.changeReport_format_id} name="DICT_REPORT_FORMAT" id="DICT_REPORT_FORMAT">
-
-                                                { this.state.DICT_REPORT_FORMAT.map( ( item , index) => {
-                                                    return < OptionItem key={index} optionItem={item} report_format_id={report_format_id} />
-                                                }) }
-                                            </select>
-                                            : <span>Завантаження...</span>
-                                    }
-
-
-
-                                </div>
-                                <div className="coverInput">
-                                    <label htmlFor="report_period">Період звіту</label>
-                                    {
-                                        this.state.isShowDICT_REPORT_PERIOD_TYPE
-                                            ? <select className="form-select" onChange={this.changeReport_period_type_id} name="DICT_REPORT_PERIOD_TYPE" id="DICT_REPORT_PERIOD_TYPE">
-
-                                                { this.state.DICT_REPORT_PERIOD_TYPE.map( ( item , index) => {
-                                                    return < OptionItemDICT_REPORT_PERIOD_TYPE key={index} optionItem={item} report_period_type_id={report_period_type_id} />
-                                                }) }
-                                            </select>
-                                            : <span>Завантаження...</span>
-                                    }
-                                </div>
-                                <div className="coverInput">
-                                    <label htmlFor="file_name_mask">Маска назви файлу</label>
-                                    <input defaultValue={file_name_mask} onChange={this.changeFile_name_mask} apiName="file_name_mask" className="customInput form-control" id="file_name_mask" type="text"/>
-                                </div>
-                                <div className="coverInput">
-                                    <label htmlFor="сatalog">Каталог</label>
-                                    <input disabled onChange={this.changeInput} apiName="сatalog" className="customInput form-control" id="сatalog" type="text"/>
-                                </div>
-                                <div className="coverInput">
-                                    <label htmlFor="сhannel">Канал</label>
-                                    {
-                                        this.state.isShowDICT_REPORT_CHANNEL_TYPE
-                                            ? <select className="form-select" onChange={this.changeChannel_type_id} name="DICT_REPORT_CHANNEL_TYPE" id="DICT_REPORT_CHANNEL_TYPE">
-
-                                                { this.state.DICT_REPORT_CHANNEL_TYPE.map( ( item , index) => {
-                                                    return < OptionItemDICT_REPORT_CHANNEL_TYPE key={index} optionItem={item} channel_type_id={channel_type_id} />
-                                                }) }
-                                            </select>
-                                            : <span>Завантаження...</span>
-                                    }
-
-                                </div>
-                                <div className="coverInput">
-                                    <input defaultValue={channel_address} onChange={this.changeFile_name_mask} apiName="channel_address" className="customInput form-control"  type="text"/>
-                                </div>
-                                <br/>
-                                <div className="reportCoverBtn">
-                                    <button className="btn btn-secondary" onClick={this.saveReport}>Зберегти</button>
-                                </div>
-                            </div>
-                            {
-                                item.main_settings.map( ( item , index) => {
-                                    let report_period_type_id = item.report_period_type_id;
-                                    let report_format_id = item.report_format_id;
-                                    let channel_type_id = item.channel_type_id;
-                                    let file_name_mask = item.file_name_mask;
-                                    let acquiring_type_id = item.acquiring_type_id;
-                                    let standard_report = item.standard_report;
-                                    let extended_report = item.extended_report;
-                                    let installment_report = item.installment_report;
-                                    let channel_address = item.channel_address;
-                                    console.log(acquiring_type_id);
-                                    console.log(report_period_type_id);
-                                    console.log(report_format_id);
-                                    console.log(channel_type_id);
-                                    console.log(file_name_mask);
-                                    console.log(channel_address);
-                                    console.log(this.state.type_acquiring);
-                                    return(
-                                        <div className={`${this.state.type_acquiring == acquiring_type_id ? '' : 'd-none'} border report`}>
-                                            <div className="title">Перелік полів звіту ТСП</div>
-
-                                            <button className="btn btn-secondary" disabled={standard_report ? '' : 'disabled'} onClick={this.openStandardReport} >Стандартний звіт</button>
-                                            <button className="btn btn-secondary" disabled={extended_report ? '' : 'disabled'} >Розширений звіт</button>
-                                            <button className="btn btn-secondary" disabled={installment_report ? '' : 'disabled'} >Звіт по операціям Installment</button>
-                                            <br/>
-                                            <div className="coverInput">
-                                                <label htmlFor="file_format">Формат файлу</label>
-                                                {
-                                                    this.state.isShowREPORT_FORMAT
-                                                        ? <select className="form-select" onChange={this.changeReport_format_id} name="DICT_REPORT_FORMAT" id="DICT_REPORT_FORMAT">
-
-                                                            { this.state.DICT_REPORT_FORMAT.map( ( item , index) => {
-                                                                return < OptionItem key={index} optionItem={item} report_format_id={report_format_id} />
-                                                            }) }
-                                                        </select>
-                                                        : <span>Завантаження...</span>
-                                                }
-
-
-
-                                            </div>
-                                            <div className="coverInput">
-                                                <label htmlFor="report_period">Період звіту</label>
-                                                {
-                                                    this.state.isShowDICT_REPORT_PERIOD_TYPE
-                                                        ? <select className="form-select" onChange={this.changeReport_period_type_id} name="DICT_REPORT_PERIOD_TYPE" id="DICT_REPORT_PERIOD_TYPE">
-
-                                                            { this.state.DICT_REPORT_PERIOD_TYPE.map( ( item , index) => {
-                                                                return < OptionItemDICT_REPORT_PERIOD_TYPE key={index} optionItem={item} report_period_type_id={report_period_type_id} />
-                                                            }) }
-                                                        </select>
-                                                        : <span>Завантаження...</span>
-                                                }
-                                            </div>
-                                            <div className="coverInput">
-                                                <label htmlFor="file_name_mask">Маска назви файлу</label>
-                                                <input defaultValue={file_name_mask} onChange={this.changeFile_name_mask} apiName="file_name_mask" className="customInput form-control" id="file_name_mask" type="text"/>
-                                            </div>
-                                            <div className="coverInput">
-                                                <label htmlFor="сatalog">Каталог</label>
-                                                <input disabled onChange={this.changeInput} apiName="сatalog" className="customInput form-control" id="сatalog" type="text"/>
-                                            </div>
-                                            <div className="coverInput">
-                                                <label htmlFor="сhannel">Канал</label>
-                                                {
-                                                    this.state.isShowDICT_REPORT_CHANNEL_TYPE
-                                                        ? <select className="form-select" onChange={this.changeChannel_type_id} name="DICT_REPORT_CHANNEL_TYPE" id="DICT_REPORT_CHANNEL_TYPE">
-
-                                                            { this.state.DICT_REPORT_CHANNEL_TYPE.map( ( item , index) => {
-                                                                return < OptionItemDICT_REPORT_CHANNEL_TYPE key={index} optionItem={item} channel_type_id={channel_type_id} />
-                                                            }) }
-                                                        </select>
-                                                        : <span>Завантаження...</span>
-                                                }
-
-                                            </div>
-                                            <div className="coverInput">
-                                                <input defaultValue={channel_address} onChange={this.changeFile_name_mask} apiName="channel_address" className="customInput form-control"  type="text"/>
-                                            </div>
-                                            <br/>
-                                            <div className="reportCoverBtn">
-                                                <button className="btn btn-secondary" onClick={this.saveReport}>Зберегти</button>
-                                            </div>
-                                        </div>
-                                    )
-                                })
-                            }
-
-                        </div>
-                    )
-                }
-
-
-                // if(item.main_settings == null){
-                //         let report_period_type_id = 1;
-                //         let report_format_id = 1;
-                //         let channel_type_id = 1;
-                //         let file_name_mask = "";
-                //         let channel_address = "";
-                //
-                //         console.log(report_period_type_id);
-                //         console.log(report_format_id);
-                //         console.log(channel_type_id);
-                //         console.log(file_name_mask);
-                //         console.log(channel_address);
-                //         return(
-                //             <div className="report border">
-                //                 <div className="title">Перелік полів звіту ТСП</div>
-                //                 <button className="btn btn-secondary" onClick={this.openStandardReport} >Стандартний звіт</button>
-                //                 <button className="btn btn-secondary" disabled>Розширений звіт</button>
-                //                 <button className="btn btn-secondary" disabled>Звіт по операціям Installment</button>
-                //                 <br/>
-                //                 <div className="coverInput">
-                //                     <label htmlFor="file_format">Формат файлу</label>
-                //                     {
-                //                         this.state.isShowREPORT_FORMAT
-                //                             ? <select className="form-select" onChange={this.changeReport_format_id} name="DICT_REPORT_FORMAT" id="DICT_REPORT_FORMAT">
-                //
-                //                                 { this.state.DICT_REPORT_FORMAT.map( ( item , index) => {
-                //                                     return < OptionItem key={index} optionItem={item} report_format_id={report_format_id} />
-                //                                 }) }
-                //                             </select>
-                //                             : <span>Завантаження...</span>
-                //                     }
-                //
-                //
-                //
-                //                 </div>
-                //                 <div className="coverInput">
-                //                     <label htmlFor="report_period">Період звіту</label>
-                //                     {
-                //                         this.state.isShowDICT_REPORT_PERIOD_TYPE
-                //                             ? <select className="form-select" onChange={this.changeReport_period_type_id} name="DICT_REPORT_PERIOD_TYPE" id="DICT_REPORT_PERIOD_TYPE">
-                //
-                //                                 { this.state.DICT_REPORT_PERIOD_TYPE.map( ( item , index) => {
-                //                                     return < OptionItemDICT_REPORT_PERIOD_TYPE key={index} optionItem={item} report_period_type_id={report_period_type_id} />
-                //                                 }) }
-                //                             </select>
-                //                             : <span>Завантаження...</span>
-                //                     }
-                //                 </div>
-                //                 <div className="coverInput">
-                //                     <label htmlFor="file_name_mask">Маска назви файлу</label>
-                //                     <input defaultValue={file_name_mask} onChange={this.changeFile_name_mask} apiName="file_name_mask" className="customInput form-control" id="file_name_mask" type="text"/>
-                //                 </div>
-                //                 <div className="coverInput">
-                //                     <label htmlFor="сatalog">Каталог</label>
-                //                     <input disabled onChange={this.changeInput} apiName="сatalog" className="customInput form-control" id="сatalog" type="text"/>
-                //                 </div>
-                //                 <div className="coverInput">
-                //                     <label htmlFor="сhannel">Канал</label>
-                //                     {
-                //                         this.state.isShowDICT_REPORT_CHANNEL_TYPE
-                //                             ? <select className="form-select" onChange={this.changeChannel_type_id} name="DICT_REPORT_CHANNEL_TYPE" id="DICT_REPORT_CHANNEL_TYPE">
-                //
-                //                                 { this.state.DICT_REPORT_CHANNEL_TYPE.map( ( item , index) => {
-                //                                     return < OptionItemDICT_REPORT_CHANNEL_TYPE key={index} optionItem={item} channel_type_id={channel_type_id} />
-                //                                 }) }
-                //                             </select>
-                //                             : <span>Завантаження...</span>
-                //                     }
-                //
-                //                 </div>
-                //                 <div className="coverInput">
-                //                     <input defaultValue={channel_address} onChange={this.changeFile_name_mask} apiName="channel_address" className="customInput form-control"  type="text"/>
-                //                 </div>
-                //
-                //                 <div className="reportCoverBtn">
-                //                     <button className="btn btn-secondary" onClick={this.saveReport}>Зберегти</button>
-                //                 </div>
-                //             </div>
-                //         )
-                // }else if(item.main_settings.length == 1){
-                //     return item.main_settings.map( ( item , index) => {
-                //         let report_period_type_id = item.report_period_type_id;
-                //         let report_format_id = item.report_format_id;
-                //         let channel_type_id = item.channel_type_id;
-                //         let file_name_mask = item.file_name_mask;
-                //         console.log(report_period_type_id);
-                //         console.log(report_format_id);
-                //         console.log(channel_type_id);
-                //         console.log(file_name_mask);
-                //         return(
-                //             <div className=" border report">
-                //                 <div className="coverBtn border">
-                //                     <div className="title">Вид екварингу</div>
-                //                     <button className="btn btn-secondary">{this.state.type_acquiring == 1 ? 'Фізичний' : 'Інтернет'}</button>
-                //                     {/*<button*/}
-                //                     {/*    className="btn btn-secondary"*/}
-                //                     {/*    disabled={this.state.type_acquiring == 2 ? 'disabled' : ''}*/}
-                //                     {/*    onClick={this.changeTypeAcquiringInternet}*/}
-                //                     {/*    type_acquiring={2}>Інтернет</button>*/}
-                //                 </div>
-                //                 <div className="report border">
-                //                     <div className="title">Перелік полів звіту ТСП</div>
-                //                     <button className="btn btn-secondary" onClick={this.openStandardReport} >Стандартний звіт</button>
-                //                     <button className="btn btn-secondary" disabled>Розширений звіт</button>
-                //                     <button className="btn btn-secondary" disabled>Звіт по операціям Installment</button>
-                //                     <br/>
-                //                     <div className="coverInput">
-                //                         <label htmlFor="file_format">Формат файлу</label>
-                //                         {
-                //                             this.state.isShowREPORT_FORMAT
-                //                                 ? <select className="form-select" onChange={this.changeReport_format_id} name="DICT_REPORT_FORMAT" id="DICT_REPORT_FORMAT">
-                //
-                //                                     { this.state.DICT_REPORT_FORMAT.map( ( item , index) => {
-                //                                         return < OptionItem key={index} optionItem={item} report_format_id={report_format_id} />
-                //                                     }) }
-                //                                 </select>
-                //                                 : <span>Завантаження...</span>
-                //                         }
-                //
-                //
-                //
-                //                     </div>
-                //                     <div className="coverInput">
-                //                         <label htmlFor="report_period">Період звіту</label>
-                //                         {
-                //                             this.state.isShowDICT_REPORT_PERIOD_TYPE
-                //                                 ? <select className="form-select" onChange={this.changeReport_period_type_id} name="DICT_REPORT_PERIOD_TYPE" id="DICT_REPORT_PERIOD_TYPE">
-                //
-                //                                     { this.state.DICT_REPORT_PERIOD_TYPE.map( ( item , index) => {
-                //                                         return < OptionItemDICT_REPORT_PERIOD_TYPE key={index} optionItem={item} report_period_type_id={report_period_type_id} />
-                //                                     }) }
-                //                                 </select>
-                //                                 : <span>Завантаження...</span>
-                //                         }
-                //                     </div>
-                //                     <div className="coverInput">
-                //                         <label htmlFor="file_name_mask">Маска назви файлу</label>
-                //                         <input defaultValue={file_name_mask} onChange={this.changeFile_name_mask} apiName="file_name_mask" className="customInput form-control" id="file_name_mask" type="text"/>
-                //                     </div>
-                //                     <div className="coverInput">
-                //                         <label htmlFor="сatalog">Каталог</label>
-                //                         <input disabled onChange={this.changeInput} apiName="сatalog" className="customInput form-control" id="сatalog" type="text"/>
-                //                     </div>
-                //                     <div className="coverInput">
-                //                         <label htmlFor="сhannel">Канал</label>
-                //                         {
-                //                             this.state.isShowDICT_REPORT_CHANNEL_TYPE
-                //                                 ? <select className="form-select" onChange={this.changeChannel_type_id} name="DICT_REPORT_CHANNEL_TYPE" id="DICT_REPORT_CHANNEL_TYPE">
-                //
-                //                                     { this.state.DICT_REPORT_CHANNEL_TYPE.map( ( item , index) => {
-                //                                         return < OptionItemDICT_REPORT_CHANNEL_TYPE key={index} optionItem={item} channel_type_id={channel_type_id} />
-                //                                     }) }
-                //                                 </select>
-                //                                 : <span>Завантаження...</span>
-                //                         }
-                //
-                //                     </div>
-                //                     <div className="reportCoverBtn">
-                //                         <button className="btn btn-secondary" onClick={this.saveReport}>Зберегти</button>
-                //                     </div>
-                //                 </div>
-                //             </div>
-                //         )
-                //     });
-                //
-                // }else if(item.main_settings.length == 2){
-                //
-                //
-                //         return(
-                //             <div className="">
-                //                 <div className="coverBtn border">
-                //                     <div className="title">Вид екварингу</div>
-                //                     <button
-                //                         className="btn btn-secondary"
-                //                         disabled={this.state.type_acquiring == 1 ? 'disabled' : ''}
-                //                         onClick={  this.changeTypeAcquiring }
-                //                         type_acquiring={1}>Фізичний</button>
-                //                     <button
-                //                         className="btn btn-secondary"
-                //                         disabled={this.state.type_acquiring == 2 ? 'disabled' : ''}
-                //                         onClick={ this.changeTypeAcquiring }
-                //                         type_acquiring={2}>Інтернет</button>
-                //                 </div>
-                //                     {
-                //                         item.main_settings.map( ( item , index) => {
-                //                             let report_period_type_id = item.report_period_type_id;
-                //                             let report_format_id = item.report_format_id;
-                //                             let channel_type_id = item.channel_type_id;
-                //                             let file_name_mask = item.file_name_mask;
-                //                             let acquiring_type_id = item.acquiring_type_id;
-                //                             let standard_report = item.standard_report;
-                //                             let extended_report = item.extended_report;
-                //                             let installment_report = item.installment_report;
-                //                             console.log(acquiring_type_id);
-                //                             console.log(report_period_type_id);
-                //                             console.log(report_format_id);
-                //                             console.log(channel_type_id);
-                //                             console.log(file_name_mask);
-                //                             console.log(this.state.type_acquiring);
-                //                             return(
-                //                                 <div className={`${this.state.type_acquiring == acquiring_type_id ? '' : 'd-none'} border report`}>
-                //                                     <div className="title">Перелік полів звіту ТСП</div>
-                //
-                //                                     <button className="btn btn-secondary" disabled={standard_report ? '' : 'disabled'} onClick={this.openStandardReport} >Стандартний звіт</button>
-                //                                     <button className="btn btn-secondary" disabled={extended_report ? '' : 'disabled'} >Розширений звіт</button>
-                //                                     <button className="btn btn-secondary" disabled={installment_report ? '' : 'disabled'} >Звіт по операціям Installment</button>
-                //                                     <br/>
-                //                                     <div className="coverInput">
-                //                                         <label htmlFor="file_format">Формат файлу</label>
-                //                                         {
-                //                                             this.state.isShowREPORT_FORMAT
-                //                                                 ? <select className="form-select" onChange={this.changeReport_format_id} name="DICT_REPORT_FORMAT" id="DICT_REPORT_FORMAT">
-                //
-                //                                                     { this.state.DICT_REPORT_FORMAT.map( ( item , index) => {
-                //                                                         return < OptionItem key={index} optionItem={item} report_format_id={report_format_id} />
-                //                                                     }) }
-                //                                                 </select>
-                //                                                 : <span>Завантаження...</span>
-                //                                         }
-                //
-                //
-                //
-                //                                     </div>
-                //                                     <div className="coverInput">
-                //                                         <label htmlFor="report_period">Період звіту</label>
-                //                                         {
-                //                                             this.state.isShowDICT_REPORT_PERIOD_TYPE
-                //                                                 ? <select className="form-select" onChange={this.changeReport_period_type_id} name="DICT_REPORT_PERIOD_TYPE" id="DICT_REPORT_PERIOD_TYPE">
-                //
-                //                                                     { this.state.DICT_REPORT_PERIOD_TYPE.map( ( item , index) => {
-                //                                                         return < OptionItemDICT_REPORT_PERIOD_TYPE key={index} optionItem={item} report_period_type_id={report_period_type_id} />
-                //                                                     }) }
-                //                                                 </select>
-                //                                                 : <span>Завантаження...</span>
-                //                                         }
-                //                                     </div>
-                //                                     <div className="coverInput">
-                //                                         <label htmlFor="file_name_mask">Маска назви файлу</label>
-                //                                         <input defaultValue={file_name_mask} onChange={this.changeFile_name_mask} apiName="file_name_mask" className="customInput form-control" id="file_name_mask" type="text"/>
-                //                                     </div>
-                //                                     <div className="coverInput">
-                //                                         <label htmlFor="сatalog">Каталог</label>
-                //                                         <input disabled onChange={this.changeInput} apiName="сatalog" className="customInput form-control" id="сatalog" type="text"/>
-                //                                     </div>
-                //                                     <div className="coverInput">
-                //                                         <label htmlFor="сhannel">Канал</label>
-                //                                         {
-                //                                             this.state.isShowDICT_REPORT_CHANNEL_TYPE
-                //                                                 ? <select className="form-select" onChange={this.changeChannel_type_id} name="DICT_REPORT_CHANNEL_TYPE" id="DICT_REPORT_CHANNEL_TYPE">
-                //
-                //                                                     { this.state.DICT_REPORT_CHANNEL_TYPE.map( ( item , index) => {
-                //                                                         return < OptionItemDICT_REPORT_CHANNEL_TYPE key={index} optionItem={item} channel_type_id={channel_type_id} />
-                //                                                     }) }
-                //                                                 </select>
-                //                                                 : <span>Завантаження...</span>
-                //                                         }
-                //
-                //                                     </div>
-                //                                     <br/>
-                //                                     <div className="reportCoverBtn">
-                //                                         <button className="btn btn-secondary" onClick={this.saveReport}>Зберегти</button>
-                //                                     </div>
-                //                                 </div>
-                //                             )
-                //                         })
-                //                     }
-                //
-                //             </div>
-                //         )
-                //
-                // }
-
-
-                // return item.main_settings.map( ( item , index) => {
-                //     console.log(item);
-                //     console.log(item.acquiring_type_id == this.state.type_acquiring);
-                //
-                //     if(item.acquiring_type_id == this.state.type_acquiring){
-                //         let report_period_type_id = item.report_period_type_id;
-                //         let report_format_id = item.report_format_id;
-                //         let channel_type_id = item.channel_type_id;
-                //         let file_name_mask = item.file_name_mask;
-                //         // this.setState({
-                //         //     report_period_type_id: report_period_type_id,
-                //         //     report_format_id: report_format_id,
-                //         //     channel_type_id: channel_type_id,
-                //         //     file_name_mask: file_name_mask
-                //         // });
-                //
-                //         return(
-                //             <div className="report border">
-                //                 <div className="title">{this.state.type_acquiring == 1 ? "Фізичний" :"Інтернет"}</div>
-                //                 <div className="title">Перелік полів звіту ТСП</div>
-                //                 <button className="btn btn-secondary" onClick={this.openStandardReport} >Стандартний звіт</button>
-                //                 <button className="btn btn-secondary" disabled>Розширений звіт</button>
-                //                 <button className="btn btn-secondary" disabled>Звіт по операціям Installment</button>
-                //                 <br/>
-                //                 <div className="coverInput">
-                //                     <label htmlFor="file_format">Формат файлу</label>
-                //                     {
-                //                         this.state.isShowREPORT_FORMAT
-                //                             ? <select className="form-select" onChange={this.changeReport_format_id} name="DICT_REPORT_FORMAT" id="DICT_REPORT_FORMAT">
-                //
-                //                                 { this.state.DICT_REPORT_FORMAT.map( ( item , index) => {
-                //                                     return < OptionItem key={index} optionItem={item} report_format_id={report_format_id} />
-                //                                 }) }
-                //                             </select>
-                //                             : <span>Завантаження...</span>
-                //                     }
-                //
-                //
-                //
-                //                 </div>
-                //                 <div className="coverInput">
-                //                     <label htmlFor="report_period">Період звіту</label>
-                //                     {
-                //                         this.state.isShowDICT_REPORT_PERIOD_TYPE
-                //                             ? <select className="form-select" onChange={this.changeReport_period_type_id} name="DICT_REPORT_PERIOD_TYPE" id="DICT_REPORT_PERIOD_TYPE">
-                //
-                //                                 { this.state.DICT_REPORT_PERIOD_TYPE.map( ( item , index) => {
-                //                                     return < OptionItemDICT_REPORT_PERIOD_TYPE key={index} optionItem={item} report_period_type_id={report_period_type_id} />
-                //                                 }) }
-                //                             </select>
-                //                             : <span>Завантаження...</span>
-                //                     }
-                //                 </div>
-                //                 <div className="coverInput">
-                //                     <label htmlFor="file_name_mask">Маска назви файлу</label>
-                //                     <input defaultValue={file_name_mask} onChange={this.changeFile_name_mask} apiName="file_name_mask" className="customInput form-control" id="file_name_mask" type="text"/>
-                //                 </div>
-                //                 <div className="coverInput">
-                //                     <label htmlFor="сatalog">Каталог</label>
-                //                     <input disabled onChange={this.changeInput} apiName="сatalog" className="customInput form-control" id="сatalog" type="text"/>
-                //                 </div>
-                //                 <div className="coverInput">
-                //                     <label htmlFor="сhannel">Канал</label>
-                //                     {
-                //                         this.state.isShowDICT_REPORT_CHANNEL_TYPE
-                //                             ? <select className="form-select" onChange={this.changeChannel_type_id} name="DICT_REPORT_CHANNEL_TYPE" id="DICT_REPORT_CHANNEL_TYPE">
-                //
-                //                                 { this.state.DICT_REPORT_CHANNEL_TYPE.map( ( item , index) => {
-                //                                     return < OptionItemDICT_REPORT_CHANNEL_TYPE key={index} optionItem={item} channel_type_id={channel_type_id} />
-                //                                 }) }
-                //                             </select>
-                //                             : <span>Завантаження...</span>
-                //                     }
-                //
-                //                 </div>
-                //                 <div className="reportCoverBtn">
-                //                     <button className="btn btn-secondary" onClick={this.saveReport}>Зберегти</button>
-                //                 </div>
-                //             </div>
-                //         )
-                //     }
-                // });
-
-            }
-        })
-    }
+    // showReport = (currentTsp) => {
+    //     console.log(currentTsp);
+    //     return this.state.settings.map( ( item , index) => {
+    //         console.log(item);
+    //
+    //
+    //         console.log(item.tsp_id);
+    //         console.log(item.tsp_id == currentTsp);
+    //         if(item.tsp_id == currentTsp){
+    //             console.log(item.main_settings);
+    //             if(item.main_settings == null){
+    //                 // let report_period_type_id = 1;
+    //                 // let report_format_id = 1;
+    //                 // let channel_type_id = 1;
+    //                 // let file_name_mask = "";
+    //                 // let channel_address = "";
+    //                 // console.log(acquiring_type_id);
+    //                 // console.log(report_period_type_id);
+    //                 // console.log(report_format_id);
+    //                 // console.log(channel_type_id);
+    //                 // console.log(file_name_mask);
+    //                 // console.log(channel_address);
+    //                 console.log(this.state.type_acquiring);
+    //                 return(
+    //                     <div className="">
+    //                         <div className="coverBtn border">
+    //                             <div className="title">Вид екварингу</div>
+    //                             <button
+    //                                 className="btn btn-secondary"
+    //                                 disabled={this.state.type_acquiring == 1 ? 'disabled' : ''}
+    //                                 onClick={  this.changeTypeAcquiring }
+    //                                 type_acquiring={1}>Фізичний</button>
+    //                             <button
+    //                                 className="btn btn-secondary"
+    //                                 disabled={this.state.type_acquiring == 2 ? 'disabled' : ''}
+    //                                 onClick={ this.changeTypeAcquiring }
+    //                                 type_acquiring={2}>Інтернет</button>
+    //                         </div>
+    //                         <div className="title">{this.state.type_acquiring == 1 ? "Фізичний" :"Інтернет"}</div>
+    //
+    //                         <div className={`${this.state.type_acquiring == 1 ? '' : 'd-none'} border report`}>
+    //                                     <div className="title">Перелік полів звіту ТСП</div>
+    //
+    //                                     <button className="btn btn-secondary" disabled={this.state.standard_report ? '' : 'disabled'} onClick={this.openStandardReport} >Стандартний звіт</button>
+    //                                     <button className="btn btn-secondary" disabled={this.state.extended_report ? '' : 'disabled'} >Розширений звіт</button>
+    //                                     <button className="btn btn-secondary" disabled={this.state.installment_report ? '' : 'disabled'} >Звіт по операціям Installment</button>
+    //                                     <br/>
+    //                                     <div className="coverInput">
+    //                                         <label htmlFor="file_format">Формат файлу</label>
+    //                                         {
+    //                                             this.state.isShowREPORT_FORMAT
+    //                                                 ? <select className="form-select" onChange={this.changeReport_format_id} name="DICT_REPORT_FORMAT" id="DICT_REPORT_FORMAT">
+    //
+    //                                                     { this.state.DICT_REPORT_FORMAT.map( ( item , index) => {
+    //                                                         return < OptionItem key={index} optionItem={item} report_format_id={this.state.report_format_id} />
+    //                                                     }) }
+    //                                                 </select>
+    //                                                 : <span>Завантаження...</span>
+    //                                         }
+    //
+    //
+    //
+    //                                     </div>
+    //                                     <div className="coverInput">
+    //                                         <label htmlFor="report_period">Період звіту</label>
+    //                                         {
+    //                                             this.state.isShowDICT_REPORT_PERIOD_TYPE
+    //                                                 ? <select className="form-select" onChange={this.changeReport_period_type_id} name="DICT_REPORT_PERIOD_TYPE" id="DICT_REPORT_PERIOD_TYPE">
+    //
+    //                                                     { this.state.DICT_REPORT_PERIOD_TYPE.map( ( item , index) => {
+    //                                                         return < OptionItemDICT_REPORT_PERIOD_TYPE key={index} optionItem={item} report_period_type_id={this.state.report_period_type_id} />
+    //                                                     }) }
+    //                                                 </select>
+    //                                                 : <span>Завантаження...</span>
+    //                                         }
+    //                                     </div>
+    //                                     <div className="coverInput">
+    //                                         <label htmlFor="file_name_mask">Маска назви файлу</label>
+    //                                         <input defaultValue={this.state.file_name_mask} onChange={this.changeFile_name_mask} apiName="file_name_mask" className="customInput form-control" id="file_name_mask" type="text"/>
+    //                                     </div>
+    //                                     <div className="coverInput">
+    //                                         <label htmlFor="сatalog">Каталог</label>
+    //                                         <input disabled onChange={this.changeInput} apiName="сatalog" className="customInput form-control" id="сatalog" type="text"/>
+    //                                     </div>
+    //                                     <div className="coverInput">
+    //                                         <label htmlFor="сhannel">Канал</label>
+    //                                         {
+    //                                             this.state.isShowDICT_REPORT_CHANNEL_TYPE
+    //                                                 ? <select className="form-select" onChange={this.changeChannel_type_id} name="DICT_REPORT_CHANNEL_TYPE" id="DICT_REPORT_CHANNEL_TYPE">
+    //
+    //                                                     { this.state.DICT_REPORT_CHANNEL_TYPE.map( ( item , index) => {
+    //                                                         return < OptionItemDICT_REPORT_CHANNEL_TYPE key={index} optionItem={item} channel_type_id={this.state.channel_type_id} />
+    //                                                     }) }
+    //                                                 </select>
+    //                                                 : <span>Завантаження...</span>
+    //                                         }
+    //
+    //                                     </div>
+    //                                     <div className="coverInput">
+    //                                         <input defaultValue={this.state.channel_address} onChange={this.changeFile_name_mask} apiName="channel_address" className="customInput form-control"  type="text"/>
+    //                                     </div>
+    //                                     <br/>
+    //                                     <div className="reportCoverBtn">
+    //                                         <button className="btn btn-secondary" onClick={this.saveReport}>Зберегти</button>
+    //                                     </div>
+    //                                 </div>
+    //
+    //                         <div className={`${this.state.type_acquiring == 1 ? 'd-none' : ''} border report`}>
+    //                             <div className="title">Перелік полів звіту ТСП</div>
+    //
+    //                             <button className="btn btn-secondary" disabled={this.state.standard_report ? '' : 'disabled'} onClick={this.openStandardReport} >Стандартний звіт</button>
+    //                             <button className="btn btn-secondary" disabled={this.state.extended_report ? '' : 'disabled'} >Розширений звіт</button>
+    //                             <button className="btn btn-secondary" disabled={this.state.installment_report ? '' : 'disabled'} >Звіт по операціям Installment</button>
+    //                             <br/>
+    //                             <div className="coverInput">
+    //                                 <label htmlFor="file_format">Формат файлу</label>
+    //                                 {
+    //                                     this.state.isShowREPORT_FORMAT
+    //                                         ? <select className="form-select" onChange={this.changeReport_format_id} name="DICT_REPORT_FORMAT" id="DICT_REPORT_FORMAT">
+    //
+    //                                             { this.state.DICT_REPORT_FORMAT.map( ( item , index) => {
+    //                                                 return < OptionItem key={index} optionItem={item} report_format_id={this.state.report_format_id} />
+    //                                             }) }
+    //                                         </select>
+    //                                         : <span>Завантаження...</span>
+    //                                 }
+    //
+    //
+    //
+    //                             </div>
+    //                             <div className="coverInput">
+    //                                 <label htmlFor="report_period">Період звіту</label>
+    //                                 {
+    //                                     this.state.isShowDICT_REPORT_PERIOD_TYPE
+    //                                         ? <select className="form-select" onChange={this.changeReport_period_type_id} name="DICT_REPORT_PERIOD_TYPE" id="DICT_REPORT_PERIOD_TYPE">
+    //
+    //                                             { this.state.DICT_REPORT_PERIOD_TYPE.map( ( item , index) => {
+    //                                                 return < OptionItemDICT_REPORT_PERIOD_TYPE key={index} optionItem={item} report_period_type_id={this.state.report_period_type_id} />
+    //                                             }) }
+    //                                         </select>
+    //                                         : <span>Завантаження...</span>
+    //                                 }
+    //                             </div>
+    //                             <div className="coverInput">
+    //                                 <label htmlFor="file_name_mask">Маска назви файлу</label>
+    //                                 <input defaultValue={this.state.file_name_mask} onChange={this.changeFile_name_mask} apiName="file_name_mask" className="customInput form-control" id="file_name_mask" type="text"/>
+    //                             </div>
+    //                             <div className="coverInput">
+    //                                 <label htmlFor="сatalog">Каталог</label>
+    //                                 <input disabled onChange={this.changeInput} apiName="сatalog" className="customInput form-control" id="сatalog" type="text"/>
+    //                             </div>
+    //                             <div className="coverInput">
+    //                                 <label htmlFor="сhannel">Канал</label>
+    //                                 {
+    //                                     this.state.isShowDICT_REPORT_CHANNEL_TYPE
+    //                                         ? <select className="form-select" onChange={this.changeChannel_type_id} name="DICT_REPORT_CHANNEL_TYPE" id="DICT_REPORT_CHANNEL_TYPE">
+    //
+    //                                             { this.state.DICT_REPORT_CHANNEL_TYPE.map( ( item , index) => {
+    //                                                 return < OptionItemDICT_REPORT_CHANNEL_TYPE key={index} optionItem={item} channel_type_id={this.state.channel_type_id} />
+    //                                             }) }
+    //                                         </select>
+    //                                         : <span>Завантаження...</span>
+    //                                 }
+    //
+    //                             </div>
+    //                             <div className="coverInput">
+    //                                 <input defaultValue={this.state.channel_address} onChange={this.changeFile_name_mask} apiName="channel_address" className="customInput form-control"  type="text"/>
+    //                             </div>
+    //                             <br/>
+    //                             <div className="reportCoverBtn">
+    //                                 <button className="btn btn-secondary" onClick={this.saveReport}>Зберегти</button>
+    //                             </div>
+    //                         </div>
+    //
+    //
+    //                     </div>
+    //                 )
+    //             }else if(false){
+    //                 //item.main_settings.length
+    //                 let physicalAcquiringData =  item.main_settings[1]
+    //
+    //
+    //                 let report_period_type_id = item.report_period_type_id;
+    //                 let report_format_id = item.report_format_id;
+    //                 let channel_type_id = item.channel_type_id;
+    //                 let file_name_mask = item.file_name_mask;
+    //                 let acquiring_type_id = item.acquiring_type_id;
+    //                 let standard_report = item.standard_report;
+    //                 let extended_report = item.extended_report;
+    //                 let installment_report = item.installment_report;
+    //                 let channel_address = item.channel_address;
+    //                 console.log(acquiring_type_id);
+    //                 console.log(report_period_type_id);
+    //                 console.log(report_format_id);
+    //                 console.log(channel_type_id);
+    //                 console.log(file_name_mask);
+    //                 console.log(channel_address);
+    //                 console.log(this.state.type_acquiring);
+    //                 return(
+    //                     <div className="">
+    //                         <div className="coverBtn border">
+    //                             <div className="title">Вид екварингу</div>
+    //                             <button
+    //                                 className="btn btn-secondary"
+    //                                 disabled={this.state.type_acquiring == 1 ? 'disabled' : ''}
+    //                                 onClick={  this.changeTypeAcquiring }
+    //                                 type_acquiring={1}>Фізичний</button>
+    //                             <button
+    //                                 className="btn btn-secondary"
+    //                                 disabled={this.state.type_acquiring == 2 ? 'disabled' : ''}
+    //                                 onClick={ this.changeTypeAcquiring }
+    //                                 type_acquiring={2}>Інтернет</button>
+    //                         </div>
+    //                         <div className={`${this.state.type_acquiring == acquiring_type_id ? '' : 'd-none'} border report`}>
+    //                             <div className="title">Перелік полів звіту ТСП</div>
+    //
+    //                             <button className="btn btn-secondary" disabled={standard_report ? '' : 'disabled'} onClick={this.openStandardReport} >Стандартний звіт</button>
+    //                             <button className="btn btn-secondary" disabled={extended_report ? '' : 'disabled'} >Розширений звіт</button>
+    //                             <button className="btn btn-secondary" disabled={installment_report ? '' : 'disabled'} >Звіт по операціям Installment</button>
+    //                             <br/>
+    //                             <div className="coverInput">
+    //                                 <label htmlFor="file_format">Формат файлу</label>
+    //                                 {
+    //                                     this.state.isShowREPORT_FORMAT
+    //                                         ? <select className="form-select" onChange={this.changeReport_format_id} name="DICT_REPORT_FORMAT" id="DICT_REPORT_FORMAT">
+    //
+    //                                             { this.state.DICT_REPORT_FORMAT.map( ( item , index) => {
+    //                                                 return < OptionItem key={index} optionItem={item} report_format_id={report_format_id} />
+    //                                             }) }
+    //                                         </select>
+    //                                         : <span>Завантаження...</span>
+    //                                 }
+    //
+    //
+    //
+    //                             </div>
+    //                             <div className="coverInput">
+    //                                 <label htmlFor="report_period">Період звіту</label>
+    //                                 {
+    //                                     this.state.isShowDICT_REPORT_PERIOD_TYPE
+    //                                         ? <select className="form-select" onChange={this.changeReport_period_type_id} name="DICT_REPORT_PERIOD_TYPE" id="DICT_REPORT_PERIOD_TYPE">
+    //
+    //                                             { this.state.DICT_REPORT_PERIOD_TYPE.map( ( item , index) => {
+    //                                                 return < OptionItemDICT_REPORT_PERIOD_TYPE key={index} optionItem={item} report_period_type_id={report_period_type_id} />
+    //                                             }) }
+    //                                         </select>
+    //                                         : <span>Завантаження...</span>
+    //                                 }
+    //                             </div>
+    //                             <div className="coverInput">
+    //                                 <label htmlFor="file_name_mask">Маска назви файлу</label>
+    //                                 <input defaultValue={file_name_mask} onChange={this.changeFile_name_mask} apiName="file_name_mask" className="customInput form-control" id="file_name_mask" type="text"/>
+    //                             </div>
+    //                             <div className="coverInput">
+    //                                 <label htmlFor="сatalog">Каталог</label>
+    //                                 <input disabled onChange={this.changeInput} apiName="сatalog" className="customInput form-control" id="сatalog" type="text"/>
+    //                             </div>
+    //                             <div className="coverInput">
+    //                                 <label htmlFor="сhannel">Канал</label>
+    //                                 {
+    //                                     this.state.isShowDICT_REPORT_CHANNEL_TYPE
+    //                                         ? <select className="form-select" onChange={this.changeChannel_type_id} name="DICT_REPORT_CHANNEL_TYPE" id="DICT_REPORT_CHANNEL_TYPE">
+    //
+    //                                             { this.state.DICT_REPORT_CHANNEL_TYPE.map( ( item , index) => {
+    //                                                 return < OptionItemDICT_REPORT_CHANNEL_TYPE key={index} optionItem={item} channel_type_id={channel_type_id} />
+    //                                             }) }
+    //                                         </select>
+    //                                         : <span>Завантаження...</span>
+    //                                 }
+    //
+    //                             </div>
+    //                             <div className="coverInput">
+    //                                 <input defaultValue={channel_address} onChange={this.changeFile_name_mask} apiName="channel_address" className="customInput form-control"  type="text"/>
+    //                             </div>
+    //                             <br/>
+    //                             <div className="reportCoverBtn">
+    //                                 <button className="btn btn-secondary" onClick={this.saveReport}>Зберегти</button>
+    //                             </div>
+    //                         </div>
+    //                         {
+    //                             item.main_settings.map( ( item , index) => {
+    //                                 let report_period_type_id = item.report_period_type_id;
+    //                                 let report_format_id = item.report_format_id;
+    //                                 let channel_type_id = item.channel_type_id;
+    //                                 let file_name_mask = item.file_name_mask;
+    //                                 let acquiring_type_id = item.acquiring_type_id;
+    //                                 let standard_report = item.standard_report;
+    //                                 let extended_report = item.extended_report;
+    //                                 let installment_report = item.installment_report;
+    //                                 let channel_address = item.channel_address;
+    //                                 console.log(acquiring_type_id);
+    //                                 console.log(report_period_type_id);
+    //                                 console.log(report_format_id);
+    //                                 console.log(channel_type_id);
+    //                                 console.log(file_name_mask);
+    //                                 console.log(channel_address);
+    //                                 console.log(this.state.type_acquiring);
+    //                                 return(
+    //                                     <div className={`${this.state.type_acquiring == acquiring_type_id ? '' : 'd-none'} border report`}>
+    //                                         <div className="title">Перелік полів звіту ТСП</div>
+    //
+    //                                         <button className="btn btn-secondary" disabled={standard_report ? '' : 'disabled'} onClick={this.openStandardReport} >Стандартний звіт</button>
+    //                                         <button className="btn btn-secondary" disabled={extended_report ? '' : 'disabled'} >Розширений звіт</button>
+    //                                         <button className="btn btn-secondary" disabled={installment_report ? '' : 'disabled'} >Звіт по операціям Installment</button>
+    //                                         <br/>
+    //                                         <div className="coverInput">
+    //                                             <label htmlFor="file_format">Формат файлу</label>
+    //                                             {
+    //                                                 this.state.isShowREPORT_FORMAT
+    //                                                     ? <select className="form-select" onChange={this.changeReport_format_id} name="DICT_REPORT_FORMAT" id="DICT_REPORT_FORMAT">
+    //
+    //                                                         { this.state.DICT_REPORT_FORMAT.map( ( item , index) => {
+    //                                                             return < OptionItem key={index} optionItem={item} report_format_id={report_format_id} />
+    //                                                         }) }
+    //                                                     </select>
+    //                                                     : <span>Завантаження...</span>
+    //                                             }
+    //
+    //
+    //
+    //                                         </div>
+    //                                         <div className="coverInput">
+    //                                             <label htmlFor="report_period">Період звіту</label>
+    //                                             {
+    //                                                 this.state.isShowDICT_REPORT_PERIOD_TYPE
+    //                                                     ? <select className="form-select" onChange={this.changeReport_period_type_id} name="DICT_REPORT_PERIOD_TYPE" id="DICT_REPORT_PERIOD_TYPE">
+    //
+    //                                                         { this.state.DICT_REPORT_PERIOD_TYPE.map( ( item , index) => {
+    //                                                             return < OptionItemDICT_REPORT_PERIOD_TYPE key={index} optionItem={item} report_period_type_id={report_period_type_id} />
+    //                                                         }) }
+    //                                                     </select>
+    //                                                     : <span>Завантаження...</span>
+    //                                             }
+    //                                         </div>
+    //                                         <div className="coverInput">
+    //                                             <label htmlFor="file_name_mask">Маска назви файлу</label>
+    //                                             <input defaultValue={file_name_mask} onChange={this.changeFile_name_mask} apiName="file_name_mask" className="customInput form-control" id="file_name_mask" type="text"/>
+    //                                         </div>
+    //                                         <div className="coverInput">
+    //                                             <label htmlFor="сatalog">Каталог</label>
+    //                                             <input disabled onChange={this.changeInput} apiName="сatalog" className="customInput form-control" id="сatalog" type="text"/>
+    //                                         </div>
+    //                                         <div className="coverInput">
+    //                                             <label htmlFor="сhannel">Канал</label>
+    //                                             {
+    //                                                 this.state.isShowDICT_REPORT_CHANNEL_TYPE
+    //                                                     ? <select className="form-select" onChange={this.changeChannel_type_id} name="DICT_REPORT_CHANNEL_TYPE" id="DICT_REPORT_CHANNEL_TYPE">
+    //
+    //                                                         { this.state.DICT_REPORT_CHANNEL_TYPE.map( ( item , index) => {
+    //                                                             return < OptionItemDICT_REPORT_CHANNEL_TYPE key={index} optionItem={item} channel_type_id={channel_type_id} />
+    //                                                         }) }
+    //                                                     </select>
+    //                                                     : <span>Завантаження...</span>
+    //                                             }
+    //
+    //                                         </div>
+    //                                         <div className="coverInput">
+    //                                             <input defaultValue={channel_address} onChange={this.changeFile_name_mask} apiName="channel_address" className="customInput form-control"  type="text"/>
+    //                                         </div>
+    //                                         <br/>
+    //                                         <div className="reportCoverBtn">
+    //                                             <button className="btn btn-secondary" onClick={this.saveReport}>Зберегти</button>
+    //                                         </div>
+    //                                     </div>
+    //                                 )
+    //                             })
+    //                         }
+    //
+    //                     </div>
+    //                 )
+    //             }
+    //
+    //
+    //             // if(item.main_settings == null){
+    //             //         let report_period_type_id = 1;
+    //             //         let report_format_id = 1;
+    //             //         let channel_type_id = 1;
+    //             //         let file_name_mask = "";
+    //             //         let channel_address = "";
+    //             //
+    //             //         console.log(report_period_type_id);
+    //             //         console.log(report_format_id);
+    //             //         console.log(channel_type_id);
+    //             //         console.log(file_name_mask);
+    //             //         console.log(channel_address);
+    //             //         return(
+    //             //             <div className="report border">
+    //             //                 <div className="title">Перелік полів звіту ТСП</div>
+    //             //                 <button className="btn btn-secondary" onClick={this.openStandardReport} >Стандартний звіт</button>
+    //             //                 <button className="btn btn-secondary" disabled>Розширений звіт</button>
+    //             //                 <button className="btn btn-secondary" disabled>Звіт по операціям Installment</button>
+    //             //                 <br/>
+    //             //                 <div className="coverInput">
+    //             //                     <label htmlFor="file_format">Формат файлу</label>
+    //             //                     {
+    //             //                         this.state.isShowREPORT_FORMAT
+    //             //                             ? <select className="form-select" onChange={this.changeReport_format_id} name="DICT_REPORT_FORMAT" id="DICT_REPORT_FORMAT">
+    //             //
+    //             //                                 { this.state.DICT_REPORT_FORMAT.map( ( item , index) => {
+    //             //                                     return < OptionItem key={index} optionItem={item} report_format_id={report_format_id} />
+    //             //                                 }) }
+    //             //                             </select>
+    //             //                             : <span>Завантаження...</span>
+    //             //                     }
+    //             //
+    //             //
+    //             //
+    //             //                 </div>
+    //             //                 <div className="coverInput">
+    //             //                     <label htmlFor="report_period">Період звіту</label>
+    //             //                     {
+    //             //                         this.state.isShowDICT_REPORT_PERIOD_TYPE
+    //             //                             ? <select className="form-select" onChange={this.changeReport_period_type_id} name="DICT_REPORT_PERIOD_TYPE" id="DICT_REPORT_PERIOD_TYPE">
+    //             //
+    //             //                                 { this.state.DICT_REPORT_PERIOD_TYPE.map( ( item , index) => {
+    //             //                                     return < OptionItemDICT_REPORT_PERIOD_TYPE key={index} optionItem={item} report_period_type_id={report_period_type_id} />
+    //             //                                 }) }
+    //             //                             </select>
+    //             //                             : <span>Завантаження...</span>
+    //             //                     }
+    //             //                 </div>
+    //             //                 <div className="coverInput">
+    //             //                     <label htmlFor="file_name_mask">Маска назви файлу</label>
+    //             //                     <input defaultValue={file_name_mask} onChange={this.changeFile_name_mask} apiName="file_name_mask" className="customInput form-control" id="file_name_mask" type="text"/>
+    //             //                 </div>
+    //             //                 <div className="coverInput">
+    //             //                     <label htmlFor="сatalog">Каталог</label>
+    //             //                     <input disabled onChange={this.changeInput} apiName="сatalog" className="customInput form-control" id="сatalog" type="text"/>
+    //             //                 </div>
+    //             //                 <div className="coverInput">
+    //             //                     <label htmlFor="сhannel">Канал</label>
+    //             //                     {
+    //             //                         this.state.isShowDICT_REPORT_CHANNEL_TYPE
+    //             //                             ? <select className="form-select" onChange={this.changeChannel_type_id} name="DICT_REPORT_CHANNEL_TYPE" id="DICT_REPORT_CHANNEL_TYPE">
+    //             //
+    //             //                                 { this.state.DICT_REPORT_CHANNEL_TYPE.map( ( item , index) => {
+    //             //                                     return < OptionItemDICT_REPORT_CHANNEL_TYPE key={index} optionItem={item} channel_type_id={channel_type_id} />
+    //             //                                 }) }
+    //             //                             </select>
+    //             //                             : <span>Завантаження...</span>
+    //             //                     }
+    //             //
+    //             //                 </div>
+    //             //                 <div className="coverInput">
+    //             //                     <input defaultValue={channel_address} onChange={this.changeFile_name_mask} apiName="channel_address" className="customInput form-control"  type="text"/>
+    //             //                 </div>
+    //             //
+    //             //                 <div className="reportCoverBtn">
+    //             //                     <button className="btn btn-secondary" onClick={this.saveReport}>Зберегти</button>
+    //             //                 </div>
+    //             //             </div>
+    //             //         )
+    //             // }else if(item.main_settings.length == 1){
+    //             //     return item.main_settings.map( ( item , index) => {
+    //             //         let report_period_type_id = item.report_period_type_id;
+    //             //         let report_format_id = item.report_format_id;
+    //             //         let channel_type_id = item.channel_type_id;
+    //             //         let file_name_mask = item.file_name_mask;
+    //             //         console.log(report_period_type_id);
+    //             //         console.log(report_format_id);
+    //             //         console.log(channel_type_id);
+    //             //         console.log(file_name_mask);
+    //             //         return(
+    //             //             <div className=" border report">
+    //             //                 <div className="coverBtn border">
+    //             //                     <div className="title">Вид екварингу</div>
+    //             //                     <button className="btn btn-secondary">{this.state.type_acquiring == 1 ? 'Фізичний' : 'Інтернет'}</button>
+    //             //                     {/*<button*/}
+    //             //                     {/*    className="btn btn-secondary"*/}
+    //             //                     {/*    disabled={this.state.type_acquiring == 2 ? 'disabled' : ''}*/}
+    //             //                     {/*    onClick={this.changeTypeAcquiringInternet}*/}
+    //             //                     {/*    type_acquiring={2}>Інтернет</button>*/}
+    //             //                 </div>
+    //             //                 <div className="report border">
+    //             //                     <div className="title">Перелік полів звіту ТСП</div>
+    //             //                     <button className="btn btn-secondary" onClick={this.openStandardReport} >Стандартний звіт</button>
+    //             //                     <button className="btn btn-secondary" disabled>Розширений звіт</button>
+    //             //                     <button className="btn btn-secondary" disabled>Звіт по операціям Installment</button>
+    //             //                     <br/>
+    //             //                     <div className="coverInput">
+    //             //                         <label htmlFor="file_format">Формат файлу</label>
+    //             //                         {
+    //             //                             this.state.isShowREPORT_FORMAT
+    //             //                                 ? <select className="form-select" onChange={this.changeReport_format_id} name="DICT_REPORT_FORMAT" id="DICT_REPORT_FORMAT">
+    //             //
+    //             //                                     { this.state.DICT_REPORT_FORMAT.map( ( item , index) => {
+    //             //                                         return < OptionItem key={index} optionItem={item} report_format_id={report_format_id} />
+    //             //                                     }) }
+    //             //                                 </select>
+    //             //                                 : <span>Завантаження...</span>
+    //             //                         }
+    //             //
+    //             //
+    //             //
+    //             //                     </div>
+    //             //                     <div className="coverInput">
+    //             //                         <label htmlFor="report_period">Період звіту</label>
+    //             //                         {
+    //             //                             this.state.isShowDICT_REPORT_PERIOD_TYPE
+    //             //                                 ? <select className="form-select" onChange={this.changeReport_period_type_id} name="DICT_REPORT_PERIOD_TYPE" id="DICT_REPORT_PERIOD_TYPE">
+    //             //
+    //             //                                     { this.state.DICT_REPORT_PERIOD_TYPE.map( ( item , index) => {
+    //             //                                         return < OptionItemDICT_REPORT_PERIOD_TYPE key={index} optionItem={item} report_period_type_id={report_period_type_id} />
+    //             //                                     }) }
+    //             //                                 </select>
+    //             //                                 : <span>Завантаження...</span>
+    //             //                         }
+    //             //                     </div>
+    //             //                     <div className="coverInput">
+    //             //                         <label htmlFor="file_name_mask">Маска назви файлу</label>
+    //             //                         <input defaultValue={file_name_mask} onChange={this.changeFile_name_mask} apiName="file_name_mask" className="customInput form-control" id="file_name_mask" type="text"/>
+    //             //                     </div>
+    //             //                     <div className="coverInput">
+    //             //                         <label htmlFor="сatalog">Каталог</label>
+    //             //                         <input disabled onChange={this.changeInput} apiName="сatalog" className="customInput form-control" id="сatalog" type="text"/>
+    //             //                     </div>
+    //             //                     <div className="coverInput">
+    //             //                         <label htmlFor="сhannel">Канал</label>
+    //             //                         {
+    //             //                             this.state.isShowDICT_REPORT_CHANNEL_TYPE
+    //             //                                 ? <select className="form-select" onChange={this.changeChannel_type_id} name="DICT_REPORT_CHANNEL_TYPE" id="DICT_REPORT_CHANNEL_TYPE">
+    //             //
+    //             //                                     { this.state.DICT_REPORT_CHANNEL_TYPE.map( ( item , index) => {
+    //             //                                         return < OptionItemDICT_REPORT_CHANNEL_TYPE key={index} optionItem={item} channel_type_id={channel_type_id} />
+    //             //                                     }) }
+    //             //                                 </select>
+    //             //                                 : <span>Завантаження...</span>
+    //             //                         }
+    //             //
+    //             //                     </div>
+    //             //                     <div className="reportCoverBtn">
+    //             //                         <button className="btn btn-secondary" onClick={this.saveReport}>Зберегти</button>
+    //             //                     </div>
+    //             //                 </div>
+    //             //             </div>
+    //             //         )
+    //             //     });
+    //             //
+    //             // }else if(item.main_settings.length == 2){
+    //             //
+    //             //
+    //             //         return(
+    //             //             <div className="">
+    //             //                 <div className="coverBtn border">
+    //             //                     <div className="title">Вид екварингу</div>
+    //             //                     <button
+    //             //                         className="btn btn-secondary"
+    //             //                         disabled={this.state.type_acquiring == 1 ? 'disabled' : ''}
+    //             //                         onClick={  this.changeTypeAcquiring }
+    //             //                         type_acquiring={1}>Фізичний</button>
+    //             //                     <button
+    //             //                         className="btn btn-secondary"
+    //             //                         disabled={this.state.type_acquiring == 2 ? 'disabled' : ''}
+    //             //                         onClick={ this.changeTypeAcquiring }
+    //             //                         type_acquiring={2}>Інтернет</button>
+    //             //                 </div>
+    //             //                     {
+    //             //                         item.main_settings.map( ( item , index) => {
+    //             //                             let report_period_type_id = item.report_period_type_id;
+    //             //                             let report_format_id = item.report_format_id;
+    //             //                             let channel_type_id = item.channel_type_id;
+    //             //                             let file_name_mask = item.file_name_mask;
+    //             //                             let acquiring_type_id = item.acquiring_type_id;
+    //             //                             let standard_report = item.standard_report;
+    //             //                             let extended_report = item.extended_report;
+    //             //                             let installment_report = item.installment_report;
+    //             //                             console.log(acquiring_type_id);
+    //             //                             console.log(report_period_type_id);
+    //             //                             console.log(report_format_id);
+    //             //                             console.log(channel_type_id);
+    //             //                             console.log(file_name_mask);
+    //             //                             console.log(this.state.type_acquiring);
+    //             //                             return(
+    //             //                                 <div className={`${this.state.type_acquiring == acquiring_type_id ? '' : 'd-none'} border report`}>
+    //             //                                     <div className="title">Перелік полів звіту ТСП</div>
+    //             //
+    //             //                                     <button className="btn btn-secondary" disabled={standard_report ? '' : 'disabled'} onClick={this.openStandardReport} >Стандартний звіт</button>
+    //             //                                     <button className="btn btn-secondary" disabled={extended_report ? '' : 'disabled'} >Розширений звіт</button>
+    //             //                                     <button className="btn btn-secondary" disabled={installment_report ? '' : 'disabled'} >Звіт по операціям Installment</button>
+    //             //                                     <br/>
+    //             //                                     <div className="coverInput">
+    //             //                                         <label htmlFor="file_format">Формат файлу</label>
+    //             //                                         {
+    //             //                                             this.state.isShowREPORT_FORMAT
+    //             //                                                 ? <select className="form-select" onChange={this.changeReport_format_id} name="DICT_REPORT_FORMAT" id="DICT_REPORT_FORMAT">
+    //             //
+    //             //                                                     { this.state.DICT_REPORT_FORMAT.map( ( item , index) => {
+    //             //                                                         return < OptionItem key={index} optionItem={item} report_format_id={report_format_id} />
+    //             //                                                     }) }
+    //             //                                                 </select>
+    //             //                                                 : <span>Завантаження...</span>
+    //             //                                         }
+    //             //
+    //             //
+    //             //
+    //             //                                     </div>
+    //             //                                     <div className="coverInput">
+    //             //                                         <label htmlFor="report_period">Період звіту</label>
+    //             //                                         {
+    //             //                                             this.state.isShowDICT_REPORT_PERIOD_TYPE
+    //             //                                                 ? <select className="form-select" onChange={this.changeReport_period_type_id} name="DICT_REPORT_PERIOD_TYPE" id="DICT_REPORT_PERIOD_TYPE">
+    //             //
+    //             //                                                     { this.state.DICT_REPORT_PERIOD_TYPE.map( ( item , index) => {
+    //             //                                                         return < OptionItemDICT_REPORT_PERIOD_TYPE key={index} optionItem={item} report_period_type_id={report_period_type_id} />
+    //             //                                                     }) }
+    //             //                                                 </select>
+    //             //                                                 : <span>Завантаження...</span>
+    //             //                                         }
+    //             //                                     </div>
+    //             //                                     <div className="coverInput">
+    //             //                                         <label htmlFor="file_name_mask">Маска назви файлу</label>
+    //             //                                         <input defaultValue={file_name_mask} onChange={this.changeFile_name_mask} apiName="file_name_mask" className="customInput form-control" id="file_name_mask" type="text"/>
+    //             //                                     </div>
+    //             //                                     <div className="coverInput">
+    //             //                                         <label htmlFor="сatalog">Каталог</label>
+    //             //                                         <input disabled onChange={this.changeInput} apiName="сatalog" className="customInput form-control" id="сatalog" type="text"/>
+    //             //                                     </div>
+    //             //                                     <div className="coverInput">
+    //             //                                         <label htmlFor="сhannel">Канал</label>
+    //             //                                         {
+    //             //                                             this.state.isShowDICT_REPORT_CHANNEL_TYPE
+    //             //                                                 ? <select className="form-select" onChange={this.changeChannel_type_id} name="DICT_REPORT_CHANNEL_TYPE" id="DICT_REPORT_CHANNEL_TYPE">
+    //             //
+    //             //                                                     { this.state.DICT_REPORT_CHANNEL_TYPE.map( ( item , index) => {
+    //             //                                                         return < OptionItemDICT_REPORT_CHANNEL_TYPE key={index} optionItem={item} channel_type_id={channel_type_id} />
+    //             //                                                     }) }
+    //             //                                                 </select>
+    //             //                                                 : <span>Завантаження...</span>
+    //             //                                         }
+    //             //
+    //             //                                     </div>
+    //             //                                     <br/>
+    //             //                                     <div className="reportCoverBtn">
+    //             //                                         <button className="btn btn-secondary" onClick={this.saveReport}>Зберегти</button>
+    //             //                                     </div>
+    //             //                                 </div>
+    //             //                             )
+    //             //                         })
+    //             //                     }
+    //             //
+    //             //             </div>
+    //             //         )
+    //             //
+    //             // }
+    //
+    //
+    //             // return item.main_settings.map( ( item , index) => {
+    //             //     console.log(item);
+    //             //     console.log(item.acquiring_type_id == this.state.type_acquiring);
+    //             //
+    //             //     if(item.acquiring_type_id == this.state.type_acquiring){
+    //             //         let report_period_type_id = item.report_period_type_id;
+    //             //         let report_format_id = item.report_format_id;
+    //             //         let channel_type_id = item.channel_type_id;
+    //             //         let file_name_mask = item.file_name_mask;
+    //             //         // this.setState({
+    //             //         //     report_period_type_id: report_period_type_id,
+    //             //         //     report_format_id: report_format_id,
+    //             //         //     channel_type_id: channel_type_id,
+    //             //         //     file_name_mask: file_name_mask
+    //             //         // });
+    //             //
+    //             //         return(
+    //             //             <div className="report border">
+    //             //                 <div className="title">{this.state.type_acquiring == 1 ? "Фізичний" :"Інтернет"}</div>
+    //             //                 <div className="title">Перелік полів звіту ТСП</div>
+    //             //                 <button className="btn btn-secondary" onClick={this.openStandardReport} >Стандартний звіт</button>
+    //             //                 <button className="btn btn-secondary" disabled>Розширений звіт</button>
+    //             //                 <button className="btn btn-secondary" disabled>Звіт по операціям Installment</button>
+    //             //                 <br/>
+    //             //                 <div className="coverInput">
+    //             //                     <label htmlFor="file_format">Формат файлу</label>
+    //             //                     {
+    //             //                         this.state.isShowREPORT_FORMAT
+    //             //                             ? <select className="form-select" onChange={this.changeReport_format_id} name="DICT_REPORT_FORMAT" id="DICT_REPORT_FORMAT">
+    //             //
+    //             //                                 { this.state.DICT_REPORT_FORMAT.map( ( item , index) => {
+    //             //                                     return < OptionItem key={index} optionItem={item} report_format_id={report_format_id} />
+    //             //                                 }) }
+    //             //                             </select>
+    //             //                             : <span>Завантаження...</span>
+    //             //                     }
+    //             //
+    //             //
+    //             //
+    //             //                 </div>
+    //             //                 <div className="coverInput">
+    //             //                     <label htmlFor="report_period">Період звіту</label>
+    //             //                     {
+    //             //                         this.state.isShowDICT_REPORT_PERIOD_TYPE
+    //             //                             ? <select className="form-select" onChange={this.changeReport_period_type_id} name="DICT_REPORT_PERIOD_TYPE" id="DICT_REPORT_PERIOD_TYPE">
+    //             //
+    //             //                                 { this.state.DICT_REPORT_PERIOD_TYPE.map( ( item , index) => {
+    //             //                                     return < OptionItemDICT_REPORT_PERIOD_TYPE key={index} optionItem={item} report_period_type_id={report_period_type_id} />
+    //             //                                 }) }
+    //             //                             </select>
+    //             //                             : <span>Завантаження...</span>
+    //             //                     }
+    //             //                 </div>
+    //             //                 <div className="coverInput">
+    //             //                     <label htmlFor="file_name_mask">Маска назви файлу</label>
+    //             //                     <input defaultValue={file_name_mask} onChange={this.changeFile_name_mask} apiName="file_name_mask" className="customInput form-control" id="file_name_mask" type="text"/>
+    //             //                 </div>
+    //             //                 <div className="coverInput">
+    //             //                     <label htmlFor="сatalog">Каталог</label>
+    //             //                     <input disabled onChange={this.changeInput} apiName="сatalog" className="customInput form-control" id="сatalog" type="text"/>
+    //             //                 </div>
+    //             //                 <div className="coverInput">
+    //             //                     <label htmlFor="сhannel">Канал</label>
+    //             //                     {
+    //             //                         this.state.isShowDICT_REPORT_CHANNEL_TYPE
+    //             //                             ? <select className="form-select" onChange={this.changeChannel_type_id} name="DICT_REPORT_CHANNEL_TYPE" id="DICT_REPORT_CHANNEL_TYPE">
+    //             //
+    //             //                                 { this.state.DICT_REPORT_CHANNEL_TYPE.map( ( item , index) => {
+    //             //                                     return < OptionItemDICT_REPORT_CHANNEL_TYPE key={index} optionItem={item} channel_type_id={channel_type_id} />
+    //             //                                 }) }
+    //             //                             </select>
+    //             //                             : <span>Завантаження...</span>
+    //             //                     }
+    //             //
+    //             //                 </div>
+    //             //                 <div className="reportCoverBtn">
+    //             //                     <button className="btn btn-secondary" onClick={this.saveReport}>Зберегти</button>
+    //             //                 </div>
+    //             //             </div>
+    //             //         )
+    //             //     }
+    //             // });
+    //
+    //         }
+    //     })
+    // }
 
     closePopupError = () => {
         this.setState({

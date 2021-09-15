@@ -23,8 +23,10 @@ import TableADMIN_ROLE_OPERATIONS from "./ADMIN/TableADMIN_ROLE_OPERATIONS";
 import REPORT_SETTINGS_TSP from "./REPORT/REPORT_SETTINGS_TSP";
 import REPORTS_acquiring from "./REPORT/REPORTS_acquiring";
 import REPORTS_ACQUIRING_MONITOR from "./REPORT/REPORTS_ACQUIRING_MONITOR";
-import DICT_NET_BRAND from "./DICT/DICT_NET_BRAND";
+import DICT_NET_BRAND from "./NETWORK/NETWORK_CREATE";
 import REPORT_OPERATIONS from "./REPORT/REPORT_OPERATIONS";
+import NETWORK_CREATE from "./NETWORK/NETWORK_CREATE";
+import NETWORK_ADD_CLIENT from "./NETWORK/NETWORK_ADD_CLIENT";
 
 class Default extends React.Component{
     render() {
@@ -463,8 +465,13 @@ class CoverTable extends React.Component{
             case "DICT_REPORT_CHANNEL_TYPE":
                 return <TableBootstrapDICT store={this.props.store}/>
                 break
-            case "DICT_NET_BRAND":
-                return <DICT_NET_BRAND store={this.props.store}/>
+
+            //NETWORK
+            case "NETWORK_CREATE":
+                return <NETWORK_CREATE store={this.props.store}/>
+                break
+            case "NETWORK_ADD_CLIENT":
+                return <NETWORK_ADD_CLIENT store={this.props.store}/>
                 break
 
             default:

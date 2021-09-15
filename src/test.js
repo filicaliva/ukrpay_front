@@ -246,3 +246,160 @@ let row = {field_name: "MERCHANT_ID", field_desc: "ID мерчанта", include
 arr.map(( item , index) => {
 
 })
+
+
+
+
+let rr3 = {
+    contact_person: "",
+    contact_phone: "",
+    contact_position: "",
+    contact_email: "",
+    brand_status_code: null,
+    brand_region: null,
+    manager_name: null,
+};
+
+let w = {
+    "brand_id": 0,
+    "brand_name": "string",
+    "brand_status_code": "string",
+    "brand_region": "string",
+    "contact_person": "string",
+    "contact_phone": "string",
+    "contact_position": "string",
+    "contact_email": "string",
+    "entity_id": 0,
+    "entity_name": "string",
+    "ident_code": 0,
+    "entity_region": "string",
+    "client_id": 0,
+    "client_name": "string",
+    "bin": "string",
+    "bankname": "string",
+    "banknameloc": "string",
+    "emberid": "string",
+    "cardtypename": "string",
+    "country": "string",
+    "bank_range_name": "string",
+    "min_number": "string",
+    "max_number": "string",
+    "manager_id": 0,
+    "manager_name": "string",
+    "institution_id": 0
+}
+
+Юзер Юзерович Юзеренко
+
+
+const OptionItemDICT_NETWORK_MANAGERS = (props) => {
+    console.log( props )
+    return(
+        <option
+            selected={props.optionItem.manager_id == props.manager_id ? 'selected' : ''}
+            value={props.optionItem.manager_id}
+        >{props.optionItem.manager_name}</option>
+        // <Dropdown.Item  onClick={() => this.selectRoleID} value={props.optionItem.role_id} >{props.optionItem.role_name}</Dropdown.Item>
+    )
+}
+
+
+
+let newObj = {
+    GetNewEntityId: 578210,
+    edrpou: "1",
+
+}
+
+
+const SampleComponent = (props) => {
+    console.log( props )
+    const OptionItemDICT_NETWORK_MANAGERS = (props) => {
+        //console.log( props )
+        return(
+            <option
+                selected={props.optionItem.manager_id == props.manager_id ? 'selected' : ''}
+                value={props.optionItem.manager_id}
+            >{props.optionItem.manager_name}</option>
+            // <Dropdown.Item  onClick={() => this.selectRoleID} value={props.optionItem.role_id} >{props.optionItem.role_name}</Dropdown.Item>
+        )
+    }
+    return(
+        <div className="twoLevel">
+            <div className="innerBlock">
+                <label htmlFor="edrpou">ЄДРПОУ</label>
+                <input  api_name="edrpou" GetNewEntityId={props.item.GetNewEntityId}  value={props.item.edrpou} id="edrpou" type="text" className="form-control"/>
+                <label htmlFor="brand_id">Назва 2-го рівня</label>
+                <input api_name="brand_id" id="brand_id" type="text" className="form-control"/>
+                <label htmlFor="brand_id">Менеджер</label>
+                <select  id="dropdown-basic-button" onChange={this.changeInput} api_name="manager_name" className="form-select" title="ТВБВ">
+                    <option>-</option>
+                    {
+                        props.DICT_NETWORK_MANAGERS.map((item, index) => {
+                            return < OptionItemDICT_NETWORK_MANAGERS key={index} optionItem={item}/>
+                        })
+                    }
+                </select>
+            </div>
+            <div className="innerBlock">
+                <label htmlFor="brand_id">ID 2-го рівня</label>
+                <input api_name="brand_id" id="brand_id" type="text" className="form-control"/>
+                <label htmlFor="brand_id">ID РУ</label>
+                <input api_name="brand_id" id="brand_id" type="text" className="form-control"/>
+            </div>
+        </div>
+    )
+}
+
+ЄДРПОУ             ident_code
+Назва 2-го рівня   entity_name
+Менеджер           manager_name
+ID 2-горівня       entity_id
+ID РУ              institution_id
+
+
+
+
+
+ЄДРПОУ             ident_code
+Назва ТСП      client_name + client_id
+
+Менеджер ТСП    manager_id
+
+Мережа      brand_id
+2 рівень      entity_id
+
+
+
+
+<div
+key={item.ident_code}
+style={{ backgroundColor: highlighted ? '#eee' : 'transparent'}}
+className="autocompleteOption"
+    >
+    <span>{item.ident_code} </span>
+{item.client_name}
+</div>  13351072
+
+
+isDisableInputDICT_NETWORK_MANAGERS: true,
+DICT_NETWORK_MANAGERS: null,
+isShowSelectDICT_NETWORK_MANAGERS: false,
+
+
+this.setState({
+DICT_NETWORK_MANAGERS: response.data.Table.TableRows,
+isShowSelectDICT_NETWORK_MANAGERS: true
+});
+
+
+isDisableInputDICT_NET_BRAND: true,
+isShowSelectDICT_NET_BRAND: false,
+DICT_NET_BRAND: null,
+
+
+isDisableInputDICT_NET_ENTITY: false,
+isShowSelectDICT_NET_ENTITY: true,
+DICT_NET_ENTITY: response.data.Table.TableRows,
+
+
