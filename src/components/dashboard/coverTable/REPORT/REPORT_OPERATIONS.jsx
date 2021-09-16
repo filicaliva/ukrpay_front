@@ -42,7 +42,7 @@ const OptionItemDICT_PAYMENT_SYSTEM = (props) => {
     )
 }
 const OptionItemDICT_REPORT_FORMAT = (props) => {
-    console.log( props )
+    //console.log( props )
     return(
         <option   value={props.optionItem.report_format_id} >{props.optionItem.report_format_name}</option>
         // <Dropdown.Item  onClick={() => this.selectRoleID} value={props.optionItem.role_id} >{props.optionItem.role_name}</Dropdown.Item>
@@ -123,7 +123,8 @@ class REPORT_OPERATIONS extends React.Component {
 
             AcquiringReportsCriteria: {
                 report_type_id: 'REPORT_OPERATIONS',
-                payment_system_id: 1
+                payment_system_id: 1,
+                format_type_id: 1
             },
 
             date_from: null,
@@ -611,8 +612,8 @@ class REPORT_OPERATIONS extends React.Component {
             inputDataObj.[apiName] = Number(inputValue);
         }else{
             if(apiName == 'terminal_type_id'){
+                inputDataObj.[apiName] = inputValue;
                 if(inputValue == '' ){
-                    inputDataObj.[apiName] = inputValue;
                     console.log(inputValue);
                     this.setState({
                         AcquiringReportsCriteria: inputDataObj,
@@ -702,7 +703,7 @@ class REPORT_OPERATIONS extends React.Component {
             "format_type_id": 0,
             "date_type_id": 0
         }
-        console.log(res);
+        //console.log(res);
         console.log(this.state.AcquiringReportsCriteria);
 
         this.defineValidationInputs();
@@ -1741,7 +1742,6 @@ class REPORT_OPERATIONS extends React.Component {
                         <label htmlFor="format_type_id">Формат файлу</label>
                         <select onChange={this.changeInput} apiName="format_type_id" id="format_type_id" className="form-select"
                                 title="DICT_REPORT_FORMAT">
-                            <option></option>
                             {
                                 this.state.isShowSelectDICT_REPORT_FORMAT
                                     ?

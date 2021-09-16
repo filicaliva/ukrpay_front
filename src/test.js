@@ -467,3 +467,26 @@ isShowInputResTsp_name
 isShowBlockSelectTsp_name
 
 isShowBlockSelectTsp_name
+
+
+
+
+if(response.data.record_count == 0){
+this.setState({
+
+isDICT_NET_BRAND_QueryTSPEmpty: true,
+isDisableIdent_code: true,
+isShowDICT_NET_BRAND_QueryTSP: false,
+DICT_NET_BRAND_QueryTSP: []
+
+});
+}else{
+this.setState({
+
+DICT_NET_BRAND_QueryTSP: response.data.tsp_list,
+isDisableIdent_code: false,
+isShowDICT_NET_BRAND_QueryTSP: true,
+isDICT_NET_BRAND_QueryTSPEmpty: false
+
+});
+}

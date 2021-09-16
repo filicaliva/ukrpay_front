@@ -490,6 +490,7 @@ header{
     .twoLevel{
       margin-top: 30px;
       display: flex;
+      align-items: flex-end;
       .innerBlock{
         &:first-child{
           margin: 0 134px 0 65px;
