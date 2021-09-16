@@ -1243,42 +1243,43 @@ class NETWORK_ADD_CLIENT extends React.Component {
 
                         <label htmlFor="name_netWork">ІНН/ЄДРПОУ</label>
                         <input
-                            //onChange={this.nameNetWork}
-                            onBlur={this.ident_code} onKeyDown={this.hendleIdent_code}
-                            //value={this.state.brand_name}
-                            api_name="ident_code" id="ident_code" type="text" className={`${this.state.isDICT_NET_BRAND_QueryTSPEmpty ? 'errorEmpty' : ''} form-control`}
-                            placeholder="Введіть код"
+                            onChange={this.nameNetWork}
+                            //onBlur={this.ident_code} onKeyDown={this.hendleIdent_code}
+                            value={this.state.brand_name}
+                            api_name="ident_code" id="ident_code" type="text" className="form-control"
+                            //className={`${this.state.isDICT_NET_BRAND_QueryTSPEmpty ? 'errorEmpty' : ''} form-control`}
+                           // placeholder="Введіть код"
                         />
                         {
                             this.state.isDICT_NET_BRAND_QueryTSPEmpty
                                 ?<span className="spanEmptyError">НЕзнайдено жодного ІНН/ЄДРПОУ</span>
                                 :<></>
                         }
-                        <input
-                            className="form-control"
-                            disabled={this.state.isDisableIdent_code ? 'disabled' : ''}
-                            //onChange={this.ident_code}
-                            //onBlur={this.ident_code}
-                            name="DICT_NET_BRAND_QueryTSP" list="DICT_NET_BRAND_QueryTSP"
-                            onChange={this.changeSelectDICT_NET_BRAND_QueryTSP}
-                            title="Виберіть назву із списку"
-                        />
-                        <datalist
-                            disabled={this.state.isDisableIdent_code ? 'disabled' : ''}
-                            id="DICT_NET_BRAND_QueryTSP"
-                            //onChange={this.changeSelectDICT_NET_BRAND_QueryTSP}
-                            //onClick={this.changeSelectDICT_NET_BRAND_QueryTSP}
-                            api_name="manager_name"
-                        >
+                        {/*<input*/}
+                        {/*    className="form-control"*/}
+                        {/*    disabled={this.state.isDisableIdent_code ? 'disabled' : ''}*/}
+                        {/*    //onChange={this.ident_code}*/}
+                        {/*    //onBlur={this.ident_code}*/}
+                        {/*    name="DICT_NET_BRAND_QueryTSP" list="DICT_NET_BRAND_QueryTSP"*/}
+                        {/*    onChange={this.changeSelectDICT_NET_BRAND_QueryTSP}*/}
+                        {/*    title="Виберіть назву із списку"*/}
+                        {/*/>*/}
+                        {/*<datalist*/}
+                        {/*    disabled={this.state.isDisableIdent_code ? 'disabled' : ''}*/}
+                        {/*    id="DICT_NET_BRAND_QueryTSP"*/}
+                        {/*    //onChange={this.changeSelectDICT_NET_BRAND_QueryTSP}*/}
+                        {/*    //onClick={this.changeSelectDICT_NET_BRAND_QueryTSP}*/}
+                        {/*    api_name="manager_name"*/}
+                        {/*>*/}
 
-                            {
-                                this.state.isShowDICT_NET_BRAND_QueryTSP
-                                    ? this.state.DICT_NET_BRAND_QueryTSP.map((item, index) => {
-                                        return < OptionItemDICT_NET_BRAND_QueryTSP key={index} optionItem={item}/>
-                                    })
-                                    : <></>
-                            }
-                        </datalist>
+                        {/*    {*/}
+                        {/*        this.state.isShowDICT_NET_BRAND_QueryTSP*/}
+                        {/*            ? this.state.DICT_NET_BRAND_QueryTSP.map((item, index) => {*/}
+                        {/*                return < OptionItemDICT_NET_BRAND_QueryTSP key={index} optionItem={item}/>*/}
+                        {/*            })*/}
+                        {/*            : <></>*/}
+                        {/*    }*/}
+                        {/*</datalist>*/}
                         <label htmlFor="status">Назва ТСП</label>
                         <input className="form-control" disabled value={this.state.client_name} type="text"/>
                         {/*<label htmlFor="status">Назва ТСП</label>*/}
