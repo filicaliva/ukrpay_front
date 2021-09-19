@@ -238,7 +238,7 @@ class NETWORK_ADD_CLIENT extends React.Component {
         let inputValue = e.target.value;
         console.log(inputValue);
         let inputDataObj = this.state.TSPReportSettingsSearchObj;
-        inputDataObj.[apiName] = inputValue;
+        inputDataObj[apiName] = inputValue;
 
         console.log(inputDataObj);
         this.setState({
@@ -1051,7 +1051,7 @@ class NETWORK_ADD_CLIENT extends React.Component {
 
         let indexItem = cloneArr.findIndex(el => el.entity_id == get_entity_id);
         console.log(indexItem);
-        cloneArr.[indexItem].[api_name] = param;
+        cloneArr[indexItem][api_name] = param;
         // stateArr.push(newObj);
         console.log(cloneArr);
 
