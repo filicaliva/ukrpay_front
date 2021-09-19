@@ -1228,17 +1228,6 @@ class NETWORK_ADD_CLIENT extends React.Component {
                 </div>
                 <div className="addbBlock">
                     <div className="coverInputs">
-                        {/*<hr/>*/}
-                        {/*<MyForm/>*/}
-                        {/*<hr/>*/}
-                        {/*<input type="text" list="test" onKeyDown={this.onKeyDownInputTest} onChange={this.onChangeInputTest}/>*/}
-                        {/*<datalist id="test" onChange={this.onChangeDatalistTest}>*/}
-                        {/*    <option value="1">1</option>*/}
-                        {/*    <option value="2">2</option>*/}
-                        {/*    <option value="3">3</option>*/}
-                        {/*    <option value="4">4</option>*/}
-                        {/*</datalist>*/}
-                        {/*<hr/>*/}
 
 
                         <label htmlFor="name_netWork">ІНН/ЄДРПОУ</label>

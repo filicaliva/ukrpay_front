@@ -42,14 +42,14 @@ const OptionItemDICT_PAYMENT_SYSTEM = (props) => {
     )
 }
 const OptionItemDICT_REPORT_FORMAT = (props) => {
-    console.log( props )
+    //console.log( props )
     return(
         <option   value={props.optionItem.report_format_id} >{props.optionItem.report_format_name}</option>
         // <Dropdown.Item  onClick={() => this.selectRoleID} value={props.optionItem.role_id} >{props.optionItem.role_name}</Dropdown.Item>
     )
 }
 const OptionItemDICT_DATE_TYPE = (props) => {
-    console.log( props )
+    //console.log( props )
     return(
         <option   value={props.optionItem.date_type_id} >{props.optionItem.date_type_name}</option>
         // <Dropdown.Item  onClick={() => this.selectRoleID} value={props.optionItem.role_id} >{props.optionItem.role_name}</Dropdown.Item>
@@ -87,6 +87,13 @@ const OptionItemDICT_REPORT_CHANNEL_TYPE = (props) => {
         >{props.optionItem.report_channel_type_name}</option>
     )
 }
+const ItemDICT_MCC = (props) => {
+    //console.log( props )
+    return(
+        <div className="blockSelectItem"  value={props.item.mcc_code} onClick={(e) => props.onClickBlockSelectItem(e)} >{props.item.mcc_name}</div>
+    )
+}
+
 
 class REPORT_OPERATIONS extends React.Component {
     constructor(props) {
@@ -116,18 +123,47 @@ class REPORT_OPERATIONS extends React.Component {
 
             AcquiringReportsCriteria: {
                 report_type_id: 'REPORT_OPERATIONS',
-            }
+                payment_system_id: 1,
+                format_type_id: 1
+            },
+
+            date_from: null,
+            date_to: null,
+            date_type_id: null,
+            institution_id: null,
+            merchant_id: null,
+            terminal_type_id: null,
+
+            isInstitution_idValidation: true,
+            isMerchant_idValidation: true,
+            isTerminal_type_idValidation: true,
+            isDate_type_idValidation: true,
+            isDate_fromValidation: true,
+            isDate_toValidation: true,
+
+
+
+            DICT_MCC: null,
+            InputDICT_MCC: null,
+            isShowBlockSelectDICT_MCC: false,
+            isShowInputResDICT_MCC: false,
+            isShowInputDICT_MCC: true,
 
         }
+        this.myRef = React.createRef();
         //console.log(this.data.sort());
     }
     componentDidMount() {
+        window.addEventListener("mousedown", this.clickTest);
         this.requestDICT_INSTITUTION( this.props.store.userState.token );
         this.requestDICT_ACQUIRING_REPORTS( this.props.store.userState.token );
         this.requestDICT_ACQUIRING_TYPE( this.props.store.userState.token );
         this.requestDICT_PAYMENT_SYSTEM( this.props.store.userState.token );
         this.requestDICT_REPORT_FORMAT( this.props.store.userState.token );
         this.requestDICT_DATE_TYPE( this.props.store.userState.token );
+    }
+    componentWillUnmount() {
+        window.addEventListener("mousedown", null);
     }
 
     async requestDICT_INSTITUTION  ( token ) {
@@ -449,15 +485,28 @@ class REPORT_OPERATIONS extends React.Component {
         inputDataObj[apiName] = inputValue;
 
         console.log(inputDataObj);
-        this.setState({
-            isShowSelectTVBV: false,
-            TSPReportSettingsSearchObj: inputDataObj
-        });
+        if(param == '' ){
+            console.log(param);
+            this.setState({
+                isShowSelectTVBV: true,
+                TSPReportSettingsSearchObj: inputDataObj,
+                isInstitution_idValidation: false
+            });
+        }else{
+            this.setState({
+                isShowSelectTVBV: false,
+                TSPReportSettingsSearchObj: inputDataObj,
+                isInstitution_idValidation: true,
+                institution_id: param
+            });
+            this.requestDICT_BRANCH(this.props.store.userState.token, param);
+        }
+
         console.log(this.state);
         console.log(this.state.AcquiringReportsCriteria);
 
 
-        this.requestDICT_BRANCH(this.props.store.userState.token, param)
+
     }
 
 
@@ -487,11 +536,22 @@ class REPORT_OPERATIONS extends React.Component {
 
 
         inputDataObj[apiName] = this.formatDate(new Date(inputValue));
+        if(inputValue == '' ){
+            console.log(inputValue);
+            this.setState({
+                AcquiringReportsCriteria: inputDataObj,
+                isDate_fromValidation: false
+            });
+        }else{
+            this.setState({
+                AcquiringReportsCriteria: inputDataObj,
+                isDate_fromValidation: true,
+                date_from: inputValue
+            });
+        }
 
         console.log(inputDataObj);
-        this.setState({
-            AcquiringReportsCriteria: inputDataObj
-        });
+
         console.log(this.state);
         console.log(this.state.AcquiringReportsCriteria);
     }
@@ -505,10 +565,22 @@ class REPORT_OPERATIONS extends React.Component {
 
         inputDataObj[apiName] = this.formatDate(new Date(inputValue));
 
+        if(inputValue == '' ){
+            console.log(inputValue);
+            this.setState({
+                AcquiringReportsCriteria: inputDataObj,
+                isDate_toValidation: false
+            });
+        }else{
+            this.setState({
+                AcquiringReportsCriteria: inputDataObj,
+                isDate_toValidation: true,
+                date_to: inputValue
+            });
+        }
+
         console.log(inputDataObj);
-        this.setState({
-            AcquiringReportsCriteria: inputDataObj
-        });
+
         console.log(this.state);
         console.log(this.state.AcquiringReportsCriteria);
     }
@@ -536,11 +608,59 @@ class REPORT_OPERATIONS extends React.Component {
         console.log(inputValue);
         let inputDataObj = this.state.AcquiringReportsCriteria;
 
-        if(apiName == 'date_type_id' || apiName == 'format_type_id' || apiName == 'mcc_code' || apiName == 'payment_system_id' || apiName == 'terminal_id' || apiName == 'merchant_id' || apiName == 'bank_branch_id' || apiName == 'institution_id'){
+        if(apiName == 'format_type_id' || apiName == 'mcc_code' || apiName == 'payment_system_id' || apiName == 'terminal_id' || apiName == 'bank_branch_id' || apiName == 'institution_id'){
             inputDataObj[apiName] = Number(inputValue);
         }else{
-            inputDataObj[apiName] = inputValue;
+            if(apiName == 'terminal_type_id'){
+                inputDataObj[apiName] = inputValue;
+                if(inputValue == '' ){
+                    console.log(inputValue);
+                    this.setState({
+                        AcquiringReportsCriteria: inputDataObj,
+                        isTerminal_type_idValidation: false
+                    });
+                }else{
+                    this.setState({
+                        AcquiringReportsCriteria: inputDataObj,
+                        isTerminal_type_idValidation: true,
+                        terminal_type_id: inputValue
+                    });
+                }
+            }else if(apiName == 'merchant_id'){
+                inputDataObj[apiName] = Number(inputValue);
+                if(inputValue == '' ){
+                    console.log(inputValue);
+                    this.setState({
+                        AcquiringReportsCriteria: inputDataObj,
+                        isMerchant_idValidation: false
+                    });
+                }else{
+                    this.setState({
+                        AcquiringReportsCriteria: inputDataObj,
+                        isMerchant_idValidation: true,
+                        merchant_id: inputValue
+                    });
+                }
+            }else if(apiName == 'date_type_id'){
+                inputDataObj[apiName] = Number(inputValue);
+                if(inputValue == '' ){
+                    console.log(inputValue);
+                    this.setState({
+                        AcquiringReportsCriteria: inputDataObj,
+                        isDate_type_idValidation: false
+                    });
+                }else{
+                    this.setState({
+                        AcquiringReportsCriteria: inputDataObj,
+                        isDate_type_idValidation: true,
+                        date_type_id: inputValue
+                    });
+                }
+            }else{
+                inputDataObj[apiName] = inputValue;
+            }
         }
+
 
         console.log(inputDataObj);
         this.setState({
@@ -583,11 +703,37 @@ class REPORT_OPERATIONS extends React.Component {
             "format_type_id": 0,
             "date_type_id": 0
         }
-        console.log(res);
+        //console.log(res);
         console.log(this.state.AcquiringReportsCriteria);
 
-        this.requestReports_Acquiring( this.props.store.userState.token,  this.state.AcquiringReportsCriteria);
+        this.defineValidationInputs();
+        if( this.state.isInstitution_idValidation && this.state.isMerchant_idValidation && this.state.isTerminal_type_idValidation && this.state.isDate_type_idValidation && this.state.isDate_fromValidation && this.state.isDate_toValidation ) {
+            //console.log(this.state.isInstitution_idValidation && this.state.isMerchant_idValidation && this.state.isTerminal_type_idValidation && this.state.isDate_type_idValidation && this.state.isDate_fromValidation && this.state.isDate_toValidation);
+            //console.log('agon');
+            this.requestReports_Acquiring( this.props.store.userState.token,  this.state.AcquiringReportsCriteria);
+        }
 
+
+    }
+    defineValidationInputs = () => {
+        if (this.state.institution_id == null || this.state.institution_id == "") {
+            this.setState({isInstitution_idValidation: false});
+        }
+        if (this.state.merchant_id == null || this.state.merchant_id == "") {
+            this.setState({isMerchant_idValidation: false});
+        }
+        if (this.state.terminal_type_id == null || this.state.terminal_type_id == "") {
+            this.setState({isTerminal_type_idValidation: false});
+        }
+        if (this.state.date_type_id == null || this.state.date_type_id == "") {
+            this.setState({isDate_type_idValidation: false});
+        }
+        if (this.state.date_from == null || this.state.date_from == "") {
+            this.setState({isDate_fromValidation: false});
+        }
+        if (this.state.date_to == null || this.state.date_to == "") {
+            this.setState({isDate_toValidation: false});
+        }
     }
     Tsp_list = (tsp_list) => {
         console.log(tsp_list);
@@ -1286,17 +1432,154 @@ class REPORT_OPERATIONS extends React.Component {
         let res;
         operationArr.map(( item , index) => {
             if(item.operation == operation){
-                console.log(item.name);
+                //console.log(item.name);
                 res = item.name;
             }
         })
         return res;
     }
+
+    //
+    onChangeAutocompleteInput = (e) => {
+        let param = e.target.value;
+        console.log(param);
+        this.setState({
+            InputDICT_MCC: param
+        });
+        if(param != ''){
+            this.requestDICT_MCC(this.props.store.userState.token, param, true);
+        }
+    }
+    onClickAutocompleteInput = (e) => {
+        let param = e.target.value;
+        console.log(param);
+        this.setState({
+            isShowBlockSelectDICT_MCC: true
+        });
+    }
+
+
+    onClickAutocompleteInputRes = () => {
+        this.setState({
+            mcc_code: null,
+            isShowBlockSelectDICT_MCC: true,
+            isShowInputResDICT_MCC: false,
+            isShowInputDICT_MCC: true,
+        });
+    }
+
+    onBlurBlockSelect = () => {
+        this.setState({
+            isShowBlockSelectDICT_MCC: false,
+        });
+    }
+
+    onClickBlockSelectItem = (e) => {
+        //console.log('----onClickBlockSelectItem-----');
+        let val = e.currentTarget.getAttribute("value");
+        //console.log(val);
+        //console.log('----onClickBlockSelectItem-----');
+        if(val != ''){
+            //console.log(this.state.InputDICT_MCC);
+            //console.log(this.state.mcc_code);
+            if(val != this.state.InputDICT_MCC){
+                this.requestDICT_MCC(this.props.store.userState.token, val, false);
+
+                let inputDataObj = this.state.AcquiringReportsCriteria;
+                inputDataObj.mcc_code = val;
+                console.log(val);
+                this.setState({
+                    AcquiringReportsCriteria: inputDataObj,
+                    InputDICT_MCC: val,
+                    isShowBlockSelectDICT_MCC: false,
+                    isShowInputResDICT_MCC: true,
+                    isShowInputDICT_MCC: false,
+                });
+            }
+            this.setState({
+                isShowBlockSelectDICT_MCC: false,
+                // isShowInputResDICT_MCC: true,
+                // isShowInputDICT_MCC: false,
+            });
+        }
+    }
+
+    clickTest = (e) => {
+        //console.log(e.target.parentElement.className);
+        //console.log(this.myRef.current.className);
+        // console.log(this.myRef);
+        // console.log(typeof this.myRef);
+        // console.log(this.myRef != null);
+        //console.log(this.myRef.current != null);
+        // console.log(e);
+        // console.log(e.target);
+        // console.log(e.target.parentElement);
+        // console.log(e.target.parentElement.className);
+        // console.log(e.target.parentElement.className != null && this.myRef.current != null);
+        if(this.myRef.current != null){
+            if(this.myRef.current.className != e.target.parentElement.className){
+                this.setState({
+                    isShowBlockSelectDICT_MCC: false,
+                });
+            }
+        }
+    }
+
+    async requestDICT_MCC  ( token, param, showBlock) {
+        this.props.store.changeLoading(true);
+        console.log( token );
+        const baseUrl = `/api/Dictionary/DICT_MCC/?param1=${param}`;
+        console.log( baseUrl );
+        await axios.get(
+            baseUrl,
+            {
+                headers: {"Token" : `${ token }`}
+            }
+        )
+            .then((response) => {
+                console.log(response.data);
+                //console.log(response.data.Table);
+
+
+
+                if(response.data.Table.TableRows == null){
+                    this.setState({
+                        DICT_MCC: [{mcc_code: "", mcc_name: "За даним кодом незнайдено жодного результату"}],
+                    });
+                }else{
+                    this.setState({
+                        DICT_MCC: response.data.Table.TableRows,
+                    });
+                }
+
+                if(showBlock){
+                    this.setState({
+                        isShowBlockSelectDICT_MCC: true
+                    });
+                }else{
+                    this.setState({
+                        isShowBlockSelectDICT_MCC: false
+                    });
+                }
+
+
+                this.props.store.changeLoading(false);
+
+
+            })
+            .catch((error) => {
+                console.log(error.response);
+                console.log(error.response.data);
+                //console.log('error_catch');
+            });
+
+    }
+    //
     render() {
         // console.log(this.props.store.menuState.tableData);
         // console.log(this.state.DICT_INSTITUTION);
         // console.log(this.state.DICT_BRANCH);
-        console.log(this.state.TSPReportSettingsSTD);
+        //console.log(this.state.TSPReportSettingsSTD);
         console.log(this.state);
 
 
@@ -1304,16 +1587,14 @@ class REPORT_OPERATIONS extends React.Component {
             <div className="coverTable REPORT_aquiring">
                 <div className="headerTable">
                     <div className="titleTable">{this.activeOperation(this.props.store.userState.OPERATIONS, this.props.store.location.pathname.substr(11))}</div>
-                    <div className="optionBlock">
-
-                    </div>
+                    <div className="optionBlock"></div>
                 </div>
                 <div className="filter">
                     <div className="coverInput">
                         <label htmlFor="DICT_INSTITUTION">Регіональні управління</label>
-                        <select onChange={this.selectDICT_INSTITUTION} apiName="institution_id" id="dropdown-basic-button" className="form-select"
+                        <select onChange={this.selectDICT_INSTITUTION} apiName="institution_id" id="dropdown-basic-button" className={`${this.state.isInstitution_idValidation ? '' : 'validError'} form-select`}
                                 title="Регіональні управління">
-                            <option>-</option>
+                            <option></option>
                             {
                                 this.state.isShowSelectDICT_INSTITUTION
                                     ?
@@ -1328,7 +1609,7 @@ class REPORT_OPERATIONS extends React.Component {
                         <select  id="dropdown-basic-button" onChange={this.changeInput} apiName="bank_branch_id" className="form-select"
                                  disabled={this.state.isDisableTVBV ? 'disabled' : ''}
                                  title="ТВБВ">
-                            <option>-</option>
+                            <option></option>
                             {
                                 this.state.isShowSelectTVBV
                                     ? this.state.DICT_BRANCH.map((item, index) => {
@@ -1340,6 +1621,34 @@ class REPORT_OPERATIONS extends React.Component {
                         </select>
                         <label htmlFor="tsp_name">Назва ТСП</label>
                         <input onChange={this.changeInput} className="form-control" apiName="tsp_name" id="tsp_name" type="text"/>
+                        {/*<div className="autocomplete">*/}
+                        {/*    <input*/}
+                        {/*        className={`${this.state.isShowInputTsp_name ? '' : 'dn'} form-control`}*/}
+                        {/*        placeholder="Введіть код" type="text"*/}
+                        {/*        onBlur={this.onBlurAutocompleteInput}*/}
+                        {/*        onChange={this.onChangeAutocompleteInput}*/}
+                        {/*        onClick={this.onClickAutocompleteInput}*/}
+                        {/*        value={this.state.InputDICT_MCC}*/}
+                        {/*    />*/}
+                        {/*    <input*/}
+                        {/*        className={`${this.state.isShowInputResTsp_name ? '' : 'dn'} form-control`}*/}
+                        {/*        placeholder="Результат" type="text"*/}
+                        {/*        value={this.state.AcquiringReportsCriteria.mcc_code}*/}
+                        {/*        onClick={this.onClickAutocompleteInputRes}*/}
+                        {/*    />*/}
+                        {/*    <div className={`${this.state.isShowBlockSelectTsp_name ? '' : 'dn'}blockSelect`} onBlur={this.onBlurBlockSelect} ref={this.myRef} >*/}
+                        {/*        {*/}
+                        {/*            this.state.isShowBlockSelectDICT_MCC*/}
+                        {/*                ? this.state.DICT_MCC != null*/}
+                        {/*                ? this.state.DICT_MCC.map((item, index) => {*/}
+                        {/*                    return < ItemDICT_MCC key={index} item={item} onClickBlockSelectItem={this.onClickBlockSelectItem}/>*/}
+                        {/*                })*/}
+                        {/*                : <></>*/}
+                        {/*                : <></>*/}
+
+                        {/*        }*/}
+                        {/*    </div>*/}
+                        {/*</div>*/}
                         <label htmlFor="INN">ІНН/ЄДРПОУ</label>
                         <input onChange={this.changeInput} className="form-control" apiName="ident_code" id="INN" type="text"/>
                     </div>
@@ -1362,9 +1671,9 @@ class REPORT_OPERATIONS extends React.Component {
 
 
                         <label htmlFor="terminal_type_id">Вид термінала</label>
-                        <select onChange={this.changeInput} apiName="terminal_type_id" id="terminal_type_id" className="form-select"
+                        <select onChange={this.changeInput} apiName="terminal_type_id" id="terminal_type_id" className={`${this.state.isTerminal_type_idValidation ? '' : 'validError'} form-select`}
                                 title="Регіональні управління">
-                            <option>-</option>
+                            <option></option>
                             {
                                 this.state.isShowSelectDICT_ACQUIRING_TYPE
                                     ?
@@ -1377,7 +1686,7 @@ class REPORT_OPERATIONS extends React.Component {
                         </select>
 
                         <label htmlFor="merchant">merchant ID</label>
-                        <input onChange={this.changeInput} className="form-control" apiName="merchant_id" id="merchant" type="text"/>
+                        <input onChange={this.changeInput} className={`${this.state.isMerchant_idValidation ? '' : 'validError'} form-control`} apiName="merchant_id" id="merchant" type="text"/>
 
                         <label htmlFor="terminal_id">Terminal ID</label>
                         <input onChange={this.changeInput} className="form-control" apiName="terminal_id" id="terminal_id" type="text"/>
@@ -1389,7 +1698,6 @@ class REPORT_OPERATIONS extends React.Component {
                         <label htmlFor="DICT_PAYMENT_SYSTEM">Карти</label>
                         <select onChange={this.changeInput} apiName="payment_system_id" id="dropdown-basic-button" className="form-select"
                                 title="Карти">
-                            <option>-</option>
                             {
                                 this.state.isShowSelectDICT_PAYMENT_SYSTEM
                                     ?
@@ -1401,16 +1709,44 @@ class REPORT_OPERATIONS extends React.Component {
                             }
                         </select>
                         <label htmlFor="mcc_code">MCC</label>
-                        <input onChange={this.changeInput} className="form-control" apiName="mcc_code" id="mcc_code" type="text"/>
+                        {/*<input onChange={this.changeInput} className="form-control" apiName="mcc_code" id="mcc_code" type="text"/>*/}
+                        <div className="autocomplete">
+                            <input
+                                className={`${this.state.isShowInputDICT_MCC ? '' : 'dn'} form-control`}
+                                placeholder="Введіть код" type="text"
+                                onBlur={this.onBlurAutocompleteInput}
+                                onChange={this.onChangeAutocompleteInput}
+                                onClick={this.onClickAutocompleteInput}
+                                value={this.state.InputDICT_MCC}
+                            />
+                            <input
+                                className={`${this.state.isShowInputResDICT_MCC ? '' : 'dn'} form-control`}
+                                placeholder="Результат" type="text"
+                                value={this.state.AcquiringReportsCriteria.mcc_code}
+                                onClick={this.onClickAutocompleteInputRes}
+                            />
+                            <div className={`${this.state.isShowBlockSelectDICT_MCC ? '' : 'dn'}blockSelect`} onBlur={this.onBlurBlockSelect} ref={this.myRef} >
+                                {
+                                    this.state.isShowBlockSelectDICT_MCC
+                                        ? this.state.DICT_MCC != null
+                                        ? this.state.DICT_MCC.map((item, index) => {
+                                            return < ItemDICT_MCC key={index} item={item} onClickBlockSelectItem={this.onClickBlockSelectItem}/>
+                                        })
+                                        : <></>
+                                        : <></>
+
+                                }
+                            </div>
+                        </div>
+
                         <label htmlFor="format_type_id">Формат файлу</label>
                         <select onChange={this.changeInput} apiName="format_type_id" id="format_type_id" className="form-select"
                                 title="DICT_REPORT_FORMAT">
-                            <option>-</option>
                             {
                                 this.state.isShowSelectDICT_REPORT_FORMAT
                                     ?
                                     this.state.DICT_REPORT_FORMAT.map((item, index) => {
-                                        console.log(item)
+                                        //console.log(item)
                                         return < OptionItemDICT_REPORT_FORMAT key={index} optionItem={item}/>
                                     })
                                     : <>
@@ -1425,14 +1761,14 @@ class REPORT_OPERATIONS extends React.Component {
                                 {/*<input onChange={this.changeInputDateReport} apiName="date_type_id" className="customInput" id="date_type_id" type="date"/>*/}
 
                                 <label htmlFor="date_type_id">Дата звіту</label>
-                                <select onChange={this.changeInput} apiName="date_type_id" id="date_type_id" className="form-select"
+                                <select onChange={this.changeInput} apiName="date_type_id" id="date_type_id" className={`${this.state.isDate_type_idValidation ? '' : 'validError'} form-select`}
                                         title="DICT_DATE_TYPE">
-                                    <option>-</option>
+                                    <option></option>
                                     {
                                         this.state.isShowSelectDICT_DATE_TYPE
                                             ?
                                             this.state.DICT_DATE_TYPE.map((item, index) => {
-                                                console.log(item)
+                                                //console.log(item)
                                                 return < OptionItemDICT_DATE_TYPE key={index} optionItem={item}/>
                                             })
                                             : <>
@@ -1446,11 +1782,11 @@ class REPORT_OPERATIONS extends React.Component {
                             <div className="coverInputs">
                                 <div className="coverDate">
                                     <label htmlFor="date_report_from">З</label>
-                                    <input onChange={this.changeInputDateReport_from} apiName="date_from" className="customInput form-control" id="date_from" type="date"/>
+                                    <input onChange={this.changeInputDateReport_from} apiName="date_from" className={`${this.state.isDate_fromValidation ? '' : 'validError'} customInput form-control`} id="date_from" type="date"/>
                                 </div>
                                 <div className="coverDate">
                                     <label htmlFor="date_report_to">По</label>
-                                    <input onChange={this.changeInputDateReport_to} apiName="date_to" className="customInput form-control" id="date_to" type="date"/>
+                                    <input onChange={this.changeInputDateReport_to} apiName="date_to" className={`${this.state.isDate_toValidation ? '' : 'validError'} customInput form-control`} id="date_to" type="date"/>
                                 </div>
                             </div>
                         </div>

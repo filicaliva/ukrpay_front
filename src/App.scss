@@ -384,11 +384,40 @@ header{
     display: flex;
     flex-direction: column;
     margin-right: 10px;
+    .validError{
+      border: 1px solid red;
+    }
     select{
       max-width: 400px;
     }
+    .autocomplete{
+      position: relative;
+      .dn{
+        display: none!important;
+      }
+      .blockSelect{
+        position: absolute;
+        top: 38px;
+        border: 1px solid #ced4da;
+        max-width: 243.17px;
+        background: #fff;
+        overflow-y: auto;
+        max-height: 300px;
+        width: 100%;
+        border-top: none;
+        .blockSelectItem{
+          padding: 2px 5px;
+          cursor: pointer;
+          &:hover{
+            color: #fff;
+            background: #797b7d;
+          }
+        }
+      }
+    }
     .coverInputs{
       display: flex;
+
       .coverDate{
         display: flex;
         align-items: center;
@@ -461,6 +490,7 @@ header{
     .twoLevel{
       margin-top: 30px;
       display: flex;
+      align-items: flex-end;
       .innerBlock{
         &:first-child{
           margin: 0 134px 0 65px;

@@ -73,10 +73,14 @@ class REPORTS_ACQUIRING_MONITOR extends React.Component {
             .then((response) => {
                 console.log(response);
                 console.log(response.data);
-                //07.09.2021.12-47    Report.07.09.2021.12-47.xlsx
-                // let filename;
-                // filename = this.formatDateFile(new Date());
-                fileDownload( response.data, this.formatDateFile(new Date()));
+                let nameArr = response.headers['content-disposition'].split("filename*=UTF-8''");
+                //console.log(nameArr);
+                //console.log(nameArr[0]);
+                console.log(nameArr[1]);
+
+
+                //fileDownload( response.data, this.formatDateFile(new Date()));
+                fileDownload( response.data, nameArr[1]);
 
                 this.props.store.changeLoading(false);
 
@@ -116,7 +120,7 @@ class REPORTS_ACQUIRING_MONITOR extends React.Component {
 
             }
             const statusBtn = (report_id) => {
-                console.log(report_id);
+                //console.log(report_id);
                 // return this.state.ReportsMonitor.map(( item , index) => {
                 //     console.log(item.report_id);
                 //     if(item.report_id == report_id){
@@ -127,9 +131,9 @@ class REPORTS_ACQUIRING_MONITOR extends React.Component {
                 // });
                     for(let i=0; i < this.state.ReportsMonitor.length; i++){
                         if(this.state.ReportsMonitor[i].report_id == report_id) {
-                            console.log('-----status-----');
-                            console.log(i);
-                            console.log(this.state.ReportsMonitor[i].status);
+                            //console.log('-----status-----');
+                            //console.log(i);
+                            //console.log(this.state.ReportsMonitor[i].status);
                             if(this.state.ReportsMonitor[i].status_code == 'C'){
                                 return true
                             }

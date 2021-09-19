@@ -403,3 +403,90 @@ isShowSelectDICT_NET_ENTITY: true,
 DICT_NET_ENTITY: response.data.Table.TableRows,
 
 
+date_from: "20210924"
+date_to: "20210922"
+date_type_id: 1
+institution_id: "824"
+merchant_id: 0
+
+terminal_type_id: "2"
+
+
+date_from: null,
+date_to: null,
+
+date_type_id: null,
+institution_id: null,
+merchant_id: null,
+terminal_type_id: null,
+
+isInstitution_idValidation: true,
+isMerchant_idValidation
+isTerminal_type_idValidation
+isDate_type_idValidation
+isDate_fromValidation
+isDate_toValidation
+
+
+className={`${this.state.isInstitution_idValidation ? '' : 'validError'} form-select`}
+//
+let rr1 = () => {
+if(param == '' ){
+console.log(param);
+this.setState({
+isShowSelectTVBV: true,
+TSPReportSettingsSearchObj: inputDataObj,
+isInstitution_idValidation: false
+});
+}else{
+this.setState({
+isShowSelectTVBV: false,
+TSPReportSettingsSearchObj: inputDataObj,
+isInstitution_idValidation: true,
+institution_id: param
+});
+this.requestDICT_BRANCH(this.props.store.userState.token, param);
+}
+}
+
+
+
+DICT_MCC: response.data.Table.TableRows,
+isShowBlockSelectDICT_MCC: true
+
+isShowInputDICT_MCC
+isShowInputResDICT_MCC
+
+className={`${this.state.isShowBlockSelectDICT_MCC ? '' : 'dn'} blockSelect`}
+
+
+
+
+isShowInputTsp_name
+isShowInputResTsp_name
+isShowBlockSelectTsp_name
+
+isShowBlockSelectTsp_name
+
+
+
+
+if(response.data.record_count == 0){
+this.setState({
+
+isDICT_NET_BRAND_QueryTSPEmpty: true,
+isDisableIdent_code: true,
+isShowDICT_NET_BRAND_QueryTSP: false,
+DICT_NET_BRAND_QueryTSP: []
+
+});
+}else{
+this.setState({
+
+DICT_NET_BRAND_QueryTSP: response.data.tsp_list,
+isDisableIdent_code: false,
+isShowDICT_NET_BRAND_QueryTSP: true,
+isDICT_NET_BRAND_QueryTSPEmpty: false
+
+});
+}
