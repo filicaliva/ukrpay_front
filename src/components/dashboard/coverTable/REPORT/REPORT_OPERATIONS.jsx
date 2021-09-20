@@ -1161,7 +1161,7 @@ class REPORT_OPERATIONS extends React.Component {
         let apiName = e.currentTarget.getAttribute("apiName");
         console.log(apiName);
         let inputDataObj = this.state.AcquiringReportsCriteria;
-        inputDataObj[apiName] = inputValue;
+        inputDataObj[apiName] = param;
 
         console.log(inputDataObj);
         if(param == '' ){
