@@ -25,6 +25,7 @@ import REPORTS_acquiring from "./REPORT/REPORTS_acquiring";
 import REPORTS_ACQUIRING_MONITOR from "./REPORT/REPORTS_ACQUIRING_MONITOR";
 import DICT_NET_BRAND from "./NETWORK/NETWORK_CREATE";
 import REPORT_OPERATIONS from "./REPORT/REPORT_OPERATIONS";
+import REPORT_OPERATIONS_NET from "./REPORT/REPORT_OPERATIONS_NET";
 import NETWORK_CREATE from "./NETWORK/NETWORK_CREATE";
 import NETWORK_ADD_CLIENT from "./NETWORK/NETWORK_ADD_CLIENT";
 
@@ -415,19 +416,17 @@ class CoverTable extends React.Component{
 
             case "REPORT_SETTINGS_TSP":
                 return <REPORT_SETTINGS_TSP store={this.props.store}/>
-                break
             case "REPORTS_ACQUIRING":
                 console.log( "REPORTS_ACQUIRING" );
                 return <REPORTS_acquiring store={this.props.store}/>
-                break
             case "REPORTS_ACQUIRING_MONITOR":
                 console.log( "REPORTS_ACQUIRING_MONITOR" );
                 return <REPORTS_ACQUIRING_MONITOR store={this.props.store}/>
-                break
             case "REPORT_OPERATIONS":
                 console.log( "REPORT_OPERATIONS" );
                 return <REPORT_OPERATIONS store={this.props.store}/>
-                break
+            case "REPORT_OPERATIONS_NET":
+                return <REPORT_OPERATIONS_NET store={this.props.store}/>
 
             case "DICT_PAYMENT_SYSTEM":
                 return <TableBootstrapDICT store={this.props.store}/>
