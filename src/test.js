@@ -1,4 +1,751 @@
 import React from "react";
+import * as axios from "axios";
+import InputMask from "react-input-mask";
+
+
+
+
+
+const ItemMccCode = (props) => {
+    //console.log( props )
+    return(
+        <div className="blockSelectItem"  value={props.item.mcc_code} onClick={(e) => props.onClickBlockSelectItem(e)} >{props.item.mcc_name}</div>
+    )
+}
+const BlockSelectItemTspName = (props) => {
+    //console.log( props )
+    return(
+        <div className="blockSelectItem"  value={props.item.client_id} name={props.item.client_name} onClick={(e) => props.onClickBlockSelectItem(e)} >{props.item.client_name}</div>
+    )
+}
+const BlockSelectItemIdentCode = (props) => {
+    //console.log( props )
+    return(
+        <div className="blockSelectItem"  value={props.item.ident_code} onClick={(e) => props.onClickBlockSelectItem(e)} >{props.item.ident_code}</div>
+    )
+}
+
+class AutocompleteInputTspName extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            data: null,
+
+            inputRequest: null,
+            inputResult: this.props.tsp_name,
+
+            isShowBlockSelect: false,
+            isShowInputResult: false,
+            isShowInputRequest: true,
+
+            isLoading: false,
+
+            selected: false
+        }
+        this.myRef = React.createRef();
+    }
+
+
+    componentDidMount() {
+        window.addEventListener("mousedown", this.clickTest);
+    }
+    componentWillUnmount() {
+        window.addEventListener("mousedown", null);
+    }
+
+    onChangeAutocompleteInput = (e) => {
+        let param = e.target.value;
+        console.log(param);
+        this.props.addTspName(Number(0));
+        this.setState({
+            inputRequest: param,
+            selected: false
+        });
+        if(param != '' && param.length >= 3){
+            this.request(this.props.token, param, true);
+        }
+    }
+    onClickAutocompleteInput = (e) => {
+        let param = e.target.value;
+        console.log(param);
+        if(param != '' && param.length >= 3){
+            this.request(this.props.token, param, true);
+        }
+        // this.setState({
+        //     isShowBlockSelect: true
+        // });
+    }
+    onBlurAutocompleteInput = (e) => {
+        let param = e.target.value;
+        console.log(param);
+        // if(param != '' && param.length >= 3){
+        //     this.request(this.props.token, param, false);
+        // }
+    }
+
+    onClickAutocompleteInputRes = () => {
+        this.setState({
+            inputResult: null,
+            isShowBlockSelect: true,
+            isShowInputResult: false,
+            isShowInputRequest: true,
+        });
+    }
+
+    onBlurBlockSelect = () => {
+        this.setState({
+            isShowBlockSelect: false,
+        });
+    }
+
+    onClickBlockSelectItem = (e) => {
+        //console.log('----onClickBlockSelectItem-----');
+        let val = e.currentTarget.getAttribute("value");
+        let name = e.currentTarget.getAttribute("name");
+        //console.log(val);
+        //console.log('----onClickBlockSelectItem-----');
+        if(val != ''){
+            //console.log(this.state.InputDICT_MCC);
+            //console.log(this.state.mcc_code);
+            if(val != this.state.inputRequest){
+                this.request(this.props.token, val, false);
+
+                // let inputDataObj = this.props.AcquiringReportsCriteria;
+                // inputDataObj.tsp_name = val;
+                console.log(val);
+                //console.log(typeof val);
+                this.props.addTspName(Number(val));
+                this.setState({
+                    inputResult: name,
+                    inputRequest: name,
+                    isShowBlockSelect: false,
+                    isShowInputResult: true,
+                    isShowInputRequest: false,
+
+                    selected: true
+                });
+            }
+            this.setState({
+                isShowBlockSelect: false,
+            });
+        }
+    }
+
+    clickTest = (e) => {
+        if(this.myRef.current != null){
+            if(this.myRef.current.className != e.target.parentElement.className){
+                this.setState({
+                    isShowBlockSelect: false,
+                });
+            }
+        }
+    }
+
+    async request( token, param, showBlock) {
+        this.setState({
+            isLoading: true
+        });
+        console.log( token );
+        const baseUrl = `/api/Dictionary/QueryTSP`;
+        console.log( baseUrl );
+        const body =
+            {
+                institution_id: this.props.institution_id,
+                branch_id: this.props.branch_id,
+                client_name: param,
+            }
+        console.log( body );
+        await axios.post(
+            baseUrl,
+            body,
+            {
+                headers: {
+                    "Token" : `${ token }`,
+                    'Content-Type': 'application/json'
+                }
+            }
+        )
+            .then((response) => {
+                console.log(response.data);
+                //console.log(response.data.Table);
+
+
+
+                if(response.data.tsp_list.TableRows == null){
+                    this.setState({
+                        data: [{client_name: "Незнайдено жодного результату"}],
+                    });
+                }else{
+                    this.setState({
+                        data: response.data.tsp_list.TableRows,
+                    });
+                }
+
+                if(showBlock){
+                    this.setState({
+                        isShowBlockSelect: true
+                    });
+                }else{
+                    this.setState({
+                        isShowBlockSelect: false
+                    });
+                }
+                this.setState({
+                    isLoading: false
+                });
+            })
+            .catch((error) => {
+                console.log(error.response);
+                console.log(error.response.data);
+                //console.log('error_catch');
+            });
+
+    }
+    render() {
+        console.log(this.props);
+        console.log(this.state);
+        return(
+            <div className="autocomplete">
+                <input
+                    className={`${this.state.selected ? 'selected ' : ''}${this.state.isShowInputRequest ? '' : 'dn '}form-control`}
+                    placeholder="Введіть перші три букви..." type="text"
+                    onBlur={this.onBlurAutocompleteInput}
+                    onChange={this.onChangeAutocompleteInput}
+                    onClick={this.onClickAutocompleteInput}
+                    value={this.state.inputRequest}
+                />
+                <input
+                    className={`${this.state.selected ? 'selected ' : ''}${this.state.isShowInputResult ? '' : 'dn '}form-control`}
+                    placeholder="Результат" type="text"
+                    value={this.state.inputResult}
+                    onClick={this.onClickAutocompleteInputRes}
+                />
+                <div className={`${this.state.isShowBlockSelect ? '' : 'dn '}blockSelect`} onBlur={this.onBlurBlockSelect} ref={this.myRef} >
+                    {
+                        this.state.isShowBlockSelect
+                            ? this.state.data != null
+                            ? this.state.data.map((item, index) => {
+                                return <BlockSelectItemTspName key={index} item={item} onClickBlockSelectItem={this.onClickBlockSelectItem}/>
+                            })
+                            : <></>
+                            : <></>
+
+                    }
+                </div>
+                {
+                    this.state.isLoading
+                        ? <div className="coverloader">
+                            <div className="loader"></div>
+                        </div>
+                        : <></>
+                }
+            </div>
+        )
+    }
+}
+class AutocompleteInputIdentCode extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            data: null,
+
+            inputRequest: null,
+            inputResult: this.props.ident_code,
+
+            isShowBlockSelect: false,
+            isShowInputResult: false,
+            isShowInputRequest: true,
+
+            isLoading: false,
+
+            selected: false
+        }
+        this.myRef = React.createRef();
+    }
+
+
+    componentDidMount() {
+        window.addEventListener("mousedown", this.clickTest);
+    }
+    componentWillUnmount() {
+        window.addEventListener("mousedown", null);
+    }
+
+    onChangeAutocompleteInput = (e) => {
+        let param = e.target.value;
+        console.log(param);
+        this.props.addIdentCode(Number(0));
+        this.setState({
+            inputRequest: param,
+            selected: false
+        });
+        if(param != '' && param.length >= 3){
+            this.request(this.props.token, param, true);
+        }
+    }
+    onClickAutocompleteInput = (e) => {
+        let param = e.target.value;
+        console.log(param);
+        if(param != '' && param.length >= 3){
+            this.request(this.props.token, param, true);
+        }
+        // this.setState({
+        //     isShowBlockSelect: true
+        // });
+    }
+    onBlurAutocompleteInput = (e) => {
+        let param = e.target.value;
+        console.log(param);
+        // if(param != '' && param.length >= 3){
+        //     this.request(this.props.token, param, false);
+        // }
+    }
+
+    onClickAutocompleteInputRes = () => {
+        this.setState({
+            inputResult: null,
+            isShowBlockSelect: true,
+            isShowInputResult: false,
+            isShowInputRequest: true,
+        });
+    }
+
+    onBlurBlockSelect = () => {
+        this.setState({
+            isShowBlockSelect: false,
+        });
+    }
+
+    onClickBlockSelectItem = (e) => {
+        //console.log('----onClickBlockSelectItem-----');
+        let val = e.currentTarget.getAttribute("value");
+        //console.log(val);
+        //console.log('----onClickBlockSelectItem-----');
+        if(val != ''){
+            //console.log(this.state.InputDICT_MCC);
+            //console.log(this.state.mcc_code);
+            if(val != this.state.inputRequest){
+                this.request(this.props.token, val, false);
+
+                // let inputDataObj = this.props.AcquiringReportsCriteria;
+                // inputDataObj.tsp_name = val;
+                console.log(val);
+                //console.log(typeof val);
+                this.props.addIdentCode(Number(val));
+                this.setState({
+                    inputResult: val,
+                    inputRequest: val,
+                    isShowBlockSelect: false,
+                    isShowInputResult: true,
+                    isShowInputRequest: false,
+
+                    selected: true
+                });
+            }
+            this.setState({
+                isShowBlockSelect: false,
+            });
+        }
+    }
+
+    clickTest = (e) => {
+        if(this.myRef.current != null){
+            if(this.myRef.current.className != e.target.parentElement.className){
+                this.setState({
+                    isShowBlockSelect: false,
+                });
+            }
+        }
+    }
+
+    async request( token, param, showBlock) {
+        this.setState({
+            isLoading: true
+        });
+        console.log( token );
+        const baseUrl = `/api/Dictionary/QueryTSP`;
+        console.log( baseUrl );
+        const body =
+            {
+                institution_id: this.props.institution_id,
+                branch_id: this.props.branch_id,
+                ident_code: param,
+            }
+        console.log( body );
+        await axios.post(
+            baseUrl,
+            body,
+            {
+                headers: {
+                    "Token" : `${ token }`,
+                    'Content-Type': 'application/json'
+                }
+            }
+        )
+            .then((response) => {
+                console.log(response.data);
+                //console.log(response.data.Table);
+
+
+
+                if(response.data.tsp_list.TableRows == null){
+                    this.setState({
+                        data: [{ident_code: "Незнайдено жодного результату"}],
+                    });
+                }else{
+                    this.setState({
+                        data: response.data.tsp_list.TableRows,
+                    });
+                }
+
+                if(showBlock){
+                    this.setState({
+                        isShowBlockSelect: true
+                    });
+                }else{
+                    this.setState({
+                        isShowBlockSelect: false
+                    });
+                }
+                this.setState({
+                    isLoading: false
+                });
+            })
+            .catch((error) => {
+                console.log(error.response);
+                console.log(error.response.data);
+                //console.log('error_catch');
+            });
+
+    }
+    render() {
+        console.log(this.props);
+        console.log(this.state);
+        return(
+            <div className="autocomplete">
+                <input
+                    className={`${this.state.selected ? 'selected ' : ''}${this.state.isShowInputRequest ? '' : 'dn '}form-control`}
+                    placeholder="Введіть перші три цифри..." type="text"
+                    onBlur={this.onBlurAutocompleteInput}
+                    onChange={this.onChangeAutocompleteInput}
+                    onClick={this.onClickAutocompleteInput}
+                    value={this.state.inputRequest}
+                />
+                <input
+                    className={`${this.state.selected ? 'selected ' : ''}${this.state.isShowInputResult ? '' : 'dn '}form-control`}
+                    placeholder="Результат" type="text"
+                    value={this.state.inputResult}
+                    onClick={this.onClickAutocompleteInputRes}
+                />
+                <div className={`${this.state.isShowBlockSelect ? '' : 'dn '}blockSelect`} onBlur={this.onBlurBlockSelect} ref={this.myRef} >
+                    {
+                        this.state.isShowBlockSelect
+                            ? this.state.data != null
+                            ? this.state.data.map((item, index) => {
+                                return <BlockSelectItemIdentCode key={index} item={item} onClickBlockSelectItem={this.onClickBlockSelectItem}/>
+                            })
+                            : <></>
+                            : <></>
+
+                    }
+                </div>
+                {
+                    this.state.isLoading
+                        ? <div className="coverloader">
+                            <div className="loader"></div>
+                        </div>
+                        : <></>
+                }
+            </div>
+        )
+    }
+}
+class AutocompleteInputMccCode extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            data: null,
+
+            inputRequest: null,
+            inputResult: this.props.mcc_code,
+
+            isShowBlockSelect: false,
+            isShowInputResult: false,
+            isShowInputRequest: true,
+
+            isLoading: false,
+
+            selected: false
+        }
+        this.myRef = React.createRef();
+    }
+
+
+    componentDidMount() {
+        window.addEventListener("mousedown", this.clickTest);
+    }
+    componentWillUnmount() {
+        window.addEventListener("mousedown", null);
+    }
+
+    onChangeAutocompleteInput = (e) => {
+        let param = e.target.value;
+        console.log(param);
+        this.props.addMccCode(Number(0));
+        this.setState({
+            inputRequest: param,
+            selected: false
+        });
+        if(param != ''){
+            this.request(this.props.token, param, true);
+        }
+    }
+    onClickAutocompleteInput = (e) => {
+        let param = e.target.value;
+        console.log(param);
+        if(param != ''){
+            this.request(this.props.token, param, true);
+        }
+        // this.setState({
+        //     isShowBlockSelect: true
+        // });
+    }
+    onBlurAutocompleteInput = (e) => {
+        let param = e.target.value;
+        console.log(param);
+        // if(param != '' && param.length >= 3){
+        //     this.request(this.props.token, param, false);
+        // }
+    }
+
+    onClickAutocompleteInputRes = () => {
+        this.setState({
+            inputResult: null,
+            isShowBlockSelect: true,
+            isShowInputResult: false,
+            isShowInputRequest: true,
+        });
+    }
+
+    onBlurBlockSelect = () => {
+        this.setState({
+            isShowBlockSelect: false,
+        });
+    }
+
+    onClickBlockSelectItem = (e) => {
+        //console.log('----onClickBlockSelectItem-----');
+        let val = e.currentTarget.getAttribute("value");
+        //console.log(val);
+        //console.log('----onClickBlockSelectItem-----');
+        if(val != ''){
+            //console.log(this.state.InputDICT_MCC);
+            //console.log(this.state.mcc_code);
+            if(val != this.state.inputRequest){
+                this.request(this.props.token, val, false);
+
+                // let inputDataObj = this.props.AcquiringReportsCriteria;
+                // inputDataObj.tsp_name = val;
+                console.log(val);
+                //console.log(typeof val);
+                this.props.addMccCode(Number(val));
+                this.setState({
+                    inputResult: val,
+                    inputRequest: val,
+                    isShowBlockSelect: false,
+                    isShowInputResult: true,
+                    isShowInputRequest: false,
+
+                    selected: true
+                });
+            }
+            this.setState({
+                isShowBlockSelect: false,
+            });
+        }
+    }
+
+    clickTest = (e) => {
+        if(this.myRef.current != null){
+            if(this.myRef.current.className != e.target.parentElement.className){
+                this.setState({
+                    isShowBlockSelect: false,
+                });
+            }
+        }
+    }
+    async request( token, param, showBlock) {
+        this.setState({
+            isLoading: true
+        });
+        console.log( token );
+        const baseUrl = `/api/Dictionary/DICT_MCC/?param1=${param}`;
+        console.log( baseUrl );
+        await axios.get(
+            baseUrl,
+            {
+                headers: {
+                    "Token" : `${ token }`,
+                    'Content-Type': 'application/json'
+                }
+            }
+        )
+            .then((response) => {
+                console.log(response.data);
+                //console.log(response.data.Table);
+
+
+
+                if(response.data.Table.TableRows == null){
+                    this.setState({
+                        data: [{mcc_code: "Незнайдено жодного результату"}],
+                    });
+                }else{
+                    this.setState({
+                        data: response.data.Table.TableRows,
+                    });
+                }
+
+                if(showBlock){
+                    this.setState({
+                        isShowBlockSelect: true
+                    });
+                }else{
+                    this.setState({
+                        isShowBlockSelect: false
+                    });
+                }
+                this.setState({
+                    isLoading: false
+                });
+            })
+            .catch((error) => {
+                console.log(error.response);
+                console.log(error.response.data);
+                //console.log('error_catch');
+            });
+
+    }
+    render() {
+        console.log(this.props);
+        console.log(this.state);
+        return(
+            <div className="autocomplete">
+                <input
+                    className={`${this.state.selected ? 'selected ' : ''}${this.state.isShowInputRequest ? '' : 'dn '}form-control`}
+                    placeholder="Введіть код..." type="text"
+                    onBlur={this.onBlurAutocompleteInput}
+                    onChange={this.onChangeAutocompleteInput}
+                    onClick={this.onClickAutocompleteInput}
+                    value={this.state.inputRequest}
+                />
+                <input
+                    className={`${this.state.selected ? 'selected ' : ''}${this.state.isShowInputResult ? '' : 'dn '}form-control`}
+                    placeholder="Результат" type="text"
+                    value={this.state.inputResult}
+                    onClick={this.onClickAutocompleteInputRes}
+                />
+                <div className={`${this.state.isShowBlockSelect ? '' : 'dn '}blockSelect`} onBlur={this.onBlurBlockSelect} ref={this.myRef} >
+                    {
+                        this.state.isShowBlockSelect
+                            ? this.state.data != null
+                            ? this.state.data.map((item, index) => {
+                                return <ItemMccCode key={index} item={item} onClickBlockSelectItem={this.onClickBlockSelectItem}/>
+                            })
+                            : <></>
+                            : <></>
+
+                    }
+                </div>
+                {
+                    this.state.isLoading
+                        ? <div className="coverloader">
+                            <div className="loader"></div>
+                        </div>
+                        : <></>
+                }
+            </div>
+        )
+    }
+}
+
+
+
+
+
+addTspName = (val) => {
+    console.log( val );
+    let inputDataObj = this.state.AcquiringReportsCriteria;
+    inputDataObj.tsp_id = val;
+    console.log( inputDataObj );
+    this.setState({
+        AcquiringReportsCriteria: inputDataObj,
+    });
+    console.log( this.state.AcquiringReportsCriteria.tsp_name );
+}
+addIdentCode = (val) => {
+    console.log( val );
+    let inputDataObj = this.state.AcquiringReportsCriteria;
+    inputDataObj.ident_code = val;
+    console.log( inputDataObj );
+    this.setState({
+        AcquiringReportsCriteria: inputDataObj,
+    });
+}
+addMccCode = (val) => {
+    console.log( val );
+    let inputDataObj = this.state.AcquiringReportsCriteria;
+    inputDataObj.mcc_code = val;
+    console.log( inputDataObj );
+    this.setState({
+        AcquiringReportsCriteria: inputDataObj,
+    });
+}
+
+
+
+
+<AutocompleteInputTspName
+    token={ this.props.store.userState.token }
+    institution_id={ this.state.AcquiringReportsCriteria.institution_id }
+    branch_id={ this.state.AcquiringReportsCriteria.bank_branch_id }
+    addTspName={this.addTspName}
+    tsp_name={this.state.AcquiringReportsCriteria.tsp_id}
+/>
+
+<AutocompleteInputIdentCode
+    token={ this.props.store.userState.token }
+    institution_id={ this.state.AcquiringReportsCriteria.institution_id }
+    branch_id={ this.state.AcquiringReportsCriteria.bank_branch_id }
+    addIdentCode={this.addIdentCode}
+    ident_code={this.state.AcquiringReportsCriteria.ident_code}
+/>
+
+
+<AutocompleteInputMccCode
+    token={ this.props.store.userState.token }
+    addMccCode={this.addMccCode}
+    mcc_code={this.state.AcquiringReportsCriteria.mcc_code}
+/>
+
+
+TSPReportSettingsSearchObj
+
+
+InputMask
+
+
+mask="999999999999"
+type="text"
+maskChar=""
+alwaysShowMask="false"
+pattern='[0-9]'
+
+
+
+
+
+
 
 let rr = [{
     acquiring_type_id: 1,
@@ -289,6 +1036,56 @@ let w = {
     "institution_id": 0
 }
 
+async requestDICT_MCC  ( token, param, showBlock) {
+    this.props.store.changeLoading(true);
+    console.log( token );
+    const baseUrl = `/api/Dictionary/DICT_MCC/?param1=${param}`;
+    console.log( baseUrl );
+    await axios.get(
+        baseUrl,
+        {
+            headers: {"Token" : `${ token }`}
+        }
+    )
+        .then((response) => {
+            console.log(response.data);
+            //console.log(response.data.Table);
+
+
+
+            if(response.data.Table.TableRows == null){
+                this.setState({
+                    DICT_MCC: [{mcc_code: "", mcc_name: "За даним кодом незнайдено жодного результату"}],
+                });
+            }else{
+                this.setState({
+                    DICT_MCC: response.data.Table.TableRows,
+                });
+            }
+
+            if(showBlock){
+                this.setState({
+                    isShowBlockSelectDICT_MCC: true
+                });
+            }else{
+                this.setState({
+                    isShowBlockSelectDICT_MCC: false
+                });
+            }
+
+
+            this.props.store.changeLoading(false);
+
+
+        })
+        .catch((error) => {
+            console.log(error.response);
+            console.log(error.response.data);
+            //console.log('error_catch');
+        });
+
+}
+
 Юзер Юзерович Юзеренко
 
 
@@ -490,3 +1287,22 @@ isDICT_NET_BRAND_QueryTSPEmpty: false
 
 });
 }
+
+
+this.props.token
+institution_id: this.props.institution_id,
+branch_id: this.props.branch_id,
+
+
+
+
+
+data: null,
+
+inputRequest: null,
+isShowBlockSelect: false,
+isShowInputResult: false,
+isShowInputRequest: true,
+
+
+isShowBlockSelectDICT_MCC  isShowBlockSelect
