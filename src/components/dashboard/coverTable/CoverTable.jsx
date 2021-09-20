@@ -28,6 +28,7 @@ import REPORT_OPERATIONS from "./REPORT/REPORT_OPERATIONS";
 import REPORT_OPERATIONS_NET from "./REPORT/REPORT_OPERATIONS_NET";
 import NETWORK_CREATE from "./NETWORK/NETWORK_CREATE";
 import NETWORK_ADD_CLIENT from "./NETWORK/NETWORK_ADD_CLIENT";
+import NETWORK_REPORT from "./NETWORK/NETWORK_REPORT";
 
 class Default extends React.Component{
     render() {
@@ -471,6 +472,9 @@ class CoverTable extends React.Component{
                 break
             case "NETWORK_ADD_CLIENT":
                 return <NETWORK_ADD_CLIENT store={this.props.store}/>
+                break
+            case "NETWORK_REPORT":
+                return <NETWORK_REPORT store={this.props.store}/>
                 break
 
             default:
