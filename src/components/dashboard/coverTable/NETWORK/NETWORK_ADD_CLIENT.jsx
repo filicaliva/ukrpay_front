@@ -98,6 +98,235 @@ const OptionItemDICT_REPORT_CHANNEL_TYPE = (props) => {
         >{props.optionItem.report_channel_type_name}</option>
     )
 }
+const BlockSelectItemIdentCode = (props) => {
+    //console.log( props )
+    return(
+        <div className="blockSelectItem"  value={props.item.ident_code} name={props.item.client_name} onClick={(e) => props.onClickBlockSelectItem(e)} >{props.item.ident_code}</div>
+    )
+}
+class AutocompleteInputIdentCode extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            data: null,
+
+            inputRequest: null,
+            inputResult: this.props.ident_code,
+
+            isShowBlockSelect: false,
+            isShowInputResult: false,
+            isShowInputRequest: true,
+
+            isLoading: false,
+
+            selected: false
+        }
+        this.myRef = React.createRef();
+    }
+
+
+    componentDidMount() {
+        window.addEventListener("mousedown", this.clickTest);
+    }
+    componentWillUnmount() {
+        window.addEventListener("mousedown", null);
+    }
+
+    onChangeAutocompleteInput = (e) => {
+        let param = e.target.value;
+        console.log(param);
+        this.props.addIdentCode(Number(0), '', false);
+        this.setState({
+            inputRequest: param,
+            selected: false
+        });
+        if(param != '' && param.length >= 3){
+            this.request(this.props.token, param, true);
+        }
+    }
+    onClickAutocompleteInput = (e) => {
+        let param = e.target.value;
+        console.log(param);
+        if(param != '' && param.length >= 3){
+            this.request(this.props.token, param, true);
+        }
+        // this.setState({
+        //     isShowBlockSelect: true
+        // });
+    }
+    onBlurAutocompleteInput = (e) => {
+        let param = e.target.value;
+        console.log(param);
+        // if(param != '' && param.length >= 3){
+        //     this.request(this.props.token, param, false);
+        // }
+    }
+
+    onClickAutocompleteInputRes = () => {
+        this.setState({
+            inputResult: null,
+            isShowBlockSelect: true,
+            isShowInputResult: false,
+            isShowInputRequest: true,
+        });
+    }
+
+    onBlurBlockSelect = () => {
+        this.setState({
+            isShowBlockSelect: false,
+        });
+    }
+
+    onClickBlockSelectItem = (e) => {
+        //console.log('----onClickBlockSelectItem-----');
+        let val = e.currentTarget.getAttribute("value");
+        let name = e.currentTarget.getAttribute("name");
+        //console.log(val);
+        //console.log('----onClickBlockSelectItem-----');
+        if(val != ''){
+            //console.log(this.state.InputDICT_MCC);
+            //console.log(this.state.mcc_code);
+            if(val != this.state.inputRequest){
+                this.request(this.props.token, val, false);
+
+                // let inputDataObj = this.props.AcquiringReportsCriteria;
+                // inputDataObj.tsp_name = val;
+                console.log(val);
+                //console.log(typeof val);
+                this.props.addIdentCode(Number(val), name, true);
+                this.setState({
+                    inputResult: val,
+                    inputRequest: val,
+                    isShowBlockSelect: false,
+                    isShowInputResult: true,
+                    isShowInputRequest: false,
+
+                    selected: true
+                });
+            }
+            this.setState({
+                isShowBlockSelect: false,
+            });
+        }
+    }
+
+    clickTest = (e) => {
+        if(this.myRef.current != null){
+            if(this.myRef.current.className != e.target.parentElement.className){
+                this.setState({
+                    isShowBlockSelect: false,
+                });
+            }
+        }
+    }
+
+    async request( token, param, showBlock) {
+        this.setState({
+            isLoading: true
+        });
+        console.log( token );
+        const baseUrl = `/api/Dictionary/QueryTSP`;
+        console.log( baseUrl );
+        const body =
+            {
+                institution_id: this.props.institution_id,
+                branch_id: this.props.branch_id,
+                ident_code: param,
+            }
+        console.log( body );
+        await axios.post(
+            baseUrl,
+            body,
+            {
+                headers: {
+                    "Token" : `${ token }`,
+                    'Content-Type': 'application/json'
+                }
+            }
+        )
+            .then((response) => {
+                console.log(response.data);
+                //console.log(response.data.Table);
+
+
+
+                if(response.data.tsp_list.TableRows == null){
+                    this.setState({
+                        data: [{ident_code: "Незнайдено жодного результату"}],
+                    });
+                }else{
+                    this.setState({
+                        data: response.data.tsp_list.TableRows,
+                    });
+                }
+
+                if(showBlock){
+                    this.setState({
+                        isShowBlockSelect: true
+                    });
+                }else{
+                    this.setState({
+                        isShowBlockSelect: false
+                    });
+                }
+                this.setState({
+                    isLoading: false
+                });
+            })
+            .catch((error) => {
+                console.log(error.response);
+                console.log(error.response.data);
+                //console.log('error_catch');
+            });
+
+    }
+    render() {
+        console.log(this.props);
+        console.log(this.state);
+        return(
+            <div className="autocomplete">
+                <InputMask
+                    mask="999999999999"
+                    type="text"
+                    maskChar=""
+                    alwaysShowMask="false"
+                    pattern='[0-9]'
+                    className={`${this.state.selected ? 'selected ' : ''}${this.state.isShowInputRequest ? '' : 'dn '}form-control`}
+                    placeholder="Введіть перші три цифри..." type="text"
+                    onBlur={this.onBlurAutocompleteInput}
+                    onChange={this.onChangeAutocompleteInput}
+                    onClick={this.onClickAutocompleteInput}
+                    value={this.state.inputRequest}
+                />
+                <input
+                    className={`${this.state.selected ? 'selected ' : ''}${this.state.isShowInputResult ? '' : 'dn '}form-control`}
+                    placeholder="Результат" type="text"
+                    value={this.state.inputResult}
+                    onClick={this.onClickAutocompleteInputRes}
+                />
+                <div className={`${this.state.isShowBlockSelect ? '' : 'dn '}blockSelect`} onBlur={this.onBlurBlockSelect} ref={this.myRef} >
+                    {
+                        this.state.isShowBlockSelect
+                            ? this.state.data != null
+                            ? this.state.data.map((item, index) => {
+                                return <BlockSelectItemIdentCode key={index} item={item} onClickBlockSelectItem={this.onClickBlockSelectItem}/>
+                            })
+                            : <></>
+                            : <></>
+
+                    }
+                </div>
+                {
+                    this.state.isLoading
+                        ? <div className="coverloader">
+                            <div className="loader"></div>
+                        </div>
+                        : <></>
+                }
+            </div>
+        )
+    }
+}
 
 class NETWORK_ADD_CLIENT extends React.Component {
     constructor(props) {
@@ -1188,7 +1417,27 @@ class NETWORK_ADD_CLIENT extends React.Component {
     onChangeDatalistTest = () => {
         console.log('onChangeDatalistTest');
     }
+    addIdentCode = (val, name, nextInput) => {
+        console.log( val );
+        // let inputDataObj = this.state.AcquiringReportsCriteria;
+        // inputDataObj.ident_code = val;
+        //console.log( inputDataObj );
+        if(nextInput){
+            this.requestDICT_NETWORK_MANAGERS( this.props.store.userState.token );
+            this.setState({
+                ident_code: val,
+                client_name: name,
+                isDisableInputDICT_NETWORK_MANAGERS: false,
+            });
+        }else{
+            this.setState({
+                ident_code: val,
+                client_name: name,
+                isDisableInputDICT_NETWORK_MANAGERS: true
+            });
+        }
 
+    }
     render() {
 
         console.log(this.state);
@@ -1231,43 +1480,51 @@ class NETWORK_ADD_CLIENT extends React.Component {
 
 
                         <label htmlFor="name_netWork">ІНН/ЄДРПОУ</label>
-                        <input
-                            //onChange={this.nameNetWork}
-                            onBlur={this.ident_code} onKeyDown={this.hendleIdent_code}
-                            //value={this.state.brand_name}
-                            api_name="ident_code" id="ident_code" type="text" className={`${this.state.isDICT_NET_BRAND_QueryTSPEmpty ? 'errorEmpty' : ''} form-control`}
-                            placeholder="Введіть код"
+                        <AutocompleteInputIdentCode
+                            token={ this.props.store.userState.token }
+                            institution_id={ 0 }
+                            branch_id={ 0 }
+                            addIdentCode={this.addIdentCode}
+                            ident_code={this.state.ident_code}
+                            client_name={this.state.client_name}
                         />
-                        {
-                            this.state.isDICT_NET_BRAND_QueryTSPEmpty
-                                ?<span className="spanEmptyError">НЕзнайдено жодного ІНН/ЄДРПОУ</span>
-                                :<></>
-                        }
-                        <input
-                            className="form-control"
-                            disabled={this.state.isDisableIdent_code ? 'disabled' : ''}
-                            //onChange={this.ident_code}
-                            //onBlur={this.ident_code}
-                            name="DICT_NET_BRAND_QueryTSP" list="DICT_NET_BRAND_QueryTSP"
-                            onChange={this.changeSelectDICT_NET_BRAND_QueryTSP}
-                            title="Виберіть назву із списку"
-                        />
-                        <datalist
-                            disabled={this.state.isDisableIdent_code ? 'disabled' : ''}
-                            id="DICT_NET_BRAND_QueryTSP"
-                            //onChange={this.changeSelectDICT_NET_BRAND_QueryTSP}
-                            //onClick={this.changeSelectDICT_NET_BRAND_QueryTSP}
-                            api_name="manager_name"
-                        >
+                        {/*<input*/}
+                        {/*    //onChange={this.nameNetWork}*/}
+                        {/*    onBlur={this.ident_code} onKeyDown={this.hendleIdent_code}*/}
+                        {/*    //value={this.state.brand_name}*/}
+                        {/*    api_name="ident_code" id="ident_code" type="text" className={`${this.state.isDICT_NET_BRAND_QueryTSPEmpty ? 'errorEmpty' : ''} form-control`}*/}
+                        {/*    placeholder="Введіть код"*/}
+                        {/*/>*/}
+                        {/*{*/}
+                        {/*    this.state.isDICT_NET_BRAND_QueryTSPEmpty*/}
+                        {/*        ?<span className="spanEmptyError">НЕзнайдено жодного ІНН/ЄДРПОУ</span>*/}
+                        {/*        :<></>*/}
+                        {/*}*/}
+                        {/*<input*/}
+                        {/*    className="form-control"*/}
+                        {/*    disabled={this.state.isDisableIdent_code ? 'disabled' : ''}*/}
+                        {/*    //onChange={this.ident_code}*/}
+                        {/*    //onBlur={this.ident_code}*/}
+                        {/*    name="DICT_NET_BRAND_QueryTSP" list="DICT_NET_BRAND_QueryTSP"*/}
+                        {/*    onChange={this.changeSelectDICT_NET_BRAND_QueryTSP}*/}
+                        {/*    title="Виберіть назву із списку"*/}
+                        {/*/>*/}
+                        {/*<datalist*/}
+                        {/*    disabled={this.state.isDisableIdent_code ? 'disabled' : ''}*/}
+                        {/*    id="DICT_NET_BRAND_QueryTSP"*/}
+                        {/*    //onChange={this.changeSelectDICT_NET_BRAND_QueryTSP}*/}
+                        {/*    //onClick={this.changeSelectDICT_NET_BRAND_QueryTSP}*/}
+                        {/*    api_name="manager_name"*/}
+                        {/*>*/}
 
-                            {
-                                this.state.isShowDICT_NET_BRAND_QueryTSP
-                                    ? this.state.DICT_NET_BRAND_QueryTSP.map((item, index) => {
-                                        return < OptionItemDICT_NET_BRAND_QueryTSP key={index} optionItem={item}/>
-                                    })
-                                    : <></>
-                            }
-                        </datalist>
+                        {/*    {*/}
+                        {/*        this.state.isShowDICT_NET_BRAND_QueryTSP*/}
+                        {/*            ? this.state.DICT_NET_BRAND_QueryTSP.map((item, index) => {*/}
+                        {/*                return < OptionItemDICT_NET_BRAND_QueryTSP key={index} optionItem={item}/>*/}
+                        {/*            })*/}
+                        {/*            : <></>*/}
+                        {/*    }*/}
+                        {/*</datalist>*/}
                         <label htmlFor="status">Назва ТСП</label>
                         <input className="form-control" disabled value={this.state.client_name} type="text"/>
                         {/*<label htmlFor="status">Назва ТСП</label>*/}

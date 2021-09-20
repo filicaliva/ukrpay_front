@@ -1325,7 +1325,7 @@ class NETWORK_CREATE extends React.Component {
                     <div className="coverInputs">
                         <label htmlFor="brand_id">ID мережі</label>
                         <input disabled={this.state.isDisableTVBV ? 'disabled' : ''}  value={this.state.brand_id} api_name="brand_id" id="brand_id" type="text" className="form-control"/>
-                        <label htmlFor="brand_region">Регіональні управління</label>
+                        <label htmlFor="brand_region">РУ менеджера</label>
                         <select disabled={this.state.isDisableInput ? 'disabled' : ''} onChange={this.changeInput} api_name="brand_region" id="brand_region" className="form-select"
                                 title="Регіональні управління">
                             <option>-</option>

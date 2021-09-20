@@ -325,6 +325,47 @@ header{
     display: flex;
     flex-direction: column;
     margin-right: 10px;
+    .autocomplete{
+      position: relative;
+      .dn{
+        display: none!important;
+      }
+      input{
+        color: #8e8e8e;
+      }
+      //input:focus{
+      //  color: initial;
+      //}
+      .selected{
+        color: #212529;
+      }
+      .blockSelect{
+        position: absolute;
+        top: 38px;
+        border: 1px solid #ced4da;
+        //max-width: 243.17px;
+        background: #fff;
+        overflow-y: auto;
+        max-height: 300px;
+        width: 100%;
+        border-top: none;
+        z-index: 1;
+        -webkit-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+        -moz-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+        box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+        .blockSelectItem{
+          padding: 2px 5px;
+          cursor: pointer;
+          &:hover{
+            color: #fff;
+            background: #797b7d;
+          }
+        }
+      }
+      .loader{
+        font-size: 25px;
+      }
+    }
   }
   .coverInputSelect{
     margin-right: 10px;
@@ -395,16 +436,26 @@ header{
       .dn{
         display: none!important;
       }
+      input{
+        color: #8e8e8e;
+      }
+      input.selected{
+        color: #212529;
+      }
       .blockSelect{
         position: absolute;
         top: 38px;
         border: 1px solid #ced4da;
-        max-width: 243.17px;
+        //max-width: 243.17px;
         background: #fff;
         overflow-y: auto;
         max-height: 300px;
         width: 100%;
         border-top: none;
+        z-index: 1;
+        -webkit-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+        -moz-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+        box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
         .blockSelectItem{
           padding: 2px 5px;
           cursor: pointer;
@@ -413,6 +464,9 @@ header{
             background: #797b7d;
           }
         }
+      }
+      .loader{
+        font-size: 25px;
       }
     }
     .coverInputs{
@@ -434,6 +488,8 @@ header{
 
 }
 
+
+
 .DICT_NET_BRAND{
   .addbBlock{
     display: flex;
@@ -444,6 +500,44 @@ header{
     .coverInputs{
       display: flex;
       flex-direction: column;
+      .autocomplete{
+        position: relative;
+        .dn{
+          display: none!important;
+        }
+        input{
+          color: #8e8e8e;
+        }
+        input.selected{
+          color: #212529;
+        }
+        .blockSelect{
+          position: absolute;
+          top: 38px;
+          border: 1px solid #ced4da;
+          //max-width: 243.17px;
+          background: #fff;
+          overflow-y: auto;
+          max-height: 300px;
+          width: 100%;
+          border-top: none;
+          z-index: 1;
+          -webkit-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+          -moz-box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+          box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+          .blockSelectItem{
+            padding: 2px 5px;
+            cursor: pointer;
+            &:hover{
+              color: #fff;
+              background: #797b7d;
+            }
+          }
+        }
+        .loader{
+          font-size: 25px;
+        }
+      }
       .innerBlock{
         .coverInput{
           display: flex;
@@ -517,6 +611,8 @@ header{
     font-size: 10px;
   }
 }
+
+
 
 
 table {
