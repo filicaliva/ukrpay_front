@@ -161,13 +161,16 @@ class REPORTS_ACQUIRING_MONITOR extends React.Component {
                         ? <>
                             <div className="innerTable">
                                 <div className="Table">
-                                    <BootstrapTable data={this.state.ReportsMonitor}
+                                    <BootstrapTable  data={this.state.ReportsMonitor}
                                         // selectRow={selectRowProp}
                                     >
 
                                         {/*{this.testRendColums}*/}
 
-                                        <TableHeaderColumn isKey dataField='report_name' filter={ { type: 'TextFilter', delay: 1000 } }>
+                                        <TableHeaderColumn isKey dataField='report_name'   
+                                            width="400" 
+                                            tdStyle={{ whiteSpace: 'normal', wordWrap: 'break-word' }} 
+                                            filter={ { type: 'TextFilter', delay: 1000 } }>
                                             Назва звіту
                                         </TableHeaderColumn>
                                         <TableHeaderColumn dataField='date_submitted'  filter={ { type: 'TextFilter', delay: 1000 } }>
@@ -182,7 +185,7 @@ class REPORTS_ACQUIRING_MONITOR extends React.Component {
                                         <TableHeaderColumn dataField='user'  filter={ { type: 'TextFilter', delay: 1000 } }>
                                             Користувач
                                         </TableHeaderColumn>
-                                        <TableHeaderColumn dataField='report_id' dataFormat={hendleDownload} >
+                                        <TableHeaderColumn dataField='report_id'  width="100"  dataFormat={hendleDownload} >
 
                                         </TableHeaderColumn>
 
@@ -190,8 +193,7 @@ class REPORTS_ACQUIRING_MONITOR extends React.Component {
                                 </div>
                             </div>
                         </>
-                        : <>
-                        </>
+                        : null
                 }
 
 

@@ -223,6 +223,7 @@ class REPORT_OPERATIONS_NET extends React.Component {
 
       isShow_DICT_TERMINAL: false,
       DICT_TERMINAL_VALUE: [],
+      error_text: "Заповніть будь ласка поле!"
     };
     this.myRef = React.createRef();
     this.handleRequestDICT_BRANCH_NAME =
@@ -669,8 +670,8 @@ class REPORT_OPERATIONS_NET extends React.Component {
         //         isShowPopupError: true
         //     });
         // }
-
         this.props.store.changeLoading(false);
+        window.location.href = "/dashboard/REPORTS_ACQUIRING_MONITOR";
         //this.props.store.showTable(true);
       })
       .catch((error) => {
@@ -914,82 +915,49 @@ class REPORT_OPERATIONS_NET extends React.Component {
   sendOptionToServer(){
     if (
       this.state.isInstitution_idValidation &&
-      this.state.isBrandName_toValidation &&
-      this.state.isTSP_toValidation 
+      this.state.isDate_type_idValidation &&
+      this.state.isDate_fromValidation &&
+      this.state.isDate_toValidation
     ) {
       
       //// console.log(this.state.isInstitution_idValidation && this.state.isMerchant_idValidation && this.state.isTerminal_type_idValidation && this.state.isDate_type_idValidation && this.state.isDate_fromValidation && this.state.isDate_toValidation);
       //// console.log('agon');
-
-      this.state.AcquiringReportsCriteria.network_brand_id =
-        this.state.DICT_BRAND_NAME_ID;
+      if( this.state.DICT_BRAND_NAME_ID){
+        this.state.AcquiringReportsCriteria.network_brand_id =
+          this.state.DICT_BRAND_NAME_ID;
+      }
       this.state.AcquiringReportsCriteria.institution_id = Number(
         this.state.AcquiringReportsCriteria.institution_id
       );
-      this.state.AcquiringReportsCriteria.mcc_code = Number(
-        this.state.AcquiringReportsCriteria.mcc_code
-      );
+      if(this.state.AcquiringReportsCriteria.mcc_code){
+        this.state.AcquiringReportsCriteria.mcc_code = Number(
+          this.state.AcquiringReportsCriteria.mcc_code
+        );
+      }
 
       this.requestReports_Acquiring(
         this.props.store.userState.token,
         this.state.AcquiringReportsCriteria
       );
 
-      window.location.href = "/dashboard/REPORTS_ACQUIRING_MONITOR";
     }
   }
   defineValidationInputs = () => {
     if (this.state.institution_id == null || this.state.institution_id == "") {
       this.setState({ isInstitution_idValidation: false });
     }
-    if (this.state.merchant_id == null || this.state.merchant_id == "") {
-      this.setState({ isMerchant_idValidation: false });
-    }else{
-      this.setState({ isMerchant_idValidation: true });
 
-    }
-    if (
-      this.state.terminal_type_id == null ||
-      this.state.terminal_type_id == ""
-    ) {
-      this.setState({ isTerminal_type_idValidation: false });
-    }
     if (this.state.date_type_id == null || this.state.date_type_id == "") {
       this.setState({ isDate_type_idValidation: false });
     }
-    if (
-      this.state.DICT_BRAND_NAME_ID === null ||
-      this.state.DICT_BRAND_NAME_ID === ""
-    ) {
-      this.setState({ isBrandName_toValidation: false });
-    } else {
-      this.setState({ isBrandName_toValidation: true });
-    }
-    if (
-      this.state.AcquiringReportsCriteria.tsp_id === undefined ||
-      this.state.AcquiringReportsCriteria.tsp_id === ""
-    ) {
-      this.setState({ isTSP_toValidation: false });
-    } else {
-      this.setState({ isTSP_toValidation: true });
-    }
-    if (
-      this.state.AcquiringReportsCriteria.merchant_id === undefined ||
-      this.state.AcquiringReportsCriteria.merchant_id === ""
-    ) {
-      this.setState({ isMerchant_toValidation: false });
-    } else {
-      this.setState({ isMerchant_toValidation: true });
-    }
 
-    if (
-      this.state.AcquiringReportsCriteria.terminal_id === undefined ||
-      this.state.AcquiringReportsCriteria.terminal_id === ""
-    ) {
-      this.setState({ isTerminal_toValidation: false });
-    } else {
-      this.setState({ isTerminal_toValidation: true });
-    }
+    if (this.state.date_from == null || this.state.date_from == "") {
+      this.setState({isDate_fromValidation: false});
+  }
+  if (this.state.date_to == null || this.state.date_to == "") {
+      this.setState({isDate_toValidation: false});
+  }
+
 
     this.setState({}, ()=>this.sendOptionToServer())
   };
@@ -2041,18 +2009,15 @@ class REPORT_OPERATIONS_NET extends React.Component {
                     <OptionItemDICT_INSTITUTION key={index} optionItem={item} />
                   );
                 })
-              ) : (
-                <></>
-              )}
+              ) : null}
             </select>
+            <p className="error">{this.state.isInstitution_idValidation ? null : this.state.error_text}</p>
             <label htmlFor="TVBV">ТВБВ</label>
             <select
               id="dropdown-basic-button"
               onChange={this.changeInput}
               apiName="bank_branch_id"
-              className={`${
-                this.state.isInstitution_idValidation ? "" : "validError"
-              } form-select`}
+              className={`form-select`}
               disabled={this.state.isDisableTVBV ? "disabled" : ""}
               title="ТВБВ"
             >
@@ -2457,6 +2422,7 @@ class REPORT_OPERATIONS_NET extends React.Component {
                       })
                     : null}
                 </select>
+                <p className="error">{this.state.isDate_type_idValidation ? null : this.state.error_text}</p>
               </div>
             </div>
             <div className="coverInput">
@@ -2487,6 +2453,7 @@ class REPORT_OPERATIONS_NET extends React.Component {
                   />
                 </div>
               </div>
+              <p className="error">{this.state.isDate_fromValidation &&this.state.isDate_toValidation  ? null : "Заповніть будь-ласка поля!"}</p>
             </div>
           </div>
         </div>

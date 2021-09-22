@@ -66,7 +66,7 @@ const SampleComponent = (props) => {
             <div className="innerBlock">
                 <label htmlFor="brand_id">ID 2-го рівня</label>
                 <input api_name="brand_id" value={props.data.entity_id} id="brand_id" type="text" className="form-control" disabled/>
-                <label htmlFor="brand_region">ID РУ</label>
+                <label htmlFor="brand_region">РУ менеджера</label>
                 <input api_name="brand_region" value={props.brand_region} id="brand_region" type="text" className="form-control" disabled/>
             </div>
         </div>
@@ -1229,6 +1229,7 @@ class NETWORK_CREATE extends React.Component {
             showTwoLevel: true,
             moreTwoLevel: true
         });
+        this.more()
 
     }
     showTwoLevelNo = () => {
@@ -1289,7 +1290,7 @@ class NETWORK_CREATE extends React.Component {
                     <div className="optionBlock"></div>
                 </div>
                 <div className="addbBlock">
-                    <div className="coverInputs">
+                    <div className="coverInputs justify-content-end">
                         <label htmlFor="name_netWork">Найменування мережі</label>
                         <input
                             //onChange={this.nameNetWork}
@@ -1322,7 +1323,7 @@ class NETWORK_CREATE extends React.Component {
 
 
                     </div>
-                    <div className="coverInputs">
+                    <div className="coverInputs justify-content-end">
                         <label htmlFor="brand_id">ID мережі</label>
                         <input disabled={this.state.isDisableTVBV ? 'disabled' : ''}  value={this.state.brand_id} api_name="brand_id" id="brand_id" type="text" className="form-control"/>
                         <label htmlFor="brand_region">РУ менеджера</label>
@@ -1468,7 +1469,7 @@ class NETWORK_CREATE extends React.Component {
                                         />
                                     ))
                                 }
-                                <button className="btn btn-secondary" onClick={this.more}>Додати 2-й рівень до мережі</button>
+                                <button className="btn btn-secondary" onClick={this.more}>Додати ще</button>
                             </>
                             : <></>
                     }

@@ -4,6 +4,7 @@ import * as axios from "axios";
 
 import {Field, reduxForm} from "redux-form";
 import InputMask from "react-input-mask";
+import { Alert } from 'react-bootstrap';
 
 
 const OptionItemDICT_INSTITUTION = (props) => {
@@ -129,7 +130,7 @@ class AutocompleteInputTspName extends React.Component {
 
             isLoading: false,
 
-            selected: false
+            selected: false,
         }
         this.myRef = React.createRef();
     }
@@ -291,8 +292,6 @@ class AutocompleteInputTspName extends React.Component {
 
     }
     render() {
-        console.log(this.props);
-        console.log(this.state);
         return(
             <div className="autocomplete">
                 <input
@@ -829,6 +828,8 @@ class REPORT_OPERATIONS extends React.Component {
             isShowBlockSelectDICT_MCC: false,
             isShowInputResDICT_MCC: false,
             isShowInputDICT_MCC: true,
+            error_text: "Заповніть будь ласка поле!",
+            isSuccess: false
 
         }
         this.myRef = React.createRef();
@@ -1117,7 +1118,7 @@ class REPORT_OPERATIONS extends React.Component {
             }
         )
             .then((response) => {
-                console.log(response.data);
+                console.log( response.data);
                 //console.log(response.data.users);
                 //console.log(response.data.Table);
 
@@ -1128,7 +1129,7 @@ class REPORT_OPERATIONS extends React.Component {
                 // if(response.data.record_count >= 1){
                 //     this.setState({
                 //         settings: response.data.settings,
-                //         tsp_list: response.data.tsp_list,
+                //         tsp_list: response.data.tsp_list, 
                 //         //tsp_id: response.data.tsp_list[0].tsp_id,
                 //         isShowTsp: true
                 //     });
@@ -1138,7 +1139,7 @@ class REPORT_OPERATIONS extends React.Component {
                 //     });
                 // }
 
-
+                this.setState({isSuccess: true})
                 this.props.store.changeLoading(false);
                 //this.props.store.showTable(true);
 
@@ -1387,17 +1388,23 @@ class REPORT_OPERATIONS extends React.Component {
         console.log(this.state.AcquiringReportsCriteria);
 
         this.defineValidationInputs();
-        if( this.state.isInstitution_idValidation && this.state.isMerchant_idValidation && this.state.isTerminal_type_idValidation && this.state.isDate_type_idValidation && this.state.isDate_fromValidation && this.state.isDate_toValidation ) {
-            //console.log(this.state.isInstitution_idValidation && this.state.isMerchant_idValidation && this.state.isTerminal_type_idValidation && this.state.isDate_type_idValidation && this.state.isDate_fromValidation && this.state.isDate_toValidation);
-            //console.log('agon');
+        
+    }
+
+    sendOptionToServer(){
+        if( this.state.isInstitution_idValidation &&
+            this.state.isTerminal_type_idValidation &&
+            this.state.isMerchant_idValidation &&
+            this.state.isDate_type_idValidation &&
+            this.state.isDate_fromValidation &&
+            this.state.isDate_toValidation 
+            ) {
             this.requestReports_Acquiring( this.props.store.userState.token,  this.state.AcquiringReportsCriteria);
         }
-
-
-    }
+      }
     defineValidationInputs = () => {
         if (this.state.institution_id == null || this.state.institution_id == "") {
-            this.setState({isInstitution_idValidation: false});
+            this.setState({isInstitution_idValidation: false });
         }
         if (this.state.merchant_id == null || this.state.merchant_id == "") {
             this.setState({isMerchant_idValidation: false});
@@ -1414,6 +1421,8 @@ class REPORT_OPERATIONS extends React.Component {
         if (this.state.date_to == null || this.state.date_to == "") {
             this.setState({isDate_toValidation: false});
         }
+
+        this.setState({}, ()=>this.sendOptionToServer())
     }
     Tsp_list = (tsp_list) => {
         console.log(tsp_list);
@@ -2284,22 +2293,24 @@ class REPORT_OPERATIONS extends React.Component {
         });
     }
     render() {
-        // console.log(this.props.store.menuState.tableData);
-        // console.log(this.state.DICT_INSTITUTION);
-        // console.log(this.state.DICT_BRANCH);
-        //console.log(this.state.TSPReportSettingsSTD);
-        console.log(this.state);
-        console.log( this.state.AcquiringReportsCriteria );
-
-
         return (
             <div className="coverTable REPORT_aquiring">
+                {
+                this.state.isSuccess ?
+                <Alert variant={"success"}>
+                    Звіт Виписка операцій успішно сформована. Перейдіть по {" "}
+                    <Alert.Link href="/dashboard/REPORTS_ACQUIRING_MONITOR">лінку</Alert.Link>. 
+                    Для перегляду звіта. 
+                </Alert>
+                 : null
+                }
+             
                 <div className="headerTable">
                     <div className="titleTable">{this.activeOperation(this.props.store.userState.OPERATIONS, this.props.store.location.pathname.substr(11))}</div>
                     <div className="optionBlock"></div>
                 </div>
                 <div className="filter">
-                    <div className="coverInput">
+                    <div className="coverInput col-3">
                         <label htmlFor="DICT_INSTITUTION">РУ менеджера</label>
                         <select onChange={this.selectDICT_INSTITUTION} apiName="institution_id" id="dropdown-basic-button" className={`${this.state.isInstitution_idValidation ? '' : 'validError'} form-select`}
                                 title="Регіональні управління">
@@ -2314,6 +2325,7 @@ class REPORT_OPERATIONS extends React.Component {
                                     </>
                             }
                         </select>
+                        <p className="error">{this.state.isInstitution_idValidation ? null : this.state.error_text}</p>
                         <label htmlFor="TVBV">ТВБВ</label>
                         <select  id="dropdown-basic-button" onChange={this.changeInput} apiName="bank_branch_id" className="form-select"
                                  disabled={this.state.isDisableTVBV ? 'disabled' : ''}
@@ -2347,7 +2359,7 @@ class REPORT_OPERATIONS extends React.Component {
                         />
                         {/*<input onChange={this.changeInput} className="form-control" apiName="ident_code" id="INN" type="text"/>*/}
                     </div>
-                    <div className="coverInput">
+                    <div className="coverInput col-3">
 
                         {/*<label htmlFor="report_type_id">Назва звіту</label>*/}
                         {/*<select onChange={this.changeInput} apiName="report_type_id" id="report_type_id" className="form-select"*/}
@@ -2379,17 +2391,19 @@ class REPORT_OPERATIONS extends React.Component {
                                     </>
                             }
                         </select>
-
+                        <p className="error">{this.state.isTerminal_type_idValidation ? null : this.state.error_text}</p>
                         <label htmlFor="merchant">merchant ID</label>
                         <input onChange={this.changeInput} className={`${this.state.isMerchant_idValidation ? '' : 'validError'} form-control`} apiName="merchant_id" id="merchant" type="text"/>
-
+                        <p className="error">{this.state.isMerchant_idValidation ? null : this.state.error_text}</p>
                         <label htmlFor="terminal_id">Terminal ID</label>
                         <input onChange={this.changeInput} className="form-control" apiName="terminal_id" id="terminal_id" type="text"/>
 
                     </div>
-                    <div className="coverInput">
-                        <label htmlFor="base">Базові поля</label>
-                        <input  apiName="base" id="base" type="checkbox"/>
+                    <div className="coverInput col-3">
+                        <div className="base-field" >
+                            <label htmlFor="base">Базові поля</label>
+                            <input  apiName="base" id="base" type="checkbox"/>
+                        </div>
                         <label htmlFor="DICT_PAYMENT_SYSTEM">Карти</label>
                         <select onChange={this.changeInput} apiName="payment_system_id" id="dropdown-basic-button" className="form-select"
                                 title="Карти">
@@ -2455,8 +2469,8 @@ class REPORT_OPERATIONS extends React.Component {
                             }
                         </select>
                     </div>
-                    <div className="coverInput">
-                        <div className="coverInput">
+                    <div className="coverInput col-3">
+                        <div className="coverInput col-11">
                             <div className="coverDate">
                                 {/*<label htmlFor="date_type_id">Дата звіту</label>*/}
                                 {/*<input onChange={this.changeInputDateReport} apiName="date_type_id" className="customInput" id="date_type_id" type="date"/>*/}
@@ -2476,20 +2490,22 @@ class REPORT_OPERATIONS extends React.Component {
                                             </>
                                     }
                                 </select>
+                                <p className="error">{this.state.isDate_type_idValidation ? null : this.state.error_text}</p>
                             </div>
                         </div>
-                        <div className="coverInput">
+                        <div className="coverInput col-11">
                             <span>Період звіту</span>
-                            <div className="coverInputs">
-                                <div className="coverDate">
+                            <div className="row">
+                                <div className="coverDate col-6">
                                     <label htmlFor="date_report_from">З</label>
                                     <input onChange={this.changeInputDateReport_from} apiName="date_from" className={`${this.state.isDate_fromValidation ? '' : 'validError'} customInput form-control`} id="date_from" type="date"/>
                                 </div>
-                                <div className="coverDate">
+                                <div className="coverDate col-6">
                                     <label htmlFor="date_report_to">По</label>
                                     <input onChange={this.changeInputDateReport_to} apiName="date_to" className={`${this.state.isDate_toValidation ? '' : 'validError'} customInput form-control`} id="date_to" type="date"/>
                                 </div>
                             </div>
+                            <p className="error">{this.state.isDate_fromValidation && this.state.isDate_toValidation  ? null : "Заповніть будь-ласка поля!"}</p>
                         </div>
 
                     </div>
