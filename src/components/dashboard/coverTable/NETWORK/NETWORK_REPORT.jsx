@@ -49,12 +49,8 @@ export default function NETWORK_REPORT({ store }) {
       .then((res) => {
         const options =
           res.data.record_count > 0
-            ? res.data.Table.TableRows.map((i) => ({
-                id: i.brand_id,
-                value: i.brand_name,
-              }))
+            ? res.data.Table.TableRows
             : [];
-
         setOptions(options);
         setIsLoading(false);
       });
@@ -224,28 +220,35 @@ export default function NETWORK_REPORT({ store }) {
         headers: {
           token: store.userState.token,
         },
+        responseType: 'blob',
        
       })
-      .then((res) => {
-        window.location.href = "/dashboard/REPORTS_ACQUIRING_MONITOR";
+      .then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'network_report.xlsx');
+        document.body.appendChild(link);
+        link.click();
+
       });
   };
 
   return (
     <div className="coverTable DICT_NET_BRAND">
       <div className="headerTable">
-        <div className="titleTable">Звіт по мережевим клієнтам</div>
+        <h3 className="titleTable">Звіт по мережевим клієнтам</h3>
       </div>
       <div className="addbBlock">
         <div className="row col-4">
-          <div>
+          <div className="row col-8">
             <AsyncTypeahead
               filterBy={() => true}
               id="async-brand"
               isLoading={isLoading}
               labelKey={(option) => {
                 setBrand(option);
-                return option.value;
+                return option.brand_name;
               }}
               minLength={3}
               onSearch={handleSearchBrandName}
@@ -254,13 +257,13 @@ export default function NETWORK_REPORT({ store }) {
               placeholder="Назва мережі..."
               promptText=""
               renderMenuItemChildren={(option, props) => (
-                <option value={option.id}>{option.value}</option>
+                <option value={option.brand_id}>{option.brand_name}</option>
               )}
             />
           </div>
           <div>
-            <label>Назва статуса мережі</label>
-            <Form.Select
+            {/* <label>Назва статуса мережі</label> */}
+            {/* <Form.Select
               onChange={(e) => {
                 setBrandStatus({
                   brand_status_name:
@@ -275,10 +278,17 @@ export default function NETWORK_REPORT({ store }) {
                     <option value={option.id}>{option.value}</option>
                   ))
                 : null}
-            </Form.Select>
+            </Form.Select> */}
+              <Form.Check 
+                style={{marginTop: "20px"}}
+                type={"checkbox"}
+                id={`brand_name_checkbox`}
+                label={`Назва статуса мережі`}
+                checked={true}
+              />
           </div>
           <div>
-            <label>ПІБ менеджера мережі</label>
+            {/* <label>ПІБ менеджера мережі</label>
             <Form.Select
               onChange={(e) => {
                 setNameManager({
@@ -292,10 +302,17 @@ export default function NETWORK_REPORT({ store }) {
                     <option value={option.id}>{option.value}</option>
                   ))
                 : null}
-            </Form.Select>
+            </Form.Select> */}
+                <Form.Check 
+                style={{marginTop: "20px"}}
+                type={"checkbox"}
+                id={`brand_contact_name`}
+                label={`ПІБ менеджера мережі`}
+                checked={true}
+              />
           </div>
           <div>
-            <label>РУ менеджера мережі</label>
+            {/* <label>РУ менеджера мережі</label>
             <Form.Select
               onChange={(e) => {
                 setRUManager({
@@ -309,12 +326,19 @@ export default function NETWORK_REPORT({ store }) {
                     <option value={option.id}>{option.value}</option>
                   ))
                 : null}
-            </Form.Select>
+            </Form.Select> */}
+              <Form.Check 
+                style={{marginTop: "20px"}}
+                type={"checkbox"}
+                id={`brand_manager_id`}
+                label={`РУ менеджера мережі`}
+                checked={true}
+              />
           </div>
 
-          <h3>Контактна особа мережі</h3>
+          <h5 className="mt-4" >Контактна особа мережі</h5>
 
-          <div className="form" onChange={handleContactInput}>
+          {/* <div className="form" onChange={handleContactInput}>
             <label>ПІБ</label>
             <Form.Control
               type="text"
@@ -339,22 +363,72 @@ export default function NETWORK_REPORT({ store }) {
               name="brand_contact_email"
               id="brand_contact_email"
             />
-          </div>
-        </div>
+          </div>*/}
+          <div>
+            <Form.Check 
+                style={{marginTop: "10px"}}
+                type={"checkbox"}
+                id={`brand_contact_name`}
+                label={`ПІБ`}
+                checked={true}
+              />
 
-        <div className="row col-4">
-          <h3 style={{ height: "0" }}>2 рівень</h3>
-          <div className="form" onChange={handleContactInput}>
+          </div>
+            <div>
+              <Form.Check
+                  style={{marginTop: "20px"}}
+                  type={"checkbox"}
+                  id={`brand_contact_position`}
+                  label={`Посада`}
+                  checked={true}
+                />
+            </div>
+            <div>
+              <Form.Check
+                  style={{marginTop: "20px"}}
+                  type={"checkbox"}
+                  id={`brand_contact_phone`}
+                  label={`Телефон`}
+                  checked={true}
+                />
+            </div>
+            <div>
+              <Form.Check
+                  style={{marginTop: "20px"}}
+                  type={"checkbox"}
+                  id={`brand_contact_email`}
+                  label={`Email`}
+                  checked={true}
+                />
+            </div>
+        </div> 
+
+        <div className="col-4">
+          <div>
+          <h5>2 рівень</h5>
+
+          </div>
+          {/* <div className="form" onChange={handleContactInput}>
             <label>ЄДРПОУ 2 рівень</label>
             <Form.Control
               type="number"
               name="level2_ident_code"
               id="level2_ident_code"
             />
+          </div> */}
+
+          <div>
+            <Form.Check 
+                style={{marginTop: "20px"}}
+                type={"checkbox"}
+                id={`level2_ident_code`}
+                label={`ЄДРПОУ 2 рівень`}
+                checked={true}
+              />
           </div>
 
           <div>
-            <label>Назва 2 рівня: </label>
+            {/* <label>Назва 2 рівня: </label>
             <Form.Select
               onChange={(e) => {
                 console.log();
@@ -400,13 +474,56 @@ export default function NETWORK_REPORT({ store }) {
                     <option value={option.id}>{option.value}</option>
                   ))
                 : null}
-            </Form.Select>
+            </Form.Select> */}
+
+            <div>
+              <Form.Check 
+                  style={{marginTop: "20px"}}
+                  type={"checkbox"}
+                  id={`level2_name`}
+                  label={`Назва 2 рівня:`}
+                  checked={true}
+                />
+            </div>
+
+            <div>
+              <Form.Check 
+                  style={{marginTop: "20px"}}
+                  type={"checkbox"}
+                  id={`level2_id`}
+                  label={`ID 2 рівня:`}
+                  checked={true}
+                />
+            </div>
+
+            <div>
+              <Form.Check 
+                  style={{marginTop: "20px"}}
+                  type={"checkbox"}
+                  id={`level2_manager_id`}
+                  label={`Менеджер 2 рівня:`}
+                  checked={true}
+                />
+            </div>
+
+            <div>
+              <Form.Check 
+                  style={{marginTop: "20px"}}
+                  type={"checkbox"}
+                  id={`level2_manager_institution_id`}
+                  label={`РУ менеджера 2 рівня:`}
+                  checked={true}
+                />
+            </div>
           </div>
         </div>
 
-        <div className="row col-4">
-          <h3 style={{ height: "0" }}>ТСП</h3>
+        <div className="col-4">
+          <div className="row" >
+            <h5>ТСП</h5>
 
+          </div>
+{/* 
           <div
             style={{ height: "120px" }}
             className="form"
@@ -415,10 +532,20 @@ export default function NETWORK_REPORT({ store }) {
           >
             <label>ІНН/ЄДРПОУ</label>
             <Form.Control type="number" name="ident_code" id="ident_code" />
+          </div> */}
+
+      <div>
+            <Form.Check 
+                style={{marginTop: "20px"}}
+                type={"checkbox"}
+                id={`inn`}
+                label={`ІНН/ЄДРПОУ`}
+                checked={true}
+              />
           </div>
 
           <div>
-            <div>
+            {/* <div>
               <label>Назва ТСП: </label>
               <Form.Select
                 onChange={(e) => {
@@ -475,11 +602,41 @@ export default function NETWORK_REPORT({ store }) {
                 </option>
               </Form.Select>
             </div>
+           */}
+
+          <div>
+            <Form.Check 
+                style={{marginTop: "20px"}}
+                type={"checkbox"}
+                id={`name_tsp`}
+                label={`Назва ТСП:`}
+                checked={true}
+              />
+          </div>
+          <div>
+            <Form.Check 
+                style={{marginTop: "20px"}}
+                type={"checkbox"}
+                id={`manager_tsp`}
+                label={`Менеджер ТСП:`}
+                checked={true}
+              />
+          </div>
+          <div>
+            <Form.Check 
+                style={{marginTop: "20px"}}
+                type={"checkbox"}
+                id={`ru_tsp`}
+                label={`РУ менеджера ТСП:`}
+                checked={true}
+              />
+          </div>
+          
           </div>
         </div>
       </div>
-      <div class="btnBlock" style={{ background: "white", padding: "20px" }}>
-        <button class="search btn btn-primary" onClick={confirm}>
+      <div class="btnBlock" style={{ background: "white", padding: "10px" }}>
+        <button class="btn btn-success" onClick={confirm}>
           Сформувати
         </button>
       </div>

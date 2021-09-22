@@ -910,7 +910,7 @@ class REPORT_OPERATIONS_NET extends React.Component {
 
     this.defineValidationInputs();
     
-  };
+  }
 
   sendOptionToServer(){
     if (
