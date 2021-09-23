@@ -80,7 +80,7 @@ class REPORTS_ACQUIRING_MONITOR extends React.Component {
 
 
                 //fileDownload( response.data, this.formatDateFile(new Date()));
-                fileDownload( response.data, nameArr[1].slice(22,nameArr[1].length-3));
+                fileDownload( response.data, nameArr[1].slice(11,nameArr[1].length-1));
 
                 this.props.store.changeLoading(false);
 
