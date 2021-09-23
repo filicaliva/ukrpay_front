@@ -361,12 +361,14 @@ class REPORT_OPERATIONS_NET extends React.Component {
           this.setState({
             DICT_BRANCH_ENTITY_VALUES: res.data.Table.TableRows,
             isShow_ENTITY_NAME_VALUES: true,
+            isInstitution_idValidation: true
           });
         });
     } else {
       this.setState({
         DICT_BRANCH_ENTITY_VALUES: [],
         isShow_ENTITY_NAME_VALUES: false,
+        isInstitution_idValidation: true
       });
     }
     this.props.store.changeLoading(false);
@@ -946,8 +948,9 @@ class REPORT_OPERATIONS_NET extends React.Component {
     if ( this.state.DICT_BRAND_NAME_VAL == null ||  this.state.DICT_BRAND_NAME_VAL == "") {
       this.setState({ isBrandName_toValidation: false });
     }
-
-
+    if ( this.state.institution_id == null ||  this.state.institution_id == "") {
+      this.setState({ isInstitution_idValidation: false });
+    }
 
     if (this.state.date_type_id == null || this.state.date_type_id == "") {
       this.setState({ isDate_type_idValidation: false });
@@ -2023,6 +2026,7 @@ class REPORT_OPERATIONS_NET extends React.Component {
               disabled={this.state.isDisableTVBV ? "disabled" : ""}
               title="ТВБВ"
             >
+              <option></option>
               {this.state.isShowSelectTVBV
                 ? this.state.DICT_BRANCH.map((item, index) => {
                     return (
@@ -2116,7 +2120,7 @@ class REPORT_OPERATIONS_NET extends React.Component {
             <Typeahead
               id="basic-typeahead-single"
               labelKey="name"
-              onChange={(val) => this.setState({ DICT_BRAND_NAME_VAL: val })}
+              onChange={(val) =>{ this.setState({ DICT_BRAND_NAME_VAL: val })}}
               options={this.state.DICT_BRAND_NAME_VALUES}
               placeholder="Почніть вводити назву"
               selected={this.state.DICT_BRAND_NAME_VAL}
