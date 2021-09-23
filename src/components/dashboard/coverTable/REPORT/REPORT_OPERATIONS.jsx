@@ -2496,11 +2496,11 @@ class REPORT_OPERATIONS extends React.Component {
                         <div className="coverInput col-11">
                             <span>Період звіту</span>
                             <div className="row">
-                                <div className="coverDate col-6">
+                                <div className="coverDate col-11">
                                     <label htmlFor="date_report_from">З</label>
                                     <input onChange={this.changeInputDateReport_from} apiName="date_from" className={`${this.state.isDate_fromValidation ? '' : 'validError'} customInput form-control`} id="date_from" type="date"/>
                                 </div>
-                                <div className="coverDate col-6">
+                                <div className="coverDate col-11 ">
                                     <label htmlFor="date_report_to">По</label>
                                     <input onChange={this.changeInputDateReport_to} apiName="date_to" className={`${this.state.isDate_toValidation ? '' : 'validError'} customInput form-control`} id="date_to" type="date"/>
                                 </div>

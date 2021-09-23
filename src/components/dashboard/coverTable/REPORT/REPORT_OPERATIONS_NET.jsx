@@ -914,21 +914,21 @@ class REPORT_OPERATIONS_NET extends React.Component {
 
   sendOptionToServer(){
     if (
-      this.state.isInstitution_idValidation &&
+      this.state.isBrandName_toValidation &&
       this.state.isDate_type_idValidation &&
       this.state.isDate_fromValidation &&
       this.state.isDate_toValidation
     ) {
       
-      //// console.log(this.state.isInstitution_idValidation && this.state.isMerchant_idValidation && this.state.isTerminal_type_idValidation && this.state.isDate_type_idValidation && this.state.isDate_fromValidation && this.state.isDate_toValidation);
-      //// console.log('agon');
       if( this.state.DICT_BRAND_NAME_ID){
         this.state.AcquiringReportsCriteria.network_brand_id =
           this.state.DICT_BRAND_NAME_ID;
       }
-      this.state.AcquiringReportsCriteria.institution_id = Number(
-        this.state.AcquiringReportsCriteria.institution_id
-      );
+      if( this.state.AcquiringReportsCriteria.institution_id){
+        this.state.AcquiringReportsCriteria.institution_id = Number(
+          this.state.AcquiringReportsCriteria.institution_id);
+       
+      }
       if(this.state.AcquiringReportsCriteria.mcc_code){
         this.state.AcquiringReportsCriteria.mcc_code = Number(
           this.state.AcquiringReportsCriteria.mcc_code
@@ -943,9 +943,11 @@ class REPORT_OPERATIONS_NET extends React.Component {
     }
   }
   defineValidationInputs = () => {
-    if (this.state.institution_id == null || this.state.institution_id == "") {
-      this.setState({ isInstitution_idValidation: false });
+    if ( this.state.DICT_BRAND_NAME_VAL == null ||  this.state.DICT_BRAND_NAME_VAL == "") {
+      this.setState({ isBrandName_toValidation: false });
     }
+
+
 
     if (this.state.date_type_id == null || this.state.date_type_id == "") {
       this.setState({ isDate_type_idValidation: false });
@@ -953,11 +955,11 @@ class REPORT_OPERATIONS_NET extends React.Component {
 
     if (this.state.date_from == null || this.state.date_from == "") {
       this.setState({isDate_fromValidation: false});
-  }
-  if (this.state.date_to == null || this.state.date_to == "") {
-      this.setState({isDate_toValidation: false});
-  }
+    }
 
+    if (this.state.date_to == null || this.state.date_to == "") {
+        this.setState({isDate_toValidation: false});
+    }
 
     this.setState({}, ()=>this.sendOptionToServer())
   };
@@ -2123,7 +2125,8 @@ class REPORT_OPERATIONS_NET extends React.Component {
                 this.state.isBrandName_toValidation ? "" : "validError"
               }`}
             />
-
+            <p className="error">{this.state.isBrandName_toValidation ? null : this.state.error_text}</p>
+            
             <label htmlFor="TVBV">Назва мережі 2-го рівня</label>
             <select
               id="dropdown-basic-button"
@@ -2197,7 +2200,7 @@ class REPORT_OPERATIONS_NET extends React.Component {
                 : null}
             </select>
           </div>
-          <div className="col-2 coverInput">
+          <div className="col-3 coverInput">
             {/*<label htmlFor="report_type_id">Назва звіту</label>*/}
             {/*<select onChange={this.changeInput} apiName="report_type_id" id="report_type_id" className="form-select"*/}
             {/*        title="">*/}
@@ -2259,6 +2262,7 @@ class REPORT_OPERATIONS_NET extends React.Component {
               } form-select`}
               disabled={!this.state.isShow_DICT_MERCHANT ? "disabled" : ""}
             >
+              <option></option>
               {this.state.isShow_DICT_MERCHANT
                 ? this.state.DICT_MERCHANT_VALUE.map((item, index) => {
                     return (
@@ -2283,6 +2287,7 @@ class REPORT_OPERATIONS_NET extends React.Component {
               } form-select`}
               disabled={!this.state.isShow_DICT_TERMINAL ? "disabled" : ""}
             >
+              <option></option>
               {this.state.isShow_DICT_TERMINAL
                 ? this.state.DICT_TERMINAL_VALUE.map((item, index) => {
                     return (
@@ -2296,7 +2301,7 @@ class REPORT_OPERATIONS_NET extends React.Component {
                 : null}
             </select>
           </div>
-          <div className="col-2 coverInput">
+          <div className="col-3 coverInput">
             {/* <label htmlFor="base">Базові поля</label>
             <input apiName="base" id="base" type="checkbox" checked={true} /> */}
             <label htmlFor="DICT_PAYMENT_SYSTEM">Карти</label>
@@ -2393,8 +2398,8 @@ class REPORT_OPERATIONS_NET extends React.Component {
               )}
             </select>
           </div>
-          <div className="col-2 coverInput">
-            <div className="coverInput">
+          <div className="coverInput">
+            <div className="coverInput col-11">
               <div className="coverDate">
                 {/*<label htmlFor="date_type_id">Дата звіту</label>*/}
                 {/*<input onChange={this.changeInputDateReport} apiName="date_type_id" className="customInput" id="date_type_id" type="date"/>*/}
@@ -2427,8 +2432,8 @@ class REPORT_OPERATIONS_NET extends React.Component {
             </div>
             <div className="coverInput">
               <span>Період звіту</span>
-              <div className="coverInputs">
-                <div className="coverDate">
+              <div className="coverInputs row">
+                <div className="coverDate  col-11 mb-3">
                   <label htmlFor="date_report_from">З</label>
                   <input
                     onChange={this.changeInputDateReport_from}
@@ -2440,7 +2445,7 @@ class REPORT_OPERATIONS_NET extends React.Component {
                     type="date"
                   />
                 </div>
-                <div className="coverDate">
+                <div className="coverDate  col-11">
                   <label htmlFor="date_report_to">По</label>
                   <input
                     onChange={this.changeInputDateReport_to}
