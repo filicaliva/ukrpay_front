@@ -179,7 +179,7 @@ class REPORT_OPERATIONS_NET extends React.Component {
 
       AcquiringReportsCriteria: {
         report_type_id: "REPORT_OPERATIONS_NET",
-        payment_system_id: 1,
+        payment_system_id: 0,
         format_type_id: 1,
       },
 
@@ -2325,9 +2325,7 @@ class REPORT_OPERATIONS_NET extends React.Component {
                     />
                   );
                 })
-              ) : (
-                <></>
-              )}
+              ) : null}
             </select>
             <label htmlFor="mcc_code">MCC</label>
             {/*<input onChange={this.changeInput} className="form-control" apiName="mcc_code" id="mcc_code" type="text"/>*/}
