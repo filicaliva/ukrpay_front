@@ -73,15 +73,14 @@ class REPORTS_ACQUIRING_MONITOR extends React.Component {
             .then((response) => {
                 console.log(response);
                 console.log(response.data);
-                let nameArr = response.headers['content-disposition'].split(";");
-                //console.log(nameArr);
-                //console.log(nameArr[0]);
-                console.log(nameArr[0]);
-
-
-                //fileDownload( response.data, this.formatDateFile(new Date()));
-                fileDownload( response.data, nameArr[1].slice(11,nameArr[1].length-1));
-
+                let fileTitle = response.headers['content-disposition'];
+                
+                if(fileTitle.search('filename="')!==-1){
+                    fileTitle = response.headers['content-disposition'].slice(22).split('"; filename*=UTF-8')[0];
+                }else{
+                    fileTitle = response.headers['content-disposition'].slice(21).split('; filename*=UTF-8')[0];
+                }
+                fileDownload( response.data, fileTitle);
                 this.props.store.changeLoading(false);
 
             })
