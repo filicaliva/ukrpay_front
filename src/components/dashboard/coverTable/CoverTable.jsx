@@ -29,6 +29,7 @@ import REPORT_OPERATIONS_NET from "./REPORT/REPORT_OPERATIONS_NET";
 import NETWORK_CREATE from "./NETWORK/NETWORK_CREATE";
 import NETWORK_ADD_CLIENT from "./NETWORK/NETWORK_ADD_CLIENT";
 import NETWORK_REPORT from "./NETWORK/NETWORK_REPORT";
+import DICT_BIN_TABLE from "./DICT/DICT_BIN_TABLE";
 
 class Default extends React.Component{
     render() {
@@ -475,12 +476,14 @@ class CoverTable extends React.Component{
                 break
             case "NETWORK_REPORT":
                 return <NETWORK_REPORT store={this.props.store}/>
-                break
+            case "DICT_BIN_TABLE":
+                return <DICT_BIN_TABLE store={this.props.store}/>
+          
 
             default:
                 return <Default/>
         }
-    }
+    } 
     default = () => {
         console.log('зайшло default');
         return(

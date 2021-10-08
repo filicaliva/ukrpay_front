@@ -500,6 +500,27 @@ header{
 
 }
 
+.DICT_BIN_TABLE{
+  .filter{
+    background: white;
+    margin: 0;
+  }
+  .btnBlock{
+    background: white;
+    padding: 20px;
+  }
+  .form-input{
+    margin-top: 10px;
+  }
+  .error{
+    border: 1px solid red;
+  }
+  .error-text {
+    color: red;
+    margin-bottom: 0;
+    margin-top: 5px;
+}
+}
 
 
 .DICT_NET_BRAND{
