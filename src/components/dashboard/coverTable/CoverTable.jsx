@@ -30,6 +30,7 @@ import NETWORK_CREATE from "./NETWORK/NETWORK_CREATE";
 import NETWORK_ADD_CLIENT from "./NETWORK/NETWORK_ADD_CLIENT";
 import NETWORK_REPORT from "./NETWORK/NETWORK_REPORT";
 import DICT_BIN_TABLE from "./DICT/DICT_BIN_TABLE";
+import DICT_BANK_RANGE from "./DICT/DICT_BANK_RANGE";
 
 class Default extends React.Component{
     render() {
@@ -478,6 +479,8 @@ class CoverTable extends React.Component{
                 return <NETWORK_REPORT store={this.props.store}/>
             case "DICT_BIN_TABLE":
                 return <DICT_BIN_TABLE store={this.props.store}/>
+            case "DICT_BANK_RANGE":
+                return <DICT_BANK_RANGE store={this.props.store}/>
           
 
             default:
