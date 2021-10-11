@@ -803,7 +803,7 @@ class REPORT_OPERATIONS extends React.Component {
 
             AcquiringReportsCriteria: {
                 report_type_id: 'REPORT_OPERATIONS',
-                payment_system_id: 1,
+                payment_system_id: 0,
                 format_type_id: 1
             },
 

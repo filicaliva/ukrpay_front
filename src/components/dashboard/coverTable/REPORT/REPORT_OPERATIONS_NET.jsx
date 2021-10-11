@@ -182,7 +182,6 @@ class REPORT_OPERATIONS_NET extends React.Component {
         payment_system_id: 0,
         format_type_id: 1,
       },
-
       date_from: null,
       date_to: null,
       date_type_id: null,

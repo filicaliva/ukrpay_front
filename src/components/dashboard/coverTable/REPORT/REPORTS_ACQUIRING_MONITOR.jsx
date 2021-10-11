@@ -195,9 +195,6 @@ class REPORTS_ACQUIRING_MONITOR extends React.Component {
                         </>
                         : null
                 }
-
-
-
             </div>
 
         );
