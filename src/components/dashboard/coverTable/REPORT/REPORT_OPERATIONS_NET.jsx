@@ -2006,7 +2006,6 @@ class REPORT_OPERATIONS_NET extends React.Component {
               } form-select`}
               title="Регіональні управління"
             >
-              <option></option>
               {this.state.isShowSelectDICT_INSTITUTION ? (
                 this.state.DICT_INSTITUTION.map((item, index) => {
                   return (
@@ -2203,7 +2202,7 @@ class REPORT_OPERATIONS_NET extends React.Component {
                 : null}
             </select>
           </div>
-          <div className="col-3 coverInput">
+          <div className="col-2 coverInput">
             {/*<label htmlFor="report_type_id">Назва звіту</label>*/}
             {/*<select onChange={this.changeInput} apiName="report_type_id" id="report_type_id" className="form-select"*/}
             {/*        title="">*/}
@@ -2399,7 +2398,7 @@ class REPORT_OPERATIONS_NET extends React.Component {
               )}
             </select>
           </div>
-          <div className="coverInput">
+          <div className="col-4 coverInput">
             <div className="coverInput col-11">
               <div className="coverDate">
                 {/*<label htmlFor="date_type_id">Дата звіту</label>*/}
@@ -2433,8 +2432,8 @@ class REPORT_OPERATIONS_NET extends React.Component {
             </div>
             <div className="coverInput">
               <span>Період звіту</span>
-              <div className="coverInputs row">
-                <div className="coverDate  col-11 mb-3">
+              <div className="coverInputs row col-12">
+                <div className="coverDate col-6">
                   <label htmlFor="date_report_from">З</label>
                   <input
                     onChange={this.changeInputDateReport_from}
@@ -2446,7 +2445,7 @@ class REPORT_OPERATIONS_NET extends React.Component {
                     type="date"
                   />
                 </div>
-                <div className="coverDate  col-11">
+                <div className="coverDate col-6">
                   <label htmlFor="date_report_to">По</label>
                   <input
                     onChange={this.changeInputDateReport_to}

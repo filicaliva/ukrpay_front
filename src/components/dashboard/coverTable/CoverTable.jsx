@@ -25,6 +25,7 @@ import REPORTS_acquiring from "./REPORT/REPORTS_acquiring";
 import REPORTS_ACQUIRING_MONITOR from "./REPORT/REPORTS_ACQUIRING_MONITOR";
 import DICT_NET_BRAND from "./NETWORK/NETWORK_CREATE";
 import REPORT_OPERATIONS from "./REPORT/REPORT_OPERATIONS";
+import REPORT_OPERATIONS_INTERNET from "./REPORT/REPORT_OPERATIONS_INTERNET";
 import REPORT_OPERATIONS_NET from "./REPORT/REPORT_OPERATIONS_NET";
 import NETWORK_CREATE from "./NETWORK/NETWORK_CREATE";
 import NETWORK_ADD_CLIENT from "./NETWORK/NETWORK_ADD_CLIENT";
@@ -34,13 +35,11 @@ import DICT_BANK_RANGE from "./DICT/DICT_BANK_RANGE";
 
 class Default extends React.Component{
     render() {
-        console.log('зайшло default');
-        console.log('зайшло default');
         return(
             <div className="coverTable">
 
                 <div className="headerTable">
-                    <span>Не вибрано жодного звіту!!!</span>
+                    <span>Вас вітає <b>Ощадбанк Звітність.</b> <br/> Перейдіть на одну зі сторінок в меню.</span>
                     <div className="optionBlock"></div>
                 </div>
                 <div className="innerTable">
@@ -426,8 +425,9 @@ class CoverTable extends React.Component{
                 console.log( "REPORTS_ACQUIRING_MONITOR" );
                 return <REPORTS_ACQUIRING_MONITOR store={this.props.store}/>
             case "REPORT_OPERATIONS":
-                console.log( "REPORT_OPERATIONS" );
                 return <REPORT_OPERATIONS store={this.props.store}/>
+            case "REPORT_OPERATIONS_INTERNET":
+                return <REPORT_OPERATIONS_INTERNET store={this.props.store}/>
             case "REPORT_OPERATIONS_NET":
                 return <REPORT_OPERATIONS_NET store={this.props.store}/>
 
