@@ -20,6 +20,7 @@ import ReactBootstrapTable from "./test/ReactBootstrapTable";
 import TableADMIN_USERS from "./ADMIN/TableADMIN_USERS";
 import TableADMIN_OPERATIONS from "./ADMIN/TableADMIN_OPERATIONS";
 import TableADMIN_ROLE_OPERATIONS from "./ADMIN/TableADMIN_ROLE_OPERATIONS";
+import TableADMIN_USER_OPERATIONS from "./ADMIN/TableADMIN_USER_OPERATIONS";
 import REPORT_SETTINGS_TSP from "./REPORT/REPORT_SETTINGS_TSP";
 import REPORTS_acquiring from "./REPORT/REPORTS_acquiring";
 import REPORTS_ACQUIRING_MONITOR from "./REPORT/REPORTS_ACQUIRING_MONITOR";
@@ -413,6 +414,8 @@ class CoverTable extends React.Component{
                 break
             case 'ADMIN_ROLE_OPERATIONS':
                 return <TableADMIN_ROLE_OPERATIONS store={this.props.store}/>
+            case 'ADMIN_USER_OPERATIONS':
+                return <TableADMIN_USER_OPERATIONS store={this.props.store}/>
                 break
             //REPORT
 

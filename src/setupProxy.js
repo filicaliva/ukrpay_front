@@ -8,7 +8,8 @@ const endpoints = {
         '/api/Auth',
         '/api/Role',
         '/api/Operations',
-        '/api/RoleOperations'
+        '/api/RoleOperations',
+        '/api/UserOperations'
     ],
     8471: ['/api/Dictionary'],
     8472: [`/api/TSPReportSettings`],
