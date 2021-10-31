@@ -811,7 +811,7 @@ class REPORT_OPERATIONS extends React.Component {
 
             date_from: null,
             date_to: null,
-            date_type_id: null,
+            date_type_id: 2,
             institution_id: 0,
             merchant_id: null,
 
@@ -1390,7 +1390,7 @@ class REPORT_OPERATIONS extends React.Component {
         //     "date_type_id": 0
         // }
         //console.log(res);
-        console.log(this.state.AcquiringReportsCriteria);
+        // console.log("report: ", this.state.AcquiringReportsCriteria);
 
         this.defineValidationInputs();
         
@@ -1399,13 +1399,12 @@ class REPORT_OPERATIONS extends React.Component {
     sendOptionToServer(){
         if( this.state.isInstitution_idValidation &&
             this.state.isTerminal_type_idValidation &&
-            this.state.isMerchant_idValidation &&
             this.state.isDate_type_idValidation &&
             this.state.isDate_fromValidation &&
             this.state.isDate_toValidation 
             ) {
             this.checkMerchantID().then((res)=>{
-                if(res.data.ErrorStatus.ErrorCode!==0){
+                if(res.data.ErrorStatus.ErrorCode===0){
                     this.requestReports_Acquiring( this.props.store.userState.token,  this.state.AcquiringReportsCriteria);
                 }else{
                     this.setState({
@@ -1454,9 +1453,9 @@ class REPORT_OPERATIONS extends React.Component {
 
 
     defineValidationInputs = () => {
-        if (this.state.merchant_id == null || this.state.merchant_id == "") {
-            this.setState({isMerchant_idValidation: false});
-        }
+        // if (this.state.merchant_id == null || this.state.merchant_id == "") {
+        //     this.setState({isMerchant_idValidation: false});
+        // }
         if (this.state.date_type_id == null || this.state.date_type_id == "") {
             this.setState({isDate_type_idValidation: false});
         }
@@ -2522,16 +2521,13 @@ class REPORT_OPERATIONS extends React.Component {
                                 <label htmlFor="date_type_id">Дата звіту</label>
                                 <select onChange={this.changeInput} apiName="date_type_id" id="date_type_id" className={`${this.state.isDate_type_idValidation ? '' : 'validError'} form-select`}
                                         title="DICT_DATE_TYPE">
-                                    <option></option>
                                     {
                                         this.state.isShowSelectDICT_DATE_TYPE
                                             ?
                                             this.state.DICT_DATE_TYPE.map((item, index) => {
-                                                //console.log(item)
                                                 return < OptionItemDICT_DATE_TYPE key={index} optionItem={item}/>
                                             })
-                                            : <>
-                                            </>
+                                            : null
                                     }
                                 </select>
                                 <p className="error">{this.state.isDate_type_idValidation ? null : this.state.error_text}</p>

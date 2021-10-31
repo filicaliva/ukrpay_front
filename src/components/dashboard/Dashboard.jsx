@@ -7,6 +7,7 @@ import Menu from "./menu/Menu";
 import CoverTable from "./coverTable/CoverTable";
 import PopupTable from "./popup/PopupTable";
 import DashboardContainer from "./DashboardContainer";
+import LoaderUI from "../UI/LoaderUI";
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -72,20 +73,7 @@ class Dashboard extends React.Component {
     return (
       <div className="wrapper">
         {this.state.loading ? (
-          <div className="loading">
-            <div className="rotating">
-              <div class="lds-roller">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-              </div>
-            </div>
-          </div>
+          <LoaderUI/>
         ) : (
           <>
             <Header store={this.props}></Header>
@@ -105,7 +93,7 @@ class Dashboard extends React.Component {
         {this.props.menuState.showPopupTable ? (
           <PopupTable store={this.props} />
         ) : null}
-        
+        {this.props.menuState.isLoading ? <LoaderUI /> : null}
       </div>
     );
   }
