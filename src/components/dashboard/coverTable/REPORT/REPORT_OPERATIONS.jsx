@@ -1403,17 +1403,20 @@ class REPORT_OPERATIONS extends React.Component {
             this.state.isDate_fromValidation &&
             this.state.isDate_toValidation 
             ) {
-            this.checkMerchantID().then((res)=>{
-                if(res.data.ErrorStatus.ErrorCode===0){
-                    this.requestReports_Acquiring( this.props.store.userState.token,  this.state.AcquiringReportsCriteria);
-                }else{
-                    this.setState({
-                        merchant_error: res.data.ErrorStatus.ErrorMessage,
-                        isShowPopupError: true
-                    })
-                }
-            })
+                this.requestReports_Acquiring( this.props.store.userState.token,  this.state.AcquiringReportsCriteria);
         }
+      }
+
+      handleCheckId(){
+        this.checkMerchantID().then((res)=>{
+            if(res.data.ErrorStatus.ErrorCode!==0){
+           
+                this.setState({
+                    merchant_error: res.data.ErrorStatus.ErrorMessage,
+                    isShowPopupError: true
+                })
+            }
+        })
       }
 
       async checkMerchantID(){
@@ -2436,10 +2439,10 @@ class REPORT_OPERATIONS extends React.Component {
                         </select> */}
                         {/* <p className="error">{this.state.isTerminal_type_idValidation ? null : this.state.error_text}</p> */}
                         <label htmlFor="merchant">merchant ID</label>
-                        <input onChange={this.changeInput} className={`${this.state.isMerchant_idValidation ? '' : 'validError'} form-control`} apiName="merchant_id" id="merchant" type="text"/>
+                        <input onChange={this.changeInput} className={`${this.state.isMerchant_idValidation ? '' : 'validError'} form-control`} apiName="merchant_id" id="merchant" type="text" onBlur={this.handleCheckId.bind(this)}/>
                         <p className="error">{this.state.isMerchant_idValidation ? null : this.state.error_text}</p>
                         <label htmlFor="terminal_id">Terminal ID</label>
-                        <input onChange={this.changeInput} className="form-control" apiName="terminal_id" id="terminal_id" type="text"/>
+                        <input onChange={this.changeInput} className="form-control" apiName="terminal_id" id="terminal_id" type="text" onBlur={this.handleCheckId.bind(this)}/>
 
                     </div>
                     <div className="coverInput col-3">

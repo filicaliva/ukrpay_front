@@ -847,7 +847,7 @@ class AutocompleteInputMccCode extends React.Component {
             <></>
           )}
         </div>
-        {this.state.isLoading ? <LoaderUI/> : null}
+        {this.state.isLoading ? <LoaderUI /> : null}
       </div>
     );
   }
@@ -1419,22 +1419,23 @@ class REPORT_OPERATIONS extends React.Component {
       this.state.isDate_fromValidation &&
       this.state.isDate_toValidation
     ) {
-      this.checkMerchantID().then((res) => {
-        if (res.data.ErrorStatus.ErrorCode === 0) {
-          this.requestReports_Acquiring(
-            this.props.store.userState.token,
-            this.state.AcquiringReportsCriteria
-          );
-        } else {
-          this.setState({
-            merchant_error: res.data.ErrorStatus.ErrorMessage,
-            isShowPopupError: true,
-          });
-        }
-      });
+      this.requestReports_Acquiring(
+        this.props.store.userState.token,
+        this.state.AcquiringReportsCriteria
+      );
     }
   }
 
+  handleCheckId() {
+    this.checkMerchantID().then((res) => {
+      if (res.data.ErrorStatus.ErrorCode !== 0) {
+        this.setState({
+          merchant_error: res.data.ErrorStatus.ErrorMessage,
+          isShowPopupError: true,
+        });
+      }
+    });
+  }
   async checkMerchantID() {
     this.props.store.changeLoading(true);
     const baseUrl = `/api/Dictionary/QueryMerchant`;
@@ -2653,6 +2654,7 @@ class REPORT_OPERATIONS extends React.Component {
               apiName="merchant_id"
               id="merchant"
               type="text"
+              onBlur={this.handleCheckId.bind(this)}
             />
             <p className="error">
               {this.state.isMerchant_idValidation
@@ -2666,6 +2668,7 @@ class REPORT_OPERATIONS extends React.Component {
               apiName="terminal_id"
               id="terminal_id"
               type="text"
+              onBlur={this.handleCheckId.bind(this)}
             />
           </div>
           <div className="coverInput col-3">
