@@ -885,6 +885,7 @@ class REPORT_OPERATIONS extends React.Component {
         format_type_id: 1,
         terminal_type_id: 2,
         institution_id: 0,
+        date_type_id: 2,
       },
 
       date_from: null,
