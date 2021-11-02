@@ -830,6 +830,8 @@ class REPORT_OPERATIONS extends React.Component {
                 terminal_type_id: 1,
                 institution_id: 0,
                 date_type_id: 2,
+                merchant_id: 0, 
+                terminal_id:0
             },
 
             date_from: null,
@@ -1401,7 +1403,7 @@ class REPORT_OPERATIONS extends React.Component {
         let inputDataObj = this.state.AcquiringReportsCriteria;
 
         if(apiName == 'format_type_id' || apiName == 'mcc_code' || apiName == 'payment_system_id' || apiName == 'terminal_id' || apiName == 'bank_branch_id' || apiName == 'institution_id'){
-            inputDataObj[apiName] = Number(inputValue);
+            inputDataObj[apiName] = inputValue;
         }else{
             if(apiName == 'terminal_type_id'){
                 inputDataObj[apiName] = inputValue;
@@ -1459,7 +1461,7 @@ class REPORT_OPERATIONS extends React.Component {
             AcquiringReportsCriteria: inputDataObj
         });
         console.log(this.state);
-        console.log(this.state.AcquiringReportsCriteria);
+        console.log("here:", this.state.AcquiringReportsCriteria);
     }
 
 
@@ -2553,6 +2555,7 @@ class REPORT_OPERATIONS extends React.Component {
                         <label htmlFor="merchant">merchant ID</label>
                         <select onChange={this.changeInput} onFocus={()=>this.requestDICT_MERCHANT_SYSTEM()} apiName="merchant_id" id="dropdown-basic-button" className="form-select"
                                 title="merchant ID">
+                                    <option></option>
                             {
                                 this.state.isShowSelectDICT_MERCHANT_SYSTEM
                                     ?
@@ -2568,6 +2571,8 @@ class REPORT_OPERATIONS extends React.Component {
                         <label htmlFor="terminal_id">Terminal ID</label>
                         <select onChange={this.changeInput} onFocus={()=>this.requestDICT_TERMINAL_SYSTEM()} apiName="terminal_id" id="dropdown-basic-button" className="form-select"
                                 title="merchant ID">
+                                    <option></option>
+
                             {
                                 this.state.isShowSelectDICT_TERMINAL_SYSTEM
                                     ?

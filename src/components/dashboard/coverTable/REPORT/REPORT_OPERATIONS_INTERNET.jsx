@@ -899,6 +899,8 @@ class REPORT_OPERATIONS extends React.Component {
         terminal_type_id: 2,
         institution_id: 0,
         date_type_id: 2,
+        merchant_id: 0, 
+        terminal_id:0
       },
 
       date_from: null,
@@ -2755,6 +2757,7 @@ async requestDICT_TERMINAL_SYSTEM() {
             <label htmlFor="merchant">merchant ID</label>
                         <select onChange={this.changeInput} onFocus={()=>this.requestDICT_MERCHANT_SYSTEM()} apiName="merchant_id" id="dropdown-basic-button" className="form-select"
                                 title="merchant ID">
+                                    <option></option>
                             {
                                 this.state.isShowSelectDICT_MERCHANT_SYSTEM
                                     ?
@@ -2769,7 +2772,9 @@ async requestDICT_TERMINAL_SYSTEM() {
                         {/* <p className="error">{this.state.isMerchant_idValidation ? null : this.state.error_text}</p> */}
                         <label htmlFor="terminal_id">Terminal ID</label>
                         <select onChange={this.changeInput} onFocus={()=>this.requestDICT_TERMINAL_SYSTEM()} apiName="terminal_id" id="dropdown-basic-button" className="form-select"
-                                title="merchant ID">
+                                title="Terminal ID">
+                                    <option></option>
+
                             {
                                 this.state.isShowSelectDICT_TERMINAL_SYSTEM
                                     ?
