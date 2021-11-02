@@ -43,7 +43,20 @@ const OptionItemDICT_ACQUIRING_TYPE = (props) => {
     // <Dropdown.Item  onClick={() => this.selectRoleID} value={props.optionItem.role_id} >{props.optionItem.role_name}</Dropdown.Item>
   );
 };
-
+const OptionItemDICT_MERCHANT_SYSTEM = (props) => {
+  //console.log( props )
+  return(
+      <option   value={props.optionItem.merchant_id} >{props.optionItem.merchant_id}</option>
+      // <Dropdown.Item  onClick={() => this.selectRoleID} value={props.optionItem.role_id} >{props.optionItem.role_name}</Dropdown.Item>
+  )
+}
+const OptionItemDICT_TERMINAL_SYSTEM = (props) => {
+  //console.log( props )
+  return(
+      <option   value={props.optionItem.terminal_id} >{props.optionItem.terminal_id}</option>
+      // <Dropdown.Item  onClick={() => this.selectRoleID} value={props.optionItem.role_id} >{props.optionItem.role_name}</Dropdown.Item>
+  )
+}
 const OptionItemDICT_PAYMENT_SYSTEM = (props) => {
   //console.log( props )
   return (
@@ -894,6 +907,14 @@ class REPORT_OPERATIONS extends React.Component {
       institution_id: 0,
       merchant_id: null,
 
+      
+      DICT_TERMINAL_SYSTEM: null,
+      isShowSelectDICT_MERCHANT_SYSTEM: false,
+
+      DICT_MERCHANT_SYSTEM: null,
+      isShowSelectDICT_TERMINAL_SYSTEM: false,
+
+
       isInstitution_idValidation: true,
       isMerchant_idValidation: true,
       isTerminal_type_idValidation: true,
@@ -1106,6 +1127,91 @@ class REPORT_OPERATIONS extends React.Component {
         //console.log('error_catch');
       });
   }
+  async requestDICT_MERCHANT_SYSTEM  () {
+    this.props.store.changeLoading(true);
+    const baseUrl = `/api/Dictionary/QueryMerchant`;
+    const userBody = {
+        "institution_id": +this.state.institution_id,
+        "merchant_id": +this.state.merchant_id || 0
+    }
+
+    if(this.state.AcquiringReportsCriteria.tsp_id){
+        userBody.client_id=+this.state.AcquiringReportsCriteria.tsp_id;
+    }else if(this.state.AcquiringReportsCriteria.ident_code){
+        userBody.client_id=+this.state.AcquiringReportsCriteria.ident_code;
+    }else{
+        userBody.client_id=0;
+    }
+    await axios.post(
+        baseUrl,
+        userBody,
+        {
+            headers: {"Token" : `${ this.props.store.userState.token }`}
+        }
+    )
+        .then((response) => {
+            console.log(response.data);
+
+            this.setState({
+                DICT_MERCHANT_SYSTEM: response.data.merchant_list.TableRows,
+                isShowSelectDICT_MERCHANT_SYSTEM: true
+            });
+
+            this.props.store.changeLoading(false);
+
+
+        })
+        .catch((error) => {
+            console.log(error.response);
+            console.log(error.response.data);
+            //console.log('error_catch');
+
+        });
+
+}
+async requestDICT_TERMINAL_SYSTEM() {
+    this.props.store.changeLoading(true);
+    const baseUrl = `/api/Dictionary/QueryTerminal`;
+    const userBody = {
+        "institution_id": +this.state.institution_id,
+        "merchant_id": +this.state.merchant_id || 0
+    }
+
+ 
+    if(this.state.AcquiringReportsCriteria.tsp_id){
+        userBody.client_id=+this.state.AcquiringReportsCriteria.tsp_id;
+    }else if(this.state.AcquiringReportsCriteria.ident_code){
+        userBody.client_id=+this.state.AcquiringReportsCriteria.ident_code;
+    }else{
+        userBody.client_id=0;
+    }
+    await axios.post(
+        baseUrl,
+        userBody,
+        {
+            headers: {"Token" : `${ this.props.store.userState.token }`}
+        }
+    )
+        .then((response) => {
+            console.log(response.data);
+
+            this.setState({
+                DICT_TERMINAL_SYSTEM: response.data.terminal_list.TableRows,
+                isShowSelectDICT_TERMINAL_SYSTEM: true
+            });
+
+            this.props.store.changeLoading(false);
+
+
+        })
+        .catch((error) => {
+            console.log(error.response);
+            console.log(error.response.data);
+            //console.log('error_catch');
+
+        });
+
+}
   async requestDICT_DATE_TYPE(token) {
     this.props.store.changeLoading(true);
     console.log(token);
@@ -2647,30 +2753,33 @@ class REPORT_OPERATIONS extends React.Component {
                         </select> */}
             {/* <p className="error">{this.state.isTerminal_type_idValidation ? null : this.state.error_text}</p> */}
             <label htmlFor="merchant">merchant ID</label>
-            <input
-              onChange={this.changeInput}
-              className={`${
-                this.state.isMerchant_idValidation ? "" : "validError"
-              } form-control`}
-              apiName="merchant_id"
-              id="merchant"
-              type="text"
-              onBlur={this.handleCheckId.bind(this)}
-            />
-            <p className="error">
-              {this.state.isMerchant_idValidation
-                ? null
-                : this.state.error_text}
-            </p>
-            <label htmlFor="terminal_id">Terminal ID</label>
-            <input
-              onChange={this.changeInput}
-              className="form-control"
-              apiName="terminal_id"
-              id="terminal_id"
-              type="text"
-              onBlur={this.handleCheckId.bind(this)}
-            />
+                        <select onChange={this.changeInput} onFocus={()=>this.requestDICT_MERCHANT_SYSTEM()} apiName="merchant_id" id="dropdown-basic-button" className="form-select"
+                                title="merchant ID">
+                            {
+                                this.state.isShowSelectDICT_MERCHANT_SYSTEM
+                                    ?
+                                    this.state.DICT_MERCHANT_SYSTEM.map((item, index) => {
+                                        return < OptionItemDICT_MERCHANT_SYSTEM key={index} optionItem={item}/>
+                                    })
+                                    : <>
+                                    </>
+                            }
+                        </select>
+                        {/* <input onChange={this.changeInput} className={`form-control`} apiName="merchant_id" id="merchant" type="text" onBlur={this.handleCheckId.bind(this)}/> */}
+                        {/* <p className="error">{this.state.isMerchant_idValidation ? null : this.state.error_text}</p> */}
+                        <label htmlFor="terminal_id">Terminal ID</label>
+                        <select onChange={this.changeInput} onFocus={()=>this.requestDICT_TERMINAL_SYSTEM()} apiName="terminal_id" id="dropdown-basic-button" className="form-select"
+                                title="merchant ID">
+                            {
+                                this.state.isShowSelectDICT_TERMINAL_SYSTEM
+                                    ?
+                                    this.state.DICT_TERMINAL_SYSTEM.map((item, index) => {
+                                        return < OptionItemDICT_TERMINAL_SYSTEM key={index} optionItem={item}/>
+                                    })
+                                    : <>
+                                    </>
+                            }
+                        </select>
           </div>
           <div className="coverInput col-3">
             <div className="base-field">
