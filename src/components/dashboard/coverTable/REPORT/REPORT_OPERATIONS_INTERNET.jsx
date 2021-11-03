@@ -57,6 +57,13 @@ const OptionItemDICT_TERMINAL_SYSTEM = (props) => {
       // <Dropdown.Item  onClick={() => this.selectRoleID} value={props.optionItem.role_id} >{props.optionItem.role_name}</Dropdown.Item>
   )
 }
+const OptionItemDICT_MCC_SYSTEM = (props) => {
+  //console.log( props )
+  return(
+      <option   value={props.optionItem.mcc_id} >{props.optionItem.mccs_id}</option>
+      // <Dropdown.Item  onClick={() => this.selectRoleID} value={props.optionItem.role_id} >{props.optionItem.role_name}</Dropdown.Item>
+  )
+}
 const OptionItemDICT_PAYMENT_SYSTEM = (props) => {
   //console.log( props )
   return (
@@ -191,7 +198,7 @@ class AutocompleteInputTspName extends React.Component {
     this.state = {
       data: null,
 
-      inputRequest: null,
+      inputRequest: "",
       inputResult: this.props.tsp_name,
 
       isShowBlockSelect: false,
@@ -220,16 +227,16 @@ class AutocompleteInputTspName extends React.Component {
       inputRequest: param,
       selected: false,
     });
-    if (param != "" && param.length >= 0) {
+    if (param != "" && param.length >= 3) {
       this.request(this.props.token, param, true);
     }
   };
   onClickAutocompleteInput = (e) => {
     let param = e.target.value;
     console.log(param);
-    if (param != "" && param.length >= 3) {
+    // if (param != "" && param.length >= 3) {
       this.request(this.props.token, param, true);
-    }
+    // }
     // this.setState({
     //     isShowBlockSelect: true
     // });
@@ -278,8 +285,8 @@ class AutocompleteInputTspName extends React.Component {
           inputResult: name,
           inputRequest: name,
           isShowBlockSelect: false,
-          isShowInputResult: true,
-          isShowInputRequest: false,
+          // isShowInputResult: false,
+          // isShowInputRequest: true,
 
           selected: true,
         });
@@ -916,6 +923,9 @@ class REPORT_OPERATIONS extends React.Component {
       DICT_MERCHANT_SYSTEM: null,
       isShowSelectDICT_TERMINAL_SYSTEM: false,
 
+      DICT_MCC_SYSTEM: null,
+      isShowSelectDICT_MCC_SYSTEM: false,
+
 
       isInstitution_idValidation: true,
       isMerchant_idValidation: true,
@@ -1200,6 +1210,46 @@ async requestDICT_TERMINAL_SYSTEM() {
             this.setState({
                 DICT_TERMINAL_SYSTEM: response.data.terminal_list.TableRows,
                 isShowSelectDICT_TERMINAL_SYSTEM: true
+            });
+
+            this.props.store.changeLoading(false);
+
+
+        })
+        .catch((error) => {
+            console.log(error.response);
+            console.log(error.response.data);
+            //console.log('error_catch');
+
+        });
+
+}
+async requestDICT_MCC_SYSTEM() {
+    this.props.store.changeLoading(true);
+    const baseUrl = `/api/Dictionary/QueryMCC`;
+    const userBody = {
+        "terminal_id": +this.state.AcquiringReportsCriteria.tsp_id,
+        "merchant_id": +this.state.merchant_id || 0
+    }
+
+    if(this.state.AcquiringReportsCriteria.ident_code){
+        userBody.client_id=+this.state.AcquiringReportsCriteria.ident_code;
+    }else{
+        userBody.client_id=0;
+    }
+    await axios.post(
+        baseUrl,
+        userBody,
+        {
+            headers: {"Token" : `${ this.props.store.userState.token }`}
+        }
+    )
+        .then((response) => {
+            console.log(response.data);
+
+            this.setState({
+                DICT_TERMINAL_SYSTEM: response.data.mcc_list.TableRows,
+                isShowSelectDICT_MCC_SYSTEM: true
             });
 
             this.props.store.changeLoading(false);
@@ -2812,12 +2862,26 @@ async requestDICT_TERMINAL_SYSTEM() {
                 <></>
               )}
             </select>
-            <label htmlFor="mcc_code">MCC</label>
+            <label htmlFor="terminal_id">MCC</label>
+                        <select onChange={this.changeInput} onFocus={()=>this.requestDICT_TERMINAL_SYSTEM()} apiName="mcc_code" id="dropdown-basic-button" className="form-select"
+                                title="Terminal ID">
+
+                            {
+                                this.state.isShowSelectDICT_MCC_SYSTEM
+                                    ?
+                                    this.state.DICT_MCC_SYSTEM.map((item, index) => {
+                                        return < OptionItemDICT_TERMINAL_SYSTEM key={index} optionItem={item}/>
+                                    })
+                                    : <>
+                                    </>
+                            }
+                        </select>
+            {/* <label htmlFor="mcc_code">MCC</label>
             <AutocompleteInputMccCode
               token={this.props.store.userState.token}
               addMccCode={this.addMccCode}
               mcc_code={this.state.AcquiringReportsCriteria.mcc_code}
-            />
+            /> */}
 
             {/*<input onChange={this.changeInput} className="form-control" apiName="mcc_code" id="mcc_code" type="text"/>*/}
             {/*<div className="autocomplete">*/}
