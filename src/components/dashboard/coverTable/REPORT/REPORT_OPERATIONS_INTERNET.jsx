@@ -6,6 +6,7 @@ import LoaderUI from "../../../UI/LoaderUI";
 import { Field, reduxForm } from "redux-form";
 import InputMask from "react-input-mask";
 import { Alert } from "react-bootstrap";
+import { thisExpression } from "@babel/types";
 
 const OptionItemDICT_INSTITUTION = (props) => {
   //console.log( props )
@@ -45,25 +46,29 @@ const OptionItemDICT_ACQUIRING_TYPE = (props) => {
 };
 const OptionItemDICT_MERCHANT_SYSTEM = (props) => {
   //console.log( props )
-  return(
-      <option   value={props.optionItem.merchant_id} >{props.optionItem.merchant_id}</option>
-      // <Dropdown.Item  onClick={() => this.selectRoleID} value={props.optionItem.role_id} >{props.optionItem.role_name}</Dropdown.Item>
-  )
-}
+  return (
+    <option value={props.optionItem.merchant_id}>
+      {props.optionItem.merchant_id}
+    </option>
+    // <Dropdown.Item  onClick={() => this.selectRoleID} value={props.optionItem.role_id} >{props.optionItem.role_name}</Dropdown.Item>
+  );
+};
 const OptionItemDICT_TERMINAL_SYSTEM = (props) => {
   //console.log( props )
-  return(
-      <option   value={props.optionItem.terminal_id} >{props.optionItem.terminal_id}</option>
-      // <Dropdown.Item  onClick={() => this.selectRoleID} value={props.optionItem.role_id} >{props.optionItem.role_name}</Dropdown.Item>
-  )
-}
+  return (
+    <option value={props.optionItem.terminal_id}>
+      {props.optionItem.terminal_id}
+    </option>
+    // <Dropdown.Item  onClick={() => this.selectRoleID} value={props.optionItem.role_id} >{props.optionItem.role_name}</Dropdown.Item>
+  );
+};
 const OptionItemDICT_MCC_SYSTEM = (props) => {
   //console.log( props )
-  return(
-      <option   value={props.optionItem.mcc_id} >{props.optionItem.mccs_id}</option>
-      // <Dropdown.Item  onClick={() => this.selectRoleID} value={props.optionItem.role_id} >{props.optionItem.role_name}</Dropdown.Item>
-  )
-}
+  return (
+    <option value={props.optionItem.mcc_id}>{props.optionItem.mccs_id}</option>
+    // <Dropdown.Item  onClick={() => this.selectRoleID} value={props.optionItem.role_id} >{props.optionItem.role_name}</Dropdown.Item>
+  );
+};
 const OptionItemDICT_PAYMENT_SYSTEM = (props) => {
   //console.log( props )
   return (
@@ -179,6 +184,32 @@ const BlockSelectItemTspName = (props) => {
     </div>
   );
 };
+const BlockSelectItemMerchantName = (props) => {
+  //console.log( props )
+  return (
+    <div
+      className="blockSelectItem"
+      value={props.item.merchant_id}
+      name={props.item.merchant_id}
+      onClick={(e) => props.onClickBlockSelectItem(e)}
+    >
+      {props.item.merchant_id}
+    </div>
+  );
+};
+const BlockSelectItemTerminalName = (props) => {
+  //console.log( props )
+  return (
+    <div
+      className="blockSelectItem"
+      value={props.item.terminal_id}
+      name={props.item.terminal_id}
+      onClick={(e) => props.onClickBlockSelectItem(e)}
+    >
+      {props.item.terminal_id}
+    </div>
+  );
+};
 const BlockSelectItemIdentCode = (props) => {
   //console.log( props )
   return (
@@ -235,7 +266,7 @@ class AutocompleteInputTspName extends React.Component {
     let param = e.target.value;
     console.log(param);
     // if (param != "" && param.length >= 3) {
-      this.request(this.props.token, param, true);
+    this.request(this.props.token, param, true);
     // }
     // this.setState({
     //     isShowBlockSelect: true
@@ -393,6 +424,507 @@ class AutocompleteInputTspName extends React.Component {
               this.state.data.map((item, index) => {
                 return (
                   <BlockSelectItemTspName
+                    key={index}
+                    item={item}
+                    onClickBlockSelectItem={this.onClickBlockSelectItem}
+                  />
+                );
+              })
+            ) : (
+              <></>
+            )
+          ) : (
+            <></>
+          )}
+        </div>
+        {this.state.isLoading ? (
+          <div className="coverloader">
+            <div className="loader"></div>
+          </div>
+        ) : null}
+      </div>
+    );
+  }
+}
+class AutocompleteInputMerchantName extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: null,
+
+      inputRequest: "",
+      inputResult: this.props.tsp_name,
+
+      isShowBlockSelect: false,
+      isShowInputResult: false,
+      isShowInputRequest: true,
+
+      isLoading: false,
+
+      selected: false,
+      merchant_arr: null,
+    };
+    this.myRef = React.createRef();
+  }
+
+  componentDidMount() {
+    window.addEventListener("mousedown", this.clickTest);
+  }
+  componentWillUnmount() {
+    window.addEventListener("mousedown", null);
+  }
+
+  onChangeAutocompleteInput = (e) => {
+    let param = e.target.value;
+    console.log(param);
+    this.props.addTspName(Number(0));
+    this.setState({
+      inputRequest: param,
+      selected: false,
+    });
+    this.search(param);
+  };
+  onClickAutocompleteInput = (e) => {
+    let param = e.target.value;
+    console.log(param);
+    this.search(param);
+    // this.setState({
+    //     isShowBlockSelect: true
+    // });
+  };
+  onBlurAutocompleteInput = (e) => {
+    let param = e.target.value;
+    console.log(param);
+    // if(param != '' && param.length >= 3){
+    //     this.request(this.props.token, param, false);
+    // }
+  };
+
+  onClickAutocompleteInputRes = () => {
+    this.setState({
+      inputResult: null,
+      isShowBlockSelect: true,
+      isShowInputResult: false,
+      isShowInputRequest: true,
+    });
+  };
+
+  onBlurBlockSelect = () => {
+    this.setState({
+      isShowBlockSelect: false,
+    });
+  };
+
+  onClickBlockSelectItem = (e) => {
+    //console.log('----onClickBlockSelectItem-----');
+    let val = e.currentTarget.getAttribute("value");
+    let name = e.currentTarget.getAttribute("name");
+    //console.log(val);
+    //console.log('----onClickBlockSelectItem-----');
+    if (val !== "") {
+      //console.log(this.state.InputDICT_MCC);
+      //console.log(this.state.mcc_code);
+      if (+val !== +this.state.inputRequest) {
+        this.search(val);
+
+        // let inputDataObj = this.props.AcquiringReportsCriteria;
+        // inputDataObj.tsp_name = val;
+        console.log(val);
+        //console.log(typeof val);
+        this.props.addTspName(val);
+        this.setState({
+          // inputResult: name,
+          inputRequest: name,
+          isShowBlockSelect: false,
+          // isShowInputResult: false,
+          // isShowInputRequest: true,
+
+          selected: true,
+        });
+      }
+      this.setState({
+        isShowBlockSelect: false,
+      });
+    }
+  };
+
+  clickTest = (e) => {
+    if (this.myRef.current != null) {
+      if (this.myRef.current.className != e.target.parentElement.className) {
+        this.setState({
+          isShowBlockSelect: false,
+        });
+      }
+    }
+  };
+
+  async request(token, param, showBlock) {
+    this.setState({
+      isLoading: true,
+    });
+    console.log(token);
+    const baseUrl = `/api/Dictionary/QueryMerchant`;
+    console.log(baseUrl);
+    const body = {
+      institution_id: this.props.institution_id,
+      // branch_id: this.props.branch_id,
+      merchant_id: 0,
+    };
+
+    if (this.props.tsp_id) {
+      body.client_id = +this.props.tsp_id;
+    } else if (this.props.ident_code) {
+      body.client_id = +this.props.ident_code;
+    } else {
+      body.client_id = 0;
+    }
+    console.log(body);
+
+    await axios
+      .post(baseUrl, body, {
+        headers: {
+          Token: `${token}`,
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+        //console.log(response.data.Table);
+
+        if (response.data.merchant_list.TableRows == null) {
+          this.setState({
+            data: [{ client_name: "Незнайдено жодного результату" }],
+          });
+        } else {
+          this.setState({
+            data: response.data.merchant_list.TableRows,
+            merchant_arr: response.data.merchant_list.TableRows,
+          });
+        }
+
+        if (true) {
+          this.setState({
+            isShowBlockSelect: true,
+          });
+        } else {
+          this.setState({
+            isShowBlockSelect: false,
+          });
+        }
+        this.setState({
+          isLoading: false,
+        });
+      })
+      .catch((error) => {
+        console.log(error.response);
+        console.log(error.response.data);
+        //console.log('error_catch');
+      });
+  }
+  search(param) {
+    this.setState({
+      isShowBlockSelect: true,
+    });
+    const data = this.state.merchant_arr.filter((item) => {
+      const itemString = item.merchant_id.toString();
+      return itemString.includes(param.toString());
+    });
+
+    console.log("data: ", data);
+
+    if (data === null) {
+      this.setState({
+        data: [{ client_name: "Незнайдено жодного результату" }],
+      });
+    } else {
+      this.setState({
+        data,
+      });
+    }
+  }
+  render() {
+    return (
+      <div className="autocomplete">
+        <input
+          className={`${this.state.selected ? "selected " : ""}${
+            this.state.isShowInputRequest ? "" : "dn "
+          }form-control merchant-input`}
+          placeholder="Введіть цифри..."
+          type="text"
+          onBlur={this.onBlurAutocompleteInput}
+          onChange={this.onChangeAutocompleteInput}
+          onClick={this.onClickAutocompleteInput}
+          value={this.state.inputRequest}
+          onFocus={() => this.request(this.props.token, "", false)}
+        />
+        <input
+          className={`${this.state.selected ? "selected " : ""}${
+            this.state.isShowInputResult ? "" : "dn "
+          }form-control`}
+          placeholder="Результат"
+          type="text"
+          value={this.state.inputResult}
+          onClick={this.onClickAutocompleteInputRes}
+        />
+        <div
+          className={`${this.state.isShowBlockSelect ? "" : "dn "}blockSelect`}
+          onBlur={this.onBlurBlockSelect}
+          ref={this.myRef}
+        >
+          {this.state.isShowBlockSelect ? (
+            this.state.data != null ? (
+              this.state.data.map((item, index) => {
+                return (
+                  <BlockSelectItemMerchantName
+                    key={index}
+                    item={item}
+                    onClickBlockSelectItem={this.onClickBlockSelectItem}
+                  />
+                );
+              })
+            ) : (
+              <></>
+            )
+          ) : (
+            <></>
+          )}
+        </div>
+        {this.state.isLoading ? (
+          <div className="coverloader">
+            <div className="loader"></div>
+          </div>
+        ) : null}
+      </div>
+    );
+  }
+}
+
+class AutocompleteInputTerminalName extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: null,
+
+      inputRequest: "",
+      inputResult: this.props.tsp_name,
+
+      isShowBlockSelect: false,
+      isShowInputResult: false,
+      isShowInputRequest: true,
+
+      isLoading: false,
+
+      selected: false,
+      terminal_arr: null,
+    };
+    this.myRef = React.createRef();
+  }
+
+  componentDidMount() {
+    window.addEventListener("mousedown", this.clickTest);
+  }
+  componentWillUnmount() {
+    window.addEventListener("mousedown", null);
+  }
+
+  onChangeAutocompleteInput = (e) => {
+    let param = e.target.value;
+    console.log(param);
+    this.props.addTspName(Number(0));
+    this.setState({
+      inputRequest: param,
+      selected: false,
+    });
+    // if (param != "" && param.length >= 3) {
+    this.search(param);
+    // }
+  };
+  onClickAutocompleteInput = (e) => {
+    let param = e.target.value;
+    console.log(param);
+    if (param != "" && param.length >= 3) {
+      this.search(param);
+    }
+    // this.setState({
+    //     isShowBlockSelect: true
+    // });
+  };
+  onBlurAutocompleteInput = (e) => {
+    let param = e.target.value;
+    console.log(param);
+    // if (param != "" && param.length >= 3) {
+    this.search(param);
+    // }
+  };
+
+  onClickAutocompleteInputRes = () => {
+    this.setState({
+      inputResult: null,
+      isShowBlockSelect: true,
+      isShowInputResult: false,
+      isShowInputRequest: true,
+    });
+  };
+
+  onBlurBlockSelect = () => {
+    this.setState({
+      isShowBlockSelect: false,
+    });
+  };
+
+  onClickBlockSelectItem = (e) => {
+    //console.log('----onClickBlockSelectItem-----');
+    let val = e.currentTarget.getAttribute("value");
+    let name = e.currentTarget.getAttribute("name");
+    //console.log(val);
+    //console.log('----onClickBlockSelectItem-----');
+    if (val !== "") {
+      //console.log(this.state.InputDICT_MCC);
+      //console.log(this.state.mcc_code);
+      if (+val !== +this.state.inputRequest) {
+        this.search(val);
+
+        // let inputDataObj = this.props.AcquiringReportsCriteria;
+        // inputDataObj.tsp_name = val;
+        console.log(val);
+        //console.log(typeof val);
+        this.props.addTspName(Number(val));
+        this.setState({
+          // inputResult: name,
+          inputRequest: name,
+          isShowBlockSelect: false,
+          // isShowInputResult: false,
+          // isShowInputRequest: true,
+
+          selected: true,
+        });
+      }
+      this.setState({
+        isShowBlockSelect: false,
+      });
+    }
+  };
+
+  clickTest = (e) => {
+    if (this.myRef.current != null) {
+      if (this.myRef.current.className != e.target.parentElement.className) {
+        this.setState({
+          isShowBlockSelect: false,
+        });
+      }
+    }
+  };
+
+  async request(token, param, showBlock) {
+    this.setState({
+      isLoading: true,
+    });
+    console.log(token);
+    const baseUrl = `/api/Dictionary/QueryTerminal`;
+    console.log(baseUrl);
+    const body = {
+      institution_id: this.props.institution_id,
+      // branch_id: this.props.branch_id,
+      terminal_id: 0,
+    };
+
+    if (this.props.tsp_name) {
+      body.merchant_id = this.props.tsp_name;
+    }
+
+    if (this.props.tsp_id) {
+      body.client_id = +this.props.tsp_id;
+    } else if (this.props.ident_code){
+      body.client_id = this.props.ident_code;
+    }else{
+        body.client_id = 0;
+    }
+    console.log(body);
+    await axios
+      .post(baseUrl, body, {
+        headers: {
+          Token: `${token}`,
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+        //console.log(response.data.Table);
+
+        if (response.data.terminal_list.TableRows == null) {
+          this.setState({
+            data: [{ client_name: "Незнайдено жодного результату" }],
+          });
+        } else {
+          this.setState({
+            data: response.data.terminal_list.TableRows,
+            terminal_arr: response.data.terminal_list.TableRows,
+            isShowBlockSelect: true,
+          });
+        }
+          this.setState({
+            isLoading: false,
+          });
+        
+
+      })
+      .catch((error) => {
+        console.log(error.response);
+        console.log(error.response.data);
+        //console.log('error_catch');
+      });
+  }
+
+  search(param) {
+    this.setState({
+      isShowBlockSelect: true,
+    });
+    const data = this.state.terminal_arr.filter((item) => {
+      const itemString = item.terminal_id.toString();
+      return itemString.includes(param.toString());
+    });
+    if (data === null) {
+      this.setState({
+        data: [{ client_name: "Незнайдено жодного результату" }],
+      });
+    } else {
+      this.setState({data});
+    }
+  }
+  render() {
+    return (
+      <div className="autocomplete">
+        <input
+          className={`${this.state.selected ? "selected " : ""}${
+            this.state.isShowInputRequest ? "" : "dn "
+          }form-control terminal-input`}
+          placeholder="Введіть цифри..."
+          type="text"
+          onBlur={this.onBlurAutocompleteInput}
+          onChange={this.onChangeAutocompleteInput}
+          onClick={this.onClickAutocompleteInput}
+          value={this.state.inputRequest}
+          onFocus={() => this.request(this.props.token)}
+        />
+        <input
+          className={`${this.state.selected ? "selected " : ""}${
+            this.state.isShowInputResult ? "" : "dn "
+          }form-control`}
+          placeholder="Результат"
+          type="text"
+          value={this.state.inputResult}
+          onClick={this.onClickAutocompleteInputRes}
+        />
+        <div
+          className={`${this.state.isShowBlockSelect ? "" : "dn "}blockSelect`}
+          onBlur={this.onBlurBlockSelect}
+          ref={this.myRef}
+        >
+          {this.state.isShowBlockSelect ? (
+            this.state.data != null ? (
+              this.state.data.map((item, index) => {
+                return (
+                  <BlockSelectItemTerminalName
                     key={index}
                     item={item}
                     onClickBlockSelectItem={this.onClickBlockSelectItem}
@@ -596,7 +1128,7 @@ class AutocompleteInputIdentCode extends React.Component {
           className={`${this.state.selected ? "selected " : ""}${
             this.state.isShowInputRequest ? "" : "dn "
           }form-control`}
-          placeholder="Введіть перші цифри..."
+          placeholder="Введіть цифри..."
           type="text"
           onBlur={this.onBlurAutocompleteInput}
           onChange={this.onChangeAutocompleteInput}
@@ -906,8 +1438,8 @@ class REPORT_OPERATIONS extends React.Component {
         terminal_type_id: 2,
         institution_id: 0,
         date_type_id: 2,
-        merchant_id: 0, 
-        terminal_id:0
+        merchant_id: 0,
+        terminal_id: 0,
       },
 
       date_from: null,
@@ -916,7 +1448,6 @@ class REPORT_OPERATIONS extends React.Component {
       institution_id: 0,
       merchant_id: null,
 
-      
       DICT_TERMINAL_SYSTEM: null,
       isShowSelectDICT_MERCHANT_SYSTEM: false,
 
@@ -925,7 +1456,6 @@ class REPORT_OPERATIONS extends React.Component {
 
       DICT_MCC_SYSTEM: null,
       isShowSelectDICT_MCC_SYSTEM: false,
-
 
       isInstitution_idValidation: true,
       isMerchant_idValidation: true,
@@ -1139,131 +1669,109 @@ class REPORT_OPERATIONS extends React.Component {
         //console.log('error_catch');
       });
   }
-  async requestDICT_MERCHANT_SYSTEM  () {
+  async requestDICT_MERCHANT_SYSTEM() {
     this.props.store.changeLoading(true);
     const baseUrl = `/api/Dictionary/QueryMerchant`;
     const userBody = {
-        "institution_id": +this.state.institution_id,
-        "merchant_id": +this.state.merchant_id || 0
+      institution_id: +this.state.institution_id,
+      merchant_id: +this.state.merchant_id || 0,
+    };
+
+    if (this.state.AcquiringReportsCriteria.tsp_id) {
+      userBody.client_id = +this.state.AcquiringReportsCriteria.tsp_id;
+    } else if (this.state.AcquiringReportsCriteria.ident_code) {
+      userBody.client_id = +this.state.AcquiringReportsCriteria.ident_code;
+    } else {
+      userBody.client_id = 0;
     }
+    await axios
+      .post(baseUrl, userBody, {
+        headers: { Token: `${this.props.store.userState.token}` },
+      })
+      .then((response) => {
+        console.log(response.data);
 
-    if(this.state.AcquiringReportsCriteria.tsp_id){
-        userBody.client_id=+this.state.AcquiringReportsCriteria.tsp_id;
-    }else if(this.state.AcquiringReportsCriteria.ident_code){
-        userBody.client_id=+this.state.AcquiringReportsCriteria.ident_code;
-    }else{
-        userBody.client_id=0;
-    }
-    await axios.post(
-        baseUrl,
-        userBody,
-        {
-            headers: {"Token" : `${ this.props.store.userState.token }`}
-        }
-    )
-        .then((response) => {
-            console.log(response.data);
-
-            this.setState({
-                DICT_MERCHANT_SYSTEM: response.data.merchant_list.TableRows,
-                isShowSelectDICT_MERCHANT_SYSTEM: true
-            });
-
-            this.props.store.changeLoading(false);
-
-
-        })
-        .catch((error) => {
-            console.log(error.response);
-            console.log(error.response.data);
-            //console.log('error_catch');
-
+        this.setState({
+          DICT_MERCHANT_SYSTEM: response.data.merchant_list.TableRows,
+          isShowSelectDICT_MERCHANT_SYSTEM: true,
         });
 
-}
-async requestDICT_TERMINAL_SYSTEM() {
+        this.props.store.changeLoading(false);
+      })
+      .catch((error) => {
+        console.log(error.response);
+        console.log(error.response.data);
+        //console.log('error_catch');
+      });
+  }
+  async requestDICT_TERMINAL_SYSTEM() {
     this.props.store.changeLoading(true);
     const baseUrl = `/api/Dictionary/QueryTerminal`;
     const userBody = {
-        "institution_id": +this.state.institution_id,
-        "merchant_id": +this.state.merchant_id || 0
+      institution_id: +this.state.institution_id,
+      merchant_id: +this.state.merchant_id || 0,
+    };
+
+    if (this.state.AcquiringReportsCriteria.tsp_id) {
+      userBody.client_id = +this.state.AcquiringReportsCriteria.tsp_id;
+    } else if (this.state.AcquiringReportsCriteria.ident_code) {
+      userBody.client_id = +this.state.AcquiringReportsCriteria.ident_code;
+    } else {
+      userBody.client_id = 0;
     }
+    await axios
+      .post(baseUrl, userBody, {
+        headers: { Token: `${this.props.store.userState.token}` },
+      })
+      .then((response) => {
+        console.log(response.data);
 
- 
-    if(this.state.AcquiringReportsCriteria.tsp_id){
-        userBody.client_id=+this.state.AcquiringReportsCriteria.tsp_id;
-    }else if(this.state.AcquiringReportsCriteria.ident_code){
-        userBody.client_id=+this.state.AcquiringReportsCriteria.ident_code;
-    }else{
-        userBody.client_id=0;
-    }
-    await axios.post(
-        baseUrl,
-        userBody,
-        {
-            headers: {"Token" : `${ this.props.store.userState.token }`}
-        }
-    )
-        .then((response) => {
-            console.log(response.data);
-
-            this.setState({
-                DICT_TERMINAL_SYSTEM: response.data.terminal_list.TableRows,
-                isShowSelectDICT_TERMINAL_SYSTEM: true
-            });
-
-            this.props.store.changeLoading(false);
-
-
-        })
-        .catch((error) => {
-            console.log(error.response);
-            console.log(error.response.data);
-            //console.log('error_catch');
-
+        this.setState({
+          DICT_TERMINAL_SYSTEM: response.data.terminal_list.TableRows,
+          isShowSelectDICT_TERMINAL_SYSTEM: true,
         });
 
-}
-async requestDICT_MCC_SYSTEM() {
+        this.props.store.changeLoading(false);
+      })
+      .catch((error) => {
+        console.log(error.response);
+        console.log(error.response.data);
+        //console.log('error_catch');
+      });
+  }
+  async requestDICT_MCC_SYSTEM() {
     this.props.store.changeLoading(true);
     const baseUrl = `/api/Dictionary/QueryMCC`;
     const userBody = {
-        "terminal_id": +this.state.AcquiringReportsCriteria.tsp_id,
-        "merchant_id": +this.state.merchant_id || 0
+      terminal_id: +this.state.AcquiringReportsCriteria.tsp_id,
+      merchant_id: +this.state.merchant_id || 0,
+    };
+
+    if (this.state.AcquiringReportsCriteria.ident_code) {
+      userBody.client_id = +this.state.AcquiringReportsCriteria.ident_code;
+    } else {
+      userBody.client_id = 0;
     }
+    await axios
+      .post(baseUrl, userBody, {
+        headers: { Token: `${this.props.store.userState.token}` },
+      })
+      .then((response) => {
+        console.log(response.data);
 
-    if(this.state.AcquiringReportsCriteria.ident_code){
-        userBody.client_id=+this.state.AcquiringReportsCriteria.ident_code;
-    }else{
-        userBody.client_id=0;
-    }
-    await axios.post(
-        baseUrl,
-        userBody,
-        {
-            headers: {"Token" : `${ this.props.store.userState.token }`}
-        }
-    )
-        .then((response) => {
-            console.log(response.data);
-
-            this.setState({
-                DICT_TERMINAL_SYSTEM: response.data.mcc_list.TableRows,
-                isShowSelectDICT_MCC_SYSTEM: true
-            });
-
-            this.props.store.changeLoading(false);
-
-
-        })
-        .catch((error) => {
-            console.log(error.response);
-            console.log(error.response.data);
-            //console.log('error_catch');
-
+        this.setState({
+          DICT_TERMINAL_SYSTEM: response.data.mcc_list.TableRows,
+          isShowSelectDICT_MCC_SYSTEM: true,
         });
 
-}
+        this.props.store.changeLoading(false);
+      })
+      .catch((error) => {
+        console.log(error.response);
+        console.log(error.response.data);
+        //console.log('error_catch');
+      });
+  }
   async requestDICT_DATE_TYPE(token) {
     this.props.store.changeLoading(true);
     console.log(token);
@@ -1564,7 +2072,7 @@ async requestDICT_MCC_SYSTEM() {
     //     "date_type_id": 0
     // }
     //console.log(res);
-    console.log(this.state.AcquiringReportsCriteria);
+    // console.log(this.state.AcquiringReportsCriteria);
 
     this.defineValidationInputs();
   };
@@ -2663,6 +3171,26 @@ async requestDICT_MCC_SYSTEM() {
     });
     console.log(this.state.AcquiringReportsCriteria.tsp_name);
   };
+  addMerchantName = (val) => {
+    console.log(val);
+    let inputDataObj = this.state.AcquiringReportsCriteria;
+    inputDataObj.merchant_id = val;
+    console.log(inputDataObj);
+    this.setState({
+      AcquiringReportsCriteria: inputDataObj,
+    });
+    console.log(this.state.AcquiringReportsCriteria.tsp_name);
+  };
+  addTerminalName = (val) => {
+    console.log(val);
+    let inputDataObj = this.state.AcquiringReportsCriteria;
+    inputDataObj.terminal_id = val;
+    console.log(inputDataObj);
+    this.setState({
+      AcquiringReportsCriteria: inputDataObj,
+    });
+    console.log(this.state.AcquiringReportsCriteria.tsp_name);
+  };
   addIdentCode = (val) => {
     console.log(val);
     let inputDataObj = this.state.AcquiringReportsCriteria;
@@ -2804,7 +3332,7 @@ async requestDICT_MCC_SYSTEM() {
                             }
                         </select> */}
             {/* <p className="error">{this.state.isTerminal_type_idValidation ? null : this.state.error_text}</p> */}
-            <label htmlFor="merchant">merchant ID</label>
+            {/* <label htmlFor="merchant">merchant ID</label>
                         <select onChange={this.changeInput} onFocus={()=>this.requestDICT_MERCHANT_SYSTEM()} apiName="merchant_id" id="dropdown-basic-button" className="form-select"
                                 title="merchant ID">
                                     <option></option>
@@ -2817,10 +3345,39 @@ async requestDICT_MCC_SYSTEM() {
                                     : <>
                                     </>
                             }
-                        </select>
-                        {/* <input onChange={this.changeInput} className={`form-control`} apiName="merchant_id" id="merchant" type="text" onBlur={this.handleCheckId.bind(this)}/> */}
-                        {/* <p className="error">{this.state.isMerchant_idValidation ? null : this.state.error_text}</p> */}
-                        <label htmlFor="terminal_id">Terminal ID</label>
+                        </select> */}
+
+            <label htmlFor="merchant_id">merchant ID</label>
+            {/*<input onChange={this.changeInput} className="form-control" apiName="tsp_name" id="tsp_name" type="text"/>*/}
+            <AutocompleteInputMerchantName
+              token={this.props.store.userState.token}
+              institution_id={
+                this.state.AcquiringReportsCriteria.institution_id
+              }
+              branch_id={this.state.AcquiringReportsCriteria.bank_branch_id}
+              addTspName={this.addMerchantName}
+              tsp_id={this.state.AcquiringReportsCriteria.tsp_id}
+              ident_code={this.state.AcquiringReportsCriteria.ident_code}
+              tsp_name={this.state.AcquiringReportsCriteria.merchant_id}
+            />
+            {/* <input onChange={this.changeInput} className={`form-control`} apiName="merchant_id" id="merchant" type="text" onBlur={this.handleCheckId.bind(this)}/> */}
+            {/* <p className="error">{this.state.isMerchant_idValidation ? null : this.state.error_text}</p> */}
+
+            <label htmlFor="terminal_id">Terminal ID</label>
+            {/*<input onChange={this.changeInput} className="form-control" apiName="tsp_name" id="tsp_name" type="text"/>*/}
+            <AutocompleteInputTerminalName
+              token={this.props.store.userState.token}
+              institution_id={
+                this.state.AcquiringReportsCriteria.institution_id
+              }
+              branch_id={this.state.AcquiringReportsCriteria.bank_branch_id}
+              addTspName={this.addTerminalName}
+              tsp_id={this.state.AcquiringReportsCriteria.tsp_id}
+              ident_code={this.state.AcquiringReportsCriteria.ident_code}
+              tsp_name={this.state.AcquiringReportsCriteria.merchant_id}
+            />
+
+            {/* <label htmlFor="terminal_id">Terminal ID</label>
                         <select onChange={this.changeInput} onFocus={()=>this.requestDICT_TERMINAL_SYSTEM()} apiName="terminal_id" id="dropdown-basic-button" className="form-select"
                                 title="Terminal ID">
                                     <option></option>
@@ -2834,7 +3391,7 @@ async requestDICT_MCC_SYSTEM() {
                                     : <>
                                     </>
                             }
-                        </select>
+                        </select> */}
           </div>
           <div className="coverInput col-3">
             <div className="base-field">
@@ -2863,19 +3420,27 @@ async requestDICT_MCC_SYSTEM() {
               )}
             </select>
             <label htmlFor="terminal_id">MCC</label>
-                        <select onChange={this.changeInput} onFocus={()=>this.requestDICT_TERMINAL_SYSTEM()} apiName="mcc_code" id="dropdown-basic-button" className="form-select"
-                                title="Terminal ID">
-
-                            {
-                                this.state.isShowSelectDICT_MCC_SYSTEM
-                                    ?
-                                    this.state.DICT_MCC_SYSTEM.map((item, index) => {
-                                        return < OptionItemDICT_TERMINAL_SYSTEM key={index} optionItem={item}/>
-                                    })
-                                    : <>
-                                    </>
-                            }
-                        </select>
+            <select
+              onChange={this.changeInput}
+              onFocus={() => this.requestDICT_TERMINAL_SYSTEM()}
+              apiName="mcc_code"
+              id="dropdown-basic-button"
+              className="form-select"
+              title="Terminal ID"
+            >
+              {this.state.isShowSelectDICT_MCC_SYSTEM ? (
+                this.state.DICT_MCC_SYSTEM.map((item, index) => {
+                  return (
+                    <OptionItemDICT_TERMINAL_SYSTEM
+                      key={index}
+                      optionItem={item}
+                    />
+                  );
+                })
+              ) : (
+                <></>
+              )}
+            </select>
             {/* <label htmlFor="mcc_code">MCC</label>
             <AutocompleteInputMccCode
               token={this.props.store.userState.token}
