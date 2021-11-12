@@ -1,5 +1,5 @@
 .loading {
-  position: absolute;
+  position: fixed;
   width: 100%;
   height: 100vh;
   background: rgba(0, 0, 0, 0.1);
@@ -13,9 +13,6 @@
 
   .rotating {
     width: 100px;
-
-    svg {
-    }
   }
 
   .lds-roller {
@@ -300,8 +297,9 @@ header {
 .coverTable {
   background-color: #dee0e0;
   width: 100%;
-  height: 100vh;
+  height: 100%;
   padding: 15px;
+  
   .headerTable {
     background: #ffffff;
     padding: 15px;
@@ -405,6 +403,41 @@ header {
 .REPORT_SETTINGS_TSP {
   .filter {
     display: flex;
+    column-gap: 30px;
+  }
+
+  button.btn.btn-secondary.customBtnAc{
+    margin-right: 10px;
+  }
+
+  .coverTable{
+    height: 100%;
+  }
+
+  label {
+    font-size: 16px;
+    margin-top: 5px;
+}
+
+  .coverDate {
+    margin-right: 20px;
+    width: 152px;
+}
+
+select#DICT_REPORT_CHANNEL_TYPE {
+  margin-bottom: 10px;
+}
+
+  .coverInputs {
+    margin-top: 10px;
+}
+button.search.btn.btn-primary {
+  margin: 0;
+  margin-top: 20px;
+}
+
+  #DICT_REPORT_PERIOD_TYPE{
+    background-image: none;
   }
 
   .coverInputText {
@@ -455,7 +488,7 @@ header {
   }
   .coverInputSelect {
     margin-right: 10px;
-    width: 400px;
+    width: 280px;
   }
   .coverInputDate {
     .coverInputs {
@@ -471,6 +504,7 @@ header {
   .coverResult {
     display: flex;
     background: #ffffff;
+    padding-top: 40px;
     .resultSearch {
       padding: 10px;
       margin: 10px;
