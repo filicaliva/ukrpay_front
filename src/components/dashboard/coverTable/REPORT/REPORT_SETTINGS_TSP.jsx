@@ -2,8 +2,6 @@ import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
 import React from "react";
 import * as axios from "axios";
 import InputMask from "react-input-mask";
-import { Field, reduxForm } from "redux-form";
-import MaskedInput from "react-text-mask";
 
 const OptionItemDICT_INSTITUTION = (props) => {
   //console.log( props )
@@ -40,6 +38,7 @@ const OptionItem = (props) => {
   );
 };
 const OptionItemDICT_REPORT_PERIOD_TYPE = (props) => {
+  console.log("props.report_period_type_id: ", props.report_period_type_id)
   return (
     <>
       <input
@@ -598,6 +597,9 @@ class REPORT_SETTINGS_TSP extends React.Component {
       isShowTableTSPReportSettingsSTD: false,
       TSPReportSettingsSTD: null,
 
+      errorRU: false,
+      error_text: "Заповніть поле!",
+
       responseTSPReportSettings: {
         tsp_list: [
           {
@@ -636,23 +638,23 @@ class REPORT_SETTINGS_TSP extends React.Component {
                 installment_report: false,
                 report_format_id: 2,
                 report_format_name: "csv",
-                report_period_type_id: 2,
-                report_period_type_name: "Щотижня",
+                report_period_type_ids: null,
                 channel_type_id: 2,
                 channel_type_name: "email",
                 channel_address: "rere@gmail.com",
                 file_name_mask: "TEST_MASK",
                 file_path: "TEST",
+                report_setting_id: 0,
               },
               {
+                report_setting_id: 0,
                 acquiring_type_id: 2,
                 standard_report: true,
                 extended_report: false,
                 installment_report: true,
                 report_format_id: 1,
-                report_format_name: "Xls",
-                report_period_type_id: 1,
-                report_period_type_name: "Щоденно",
+                report_format_name: "xls",
+                report_period_type_ids: null,
                 channel_type_id: 2,
                 channel_type_name: null,
                 channel_address: "re3re@gmail.com",
@@ -660,30 +662,6 @@ class REPORT_SETTINGS_TSP extends React.Component {
                 file_path: "TEST",
               },
             ],
-          },
-          {
-            tsp_id: 595998,
-            main_settings: [
-              {
-                acquiring_type_id: 1,
-                standard_report: true,
-                extended_report: false,
-                installment_report: false,
-                report_format_id: 2,
-                report_format_name: "csv",
-                report_period_type_id: 3,
-                report_period_type_name: "Щомісяця",
-                channel_type_id: 1,
-                channel_type_name: "ftp",
-                channel_address: "ftp/fdfd324234",
-                file_name_mask: "Нововолинський",
-                file_path: "TEST",
-              },
-            ],
-          },
-          {
-            tsp_id: 595997,
-            main_settings: null,
           },
         ],
       },
@@ -906,9 +884,19 @@ class REPORT_SETTINGS_TSP extends React.Component {
 
         // this.props.store.addTableData(true, response.data.users);
         if (response.data.record_count >= 1) {
+            if (response.data.tsp_list[0].main_settings === null) {
+                response.data.tsp_list[0].main_settings =
+                this.state.responseTSPReportSettings.settings[0].main_settings;
+            }
+            else if (response.data.tsp_list[0].main_settings.length === 1) {
+                const count = response.data.tsp_list[0].main_settings[0].acquiring_type_id === 1 ? 1 : 0
+              response.data.tsp_list[0].main_settings.push(this.state.responseTSPReportSettings.settings[0].main_settings[count])
+                
+            }
+            console.log("response.data.tsp_list[0]: ", response.data.tsp_list[0]);
           this.setState({
-            settings: response.data.tsp_list[0].main_settings,
             tsp_list: response.data.tsp_list,
+            settings: response.data.tsp_list[0].main_settings,
             //tsp_id: response.data.tsp_list[0].tsp_id,
             isShowTsp: true,
           });
@@ -927,59 +915,6 @@ class REPORT_SETTINGS_TSP extends React.Component {
         //console.log('error_catch');
       });
   }
-  // async requestTSPReportSettings_test  (token) {
-  //     this.props.store.changeLoading(true);
-  //     console.log( token );
-  //     const baseUrl = `/api/TSPReportSettings`;
-  //     let userBody = {
-  //         date_from: "2018081",
-  //         date_to: "2021081",
-  //         institution_id: "824",
-  //         tsp_name: "Тзов"
-  //     }
-  //     await axios.post(
-  //         baseUrl,
-  //         userBody,
-  //         {
-  //             headers: {
-  //                 "Token" : `${ token }`,
-  //                 'Content-Type': 'application/json'
-  //             }
-  //         }
-  //     )
-  //         .then((response) => {
-  //             console.log(response.data);
-  //             //console.log(response.data.users);
-  //             //console.log(response.data.Table);
-
-  //             //this.props.store.showTable(true);
-
-  //             // this.props.store.addTableData(true, response.data.users);
-  //             if(response.data.record_count >= 1){
-  //                 this.setState({
-  //                     settings: response.data.settings,
-  //                     tsp_list: response.data.tsp_list,
-  //                     //tsp_id: response.data.tsp_list[0].tsp_id,
-  //                     isShowTsp: true
-  //                 });
-  //             }else if(response.data.record_count < 1){
-  //                 this.setState({
-  //                     isShowPopupError: true
-  //                 });
-  //             }
-
-  //             this.props.store.changeLoading(false);
-  //             //this.props.store.showTable(true);
-
-  //         })
-  //         .catch((error) => {
-  //             console.log(error.response);
-  //             // console.log(error.response.data);
-  //             //console.log('error_catch');
-
-  //         });
-
-  // }
   async requestTSPReportSettingsSTD(token) {
     this.props.store.changeLoading(true);
     const baseUrl = `/api/TSPReportSettings/STD`;
@@ -1093,6 +1028,15 @@ class REPORT_SETTINGS_TSP extends React.Component {
     return year + month + day;
   };
   search = () => {
+      this.setState({
+        errorRU: false,
+      });
+    if (this.state.isDisableTVBV) {
+      this.setState({
+        errorRU: true,
+      });
+      return;
+    }
     // main
     console.log(this.state.TSPReportSettingsSearchObj);
     this.requestTSPReportSettings(
@@ -1140,7 +1084,7 @@ class REPORT_SETTINGS_TSP extends React.Component {
     console.log(currentTsp);
     //console.log(this.state);
     this.state.tsp_list.map((item, index) => {
-      if (item.tsp_id == currentTsp) {
+      if (+item.tsp_id === +currentTsp) {
         this.setState({
           physical_acquiring_type_id: 1,
           physical_channel_address: "",
@@ -1149,7 +1093,7 @@ class REPORT_SETTINGS_TSP extends React.Component {
           physical_file_name_mask: "",
           physical_installment_report: false,
           physical_report_format_id: 1,
-          physical_report_period_type_id: 1,
+          physical_report_period_type_id: null,
           physical_standard_report: true,
 
           internet_acquiring_type_id: 2,
@@ -1159,7 +1103,7 @@ class REPORT_SETTINGS_TSP extends React.Component {
           internet_file_name_mask: "",
           internet_installment_report: false,
           internet_report_format_id: 1,
-          internet_report_period_type_id: 1,
+          internet_report_period_type_id: null,
           internet_standard_report: true,
 
           currentTsp: Number(currentTsp),
@@ -1173,10 +1117,6 @@ class REPORT_SETTINGS_TSP extends React.Component {
           });
         } else if (item.main_settings) {
           item.main_settings.map((item, index) => {
-            //console.log('-----------start---------------');
-            //console.log(item);
-            //console.log(item.file_name_mask);
-            //console.log(item.acquiring_type_id);
             if (item.acquiring_type_id == 1) {
               console.log("item.acquiring_type_id == 1");
               //console.log(item.file_name_mask);
@@ -1217,78 +1157,6 @@ class REPORT_SETTINGS_TSP extends React.Component {
                 isShowTypeAcquiring: true,
               });
             }
-
-            // if(item.acquiring_type_id != 1){
-            //     console.log('item.acquiring_type_id != 1');
-            //     this.setState({
-            //         physical_acquiring_type_id: 1,
-            //         physical_channel_address: "",
-            //         physical_channel_type_id: 1,
-            //         physical_extended_report: false,
-            //         physical_file_name_mask: "",
-            //         physical_installment_report: false,
-            //         physical_report_format_id: 1,
-            //         physical_report_period_type_id: 1,
-            //         physical_standard_report: true,
-            //
-            //         currentTsp: Number(currentTsp),
-            //         TSPReportSettingsSTD: null,
-            //         isShowTypeAcquiring: true,
-            //     });
-            // } else if(item.acquiring_type_id == 1){
-            //     console.log('item.acquiring_type_id == 1');
-            //     console.log(item.file_name_mask);
-            //     this.setState({
-            //         physical_acquiring_type_id: item.acquiring_type_id,
-            //         physical_channel_address: item.channel_address,
-            //         physical_channel_type_id: item.channel_type_id,
-            //         //physical_extended_report: item.extended_report,
-            //         physical_file_name_mask: item.file_name_mask,
-            //         //physical_installment_report: item.installment_report,
-            //         physical_report_format_id: item.report_format_id,
-            //         physical_report_period_type_id: item.report_period_type_id,
-            //         //physical_standard_report: item.standard_report,
-            //
-            //         currentTsp: Number(currentTsp),
-            //         TSPReportSettingsSTD: null,
-            //         isShowTypeAcquiring: true,
-            //     });
-            // }
-            // if(item.acquiring_type_id != 2){
-            //     console.log('item.acquiring_type_id != 2');
-            //     this.setState({
-            //         internet_acquiring_type_id: 2,
-            //         internet_channel_address: "",
-            //         internet_channel_type_id: 1,
-            //         internet_extended_report: false,
-            //         internet_file_name_mask: "",
-            //         internet_installment_report: false,
-            //         internet_report_format_id: 1,
-            //         internet_report_period_type_id: 1,
-            //         internet_standard_report: true,
-            //
-            //         currentTsp: Number(currentTsp),
-            //         TSPReportSettingsSTD: null,
-            //         isShowTypeAcquiring: true,
-            //     });
-            // } else if(item.acquiring_type_id == 2){
-            //     console.log('item.acquiring_type_id == 2');
-            //     this.setState({
-            //         internet_acquiring_type_id: item.acquiring_type_id,
-            //         internet_channel_address: item.channel_address,
-            //         internet_channel_type_id: item.channel_type_id,
-            //         //internet_extended_report: item.extended_report,
-            //         internet_file_name_mask: item.file_name_mask,
-            //         //internet_installment_report: item.installment_report,
-            //         internet_report_format_id: item.report_format_id,
-            //         internet_report_period_type_id: item.report_period_type_id,
-            //         //internet_standard_report: item.standard_report,
-            //
-            //         currentTsp: Number(currentTsp),
-            //         TSPReportSettingsSTD: null,
-            //         isShowTypeAcquiring: true,
-            //     });
-            // }
           });
         }
       }
@@ -1306,69 +1174,11 @@ class REPORT_SETTINGS_TSP extends React.Component {
     let typeAcquiring = e.currentTarget.getAttribute("type_acquiring");
     this.setState({
       type_acquiring: Number(typeAcquiring),
-      //   isDisabledSaveBtn: true,
-      //   physicalEmailMaskError: false,
-      //   internetEmailMaskError: false,
-
-      //   internet_channel_address: "",
-      //   physical_channel_address: "",
     });
-
-    // this.state.tsp_list.map((item, index) => {
-    //   if (item.tsp_id == this.state.currentTsp) {
-    //     if (item.main_settings != null && item.main_settings.length > 1) {
-    //       item.main_settings.map((item, index) => {
-    //         if (item.acquiring_type_id == typeAcquiring) {
-    //           this.setState({
-    //             type_acquiring: Number(typeAcquiring),
-    //             // report_format_id: item.report_format_id,
-    //             // report_period_type_id: item.report_period_type_id,
-    //             // channel_type_id: item.channel_type_id,
-    //             // file_name_mask: item.file_name_mask,
-    //           });
-    //         }
-    //       });
-    //     } else {
-    //       this.setState({
-    //         type_acquiring: Number(typeAcquiring),
-    //       });
-    //     }
-    //   }
-    // });
-
-    // this.state.settings.map( ( item , index) => {
-    //     if(item.tsp_id == this.state.currentTsp){
-    //         if(item.main_settings.length > 1){
-    //
-    //             console.log(item.main_settings[0].acquiring_type_id);
-    //             this.setState({
-    //                 type_acquiring: item.main_settings[0].acquiring_type_id,
-    //                 report_format_id: item.main_settings[0].report_format_id,
-    //                 report_period_type_id: item.main_settings[0].report_period_type_id,
-    //                 channel_type_id: item.main_settings[0].channel_type_id,
-    //                 file_name_mask: item.main_settings[0].file_name_mask,
-    //             });
-    //         }
-    //     }
-    // });
-
-    // this.setState({
-    //     report_period_type_id: this.state.settings[0].main_settings[0].report_period_type_id,
-    //     report_format_id: this.state.settings[0].main_settings[0].report_format_id,
-    //     channel_type_id: this.state.settings[0].main_settings[0].channel_type_id,
-    //     file_name_mask: this.state.settings[0].main_settings[0].file_name_mask,
-    //
-    //     type_acquiring: Number(typeAcquiring),
-    //     isShowReport: true
-    // });
   };
   changeTypeAcquiringInternet = (e) => {
     let typeAcquiring = e.currentTarget.getAttribute("type_acquiring");
     console.log(typeAcquiring);
-    // this.setState({
-    //     type_acquiring: Number(typeAcquiring),
-    //     isShowReport: true
-    // });
     this.setState({
       report_period_type_id: this.state.settings[0].report_period_type_id,
       report_format_id: this.state.settings[0].report_format_id,
@@ -1382,20 +1192,8 @@ class REPORT_SETTINGS_TSP extends React.Component {
       internetEmailMaskError: false,
     });
   };
-  // listREPORT_FORMAT = (obj) => {
-  //     console.log( obj )
-  //     return(
-  //         <option
-  //             //selected={this.state.isSelected == props.optionItem.role_id ? 'selected' : ''}
-  //             value={props.optionItem.role_id}
-  //         >{props.optionItem.role_name}</option>
-  //     )
-  //
-  // }
+
   openStandardReport = () => {
-    // this.setState({
-    //     isShowTableTSPReportSettingsSTD: true
-    // });
     this.requestTSPReportSettingsSTD(this.props.store.userState.token);
   };
   closePopupTable = () => {
@@ -1481,7 +1279,7 @@ class REPORT_SETTINGS_TSP extends React.Component {
       this.setState({ internet_channel_address: inputValue });
     if (name_input == "internet_file_name_mask")
       this.setState({ internet_file_name_mask: inputValue });
-    
+
     if (name_input == "catalog-physicall")
       this.setState({ physical_file_name: inputValue });
     if (name_input == "catalog-internet")
@@ -1630,9 +1428,9 @@ class REPORT_SETTINGS_TSP extends React.Component {
           channel_address: this.state.physical_channel_address, //file_name_mask
 
           report_setting_id: this.state.physical_report_settings_id,
-          file_path: this.state.physical_file_name
+          file_path: this.state.physical_file_name,
         };
-    } else if (type_acquiring == 2) {
+      } else if (type_acquiring == 2) {
         return {
           acquiring_type_id: 2, //type_acquiring
           // "standard_report": true,
@@ -1649,7 +1447,7 @@ class REPORT_SETTINGS_TSP extends React.Component {
           channel_address: this.state.internet_channel_address, //
 
           report_setting_id: this.state.internet_report_settings_id,
-          file_path: this.state.internet_file_name
+          file_path: this.state.internet_file_name,
         };
       }
     };
@@ -1767,7 +1565,10 @@ class REPORT_SETTINGS_TSP extends React.Component {
                 })}
               </div>
             ) : (
-              <><br/><span>Завантаження...</span></>
+              <>
+                <br />
+                <span>Завантаження...</span>
+              </>
             )}
           </div>
           <div className="coverInput">
@@ -1946,7 +1747,10 @@ class REPORT_SETTINGS_TSP extends React.Component {
                 })}
               </div>
             ) : (
-              <><br/><span>Завантаження...</span></>
+              <>
+                <br />
+                <span>Завантаження...</span>
+              </>
             )}
           </div>
           <div className="coverInput">
@@ -1969,7 +1773,6 @@ class REPORT_SETTINGS_TSP extends React.Component {
               id="сatalog"
               type="text"
               value={this.state.internet_file_name}
-
             />
           </div>
           <div className="coverInput">
@@ -2290,7 +2093,7 @@ class REPORT_SETTINGS_TSP extends React.Component {
               onChange={this.selectDICT_INSTITUTION}
               apiName="institution_id"
               id="dropdown-basic-button"
-              className="form-select"
+              className={`form-select ${this.state.errorRU ? "validError" : null}` }
               title="Регіональні управління"
             >
               <option>-</option>
@@ -2304,6 +2107,11 @@ class REPORT_SETTINGS_TSP extends React.Component {
                 <></>
               )}
             </select>
+
+            <section className={this.state.errorRU ? "d-block" : "d-none "}>
+              <p className="text-danger">{this.state.error_text}</p>
+            </section>
+
             <label htmlFor="TVBV">ТВБВ</label>
             <select
               id="dropdown-basic-button"
@@ -2401,9 +2209,7 @@ class REPORT_SETTINGS_TSP extends React.Component {
           </div>
           <div className="typeAcquiring">
             {this.state.isShowTypeAcquiring ? (
-              <>
-                {this.showHtmlReport()}
-              </>
+              <>{this.showHtmlReport()}</>
             ) : null}
           </div>
         </div>
