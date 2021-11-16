@@ -1,4 +1,4 @@
-import {Component} from "react";
+import { Component } from "react";
 import { Accordion } from "react-bootstrap";
 
 class Menu extends Component {

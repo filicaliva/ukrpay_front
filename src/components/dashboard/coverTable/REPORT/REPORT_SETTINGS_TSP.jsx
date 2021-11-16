@@ -38,7 +38,7 @@ const OptionItem = (props) => {
   );
 };
 const OptionItemDICT_REPORT_PERIOD_TYPE = (props) => {
-  console.log("props.report_period_type_id: ", props.report_period_type_id)
+  console.log("props.report_period_type_id: ", props.report_period_type_id);
   return (
     <>
       <input
@@ -884,16 +884,21 @@ class REPORT_SETTINGS_TSP extends React.Component {
 
         // this.props.store.addTableData(true, response.data.users);
         if (response.data.record_count >= 1) {
-            if (response.data.tsp_list[0].main_settings === null) {
-                response.data.tsp_list[0].main_settings =
-                this.state.responseTSPReportSettings.settings[0].main_settings;
-            }
-            else if (response.data.tsp_list[0].main_settings.length === 1) {
-                const count = response.data.tsp_list[0].main_settings[0].acquiring_type_id === 1 ? 1 : 0
-              response.data.tsp_list[0].main_settings.push(this.state.responseTSPReportSettings.settings[0].main_settings[count])
-                
-            }
-            console.log("response.data.tsp_list[0]: ", response.data.tsp_list[0]);
+          if (response.data.tsp_list[0].main_settings === null) {
+            response.data.tsp_list[0].main_settings =
+              this.state.responseTSPReportSettings.settings[0].main_settings;
+          } else if (response.data.tsp_list[0].main_settings.length === 1) {
+            const count =
+              response.data.tsp_list[0].main_settings[0].acquiring_type_id === 1
+                ? 1
+                : 0;
+            response.data.tsp_list[0].main_settings.push(
+              this.state.responseTSPReportSettings.settings[0].main_settings[
+                count
+              ]
+            );
+          }
+          console.log("response.data.tsp_list[0]: ", response.data.tsp_list[0]);
           this.setState({
             tsp_list: response.data.tsp_list,
             settings: response.data.tsp_list[0].main_settings,
@@ -1028,9 +1033,9 @@ class REPORT_SETTINGS_TSP extends React.Component {
     return year + month + day;
   };
   search = () => {
-      this.setState({
-        errorRU: false,
-      });
+    this.setState({
+      errorRU: false,
+    });
     if (this.state.isDisableTVBV) {
       this.setState({
         errorRU: true,
@@ -1203,9 +1208,25 @@ class REPORT_SETTINGS_TSP extends React.Component {
     });
   };
   seveTSPReportSettingsSTD = () => {
-    this.setState({
-      isShowTableTSPReportSettingsSTD: false,
-    });
+    const isDuplicates = () => {
+      const numbers = this.state.TSPReportSettingsSTD.map(
+        (item) => item.order_number
+      ).filter((item) => item !== 0);
+      const toFindDuplicates = (arry) =>
+        arry.filter((item, index) => arry.indexOf(item) !== index);
+      const duplicateElements = toFindDuplicates(numbers);
+      return duplicateElements.length > 0;
+    };
+
+    if (isDuplicates()) {
+      this.setState({
+        isShowOrder_numberError: true,
+      });
+    } else {
+      this.setState({
+        isShowTableTSPReportSettingsSTD: false,
+      });
+    }
   };
 
   changeSelect = (e) => {
@@ -1950,8 +1971,6 @@ class REPORT_SETTINGS_TSP extends React.Component {
         this.setState({
           TSPReportSettingsSTD: TSPReportSettingsSTD,
         });
-
-        //this.requestADMIN_ROLE_OPERATIONS_edit(this.props.store.userState.token, obj);
       };
       return (
         <>
@@ -1964,105 +1983,54 @@ class REPORT_SETTINGS_TSP extends React.Component {
         </>
       );
     };
+
     const editOrder_numberColumn = (cell, row, newValue) => {
-      //console.log(newValue);
       const test5 = (e) => {
         let nameRole = e.currentTarget.getAttribute("name");
-        //console.log(nameRole);
         let inputValue = Number(e.target.value);
-        //console.log(inputValue);
         let TSPReportSettingsSTD = this.state.TSPReportSettingsSTD;
-        //console.log(TSPReportSettingsSTD);
-        //console.log(row);
-
-        // let cloneTSPReportSettingsSTD = Object.assign({}, TSPReportSettingsSTD);
-        // console.log(TSPReportSettingsSTD);
-
         let cloneTSPReportSettingsSTD = TSPReportSettingsSTD.map((a) =>
           Object.assign({}, a)
         );
-        //console.log(cloneTSPReportSettingsSTD);
-
-        //console.log(row.field_name);
         let indexRow = cloneTSPReportSettingsSTD.findIndex(
           (el) => el.field_name === row.field_name
         );
-        //console.log(indexRow);
-
         let defineOrder_number = (arr, inputValue, indexRow) => {
           let cloneArr = arr.map((a) => Object.assign({}, a));
-          //console.log(arr == cloneArr);
-          //console.log(arr == arr);
-          //console.log(arr === cloneArr);
-          //console.log(cloneArr);
-          //console.log(arr);
-
           cloneArr.splice(indexRow, 1);
           let numberArr = [];
           cloneArr.map((item, index) => {
             numberArr.push(item.order_number);
           });
-          //console.log(numberArr);
-
-          //console.log(arr);
-          //console.log(cloneArr);
-
-          //console.log(numberArr.indexOf( inputValue ) != -1);
           return numberArr.indexOf(inputValue) != -1;
-          // if(numberArr.indexOf( inputValue ) != -1){
-          //     return false
-          // }else if(){
-          //
-          // }
         };
-        //console.log(defineOrder_number(cloneTSPReportSettingsSTD, inputValue,indexRow ));
 
-        if (
-          defineOrder_number(cloneTSPReportSettingsSTD, inputValue, indexRow)
-        ) {
-          // row[nameRole] = inputValue;
-          // cloneTSPReportSettingsSTD[indexRow] = row;
-          console.log(cloneTSPReportSettingsSTD);
-          this.setState({
-            // isShowBootstrapTable: false,
-            isShowOrder_numberError: true,
-            TSPReportSettingsSTD: TSPReportSettingsSTD,
-          });
+        // if (defineOrder_number(cloneTSPReportSettingsSTD, inputValue, indexRow)) {
+        //   this.setState({
+        //     isShowOrder_numberError: true,
+        //     TSPReportSettingsSTD,
+        //   });
+        // } else {
+        row[nameRole] = inputValue;
+        cloneTSPReportSettingsSTD[indexRow] = row;
 
-          // setTimeout(
-          //     () => this.setState({ isShowOrder_numberError: false }),
-          //     6000
-          // );
-        } else {
-          row[nameRole] = inputValue;
-          //console.log(row);
-          cloneTSPReportSettingsSTD[indexRow] = row;
-          console.log(cloneTSPReportSettingsSTD);
-
-          this.setState({
-            TSPReportSettingsSTD: cloneTSPReportSettingsSTD,
-          });
-        }
+        this.setState({
+          TSPReportSettingsSTD: cloneTSPReportSettingsSTD,
+        });
+        // }
       };
-      const rr = (e) => {
-        if (e.keyCode === 13) {
-          console.log(e.keyCode === 13);
-          let nameRole = e.currentTarget.getAttribute("name");
-          //console.log(nameRole);
-          let inputValue = e.target.value;
-          //console.log(inputValue);
-          //console.log(this.state.TSPReportSettingsSTD);
-          //console.log(row);
-          row[nameRole] = Number(inputValue);
-          //console.log(row);
-          let TSPReportSettingsSTD = this.state.TSPReportSettingsSTD;
-          TSPReportSettingsSTD[newValue] = row;
-          console.log(TSPReportSettingsSTD);
-          this.setState({
-            TSPReportSettingsSTD: TSPReportSettingsSTD,
-          });
-        }
-      };
+      // const rr = (e) => {
+      //   if (e.keyCode === 13) {
+      //     let nameRole = e.currentTarget.getAttribute("name");
+      //     let inputValue = e.target.value;
+      //     row[nameRole] = Number(inputValue);
+      //     let TSPReportSettingsSTD = this.state.TSPReportSettingsSTD;
+      //     TSPReportSettingsSTD[newValue] = row;
+      //     this.setState({
+      //       TSPReportSettingsSTD: TSPReportSettingsSTD,
+      //     });
+      //   }
+      // };
       return (
         <>
           <input
@@ -2093,7 +2061,9 @@ class REPORT_SETTINGS_TSP extends React.Component {
               onChange={this.selectDICT_INSTITUTION}
               apiName="institution_id"
               id="dropdown-basic-button"
-              className={`form-select ${this.state.errorRU ? "validError" : null}` }
+              className={`form-select ${
+                this.state.errorRU ? "validError" : null
+              }`}
               title="Регіональні управління"
             >
               <option>-</option>

@@ -159,7 +159,7 @@ select#date_type_id {
 
 .menu {
   position: relative;
-  min-width: 300px;
+  min-width: 340px;
   .coverList {
     .listMenu {
       .listMenuItem {
@@ -223,7 +223,7 @@ header {
   display: flex;
   width: 100%;
   .blockNav {
-    min-width: 300px;
+    min-width: 340px;
     padding: 20px 10px;
     display: flex;
     align-items: center;
@@ -1003,6 +1003,12 @@ table {
   width: 1.05rem !important;
   height: 1.05rem !important;
   background-size: 0.95rem !important;
+}
+
+.accordion-button:not(.collapsed), .accordion-button:focus{
+  outline: none;
+  box-shadow: none !important;
+  border: 0 !important;
 }
 .itemAct {
   opacity: 1;
