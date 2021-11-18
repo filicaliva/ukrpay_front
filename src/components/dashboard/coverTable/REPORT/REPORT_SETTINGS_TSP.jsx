@@ -4,25 +4,20 @@ import * as axios from "axios";
 import InputMask from "react-input-mask";
 
 const OptionItemDICT_INSTITUTION = (props) => {
-  //console.log( props )
   return (
     <option value={props.optionItem.institution_id}>
       {props.optionItem.institution_name}
     </option>
-    // <Dropdown.Item  onClick={() => this.selectRoleID} value={props.optionItem.role_id} >{props.optionItem.role_name}</Dropdown.Item>
   );
 };
 const OptionItemDICT_BRANCH = (props) => {
-  //console.log( props )
   return (
     <option value={props.optionItem.branch_id}>
       {props.optionItem.branch_name}
     </option>
-    // <Dropdown.Item  onClick={() => this.selectRoleID} value={props.optionItem.role_id} >{props.optionItem.role_name}</Dropdown.Item>
   );
 };
 const OptionItem = (props) => {
-  console.log(props);
   return (
     <option
       selected={
@@ -925,7 +920,6 @@ class REPORT_SETTINGS_TSP extends React.Component {
     const baseUrl = `/api/TSPReportSettings/STD`;
 
     let userBody = {
-      // tsp_id: this.state.currentTsp,
       acquiring_type_id: this.state.type_acquiring,
     };
     userBody.report_setting_id =
@@ -941,25 +935,14 @@ class REPORT_SETTINGS_TSP extends React.Component {
         },
       })
       .then((response) => {
-        console.log(response.data);
-        //console.log(response.data.users);
-        //console.log(response.data.Table);
-
-        //this.props.store.showTable(true);
-
-        // this.props.store.addTableData(true, response.data.users);
         this.setState({
           TSPReportSettingsSTD: response.data.standard_settings,
           isShowTableTSPReportSettingsSTD: true,
         });
-
         this.props.store.changeLoading(false);
-        //this.props.store.showTable(true);
       })
       .catch((error) => {
         console.log(error.response);
-        // console.log(error.response.data);
-        //console.log('error_catch');
       });
   }
   async requestTSPReportSettingsSTD_SAVE(token, dody) {
@@ -2204,10 +2187,7 @@ class REPORT_SETTINGS_TSP extends React.Component {
                 {this.state.isShowBootstrapTable ? (
                   <BootstrapTable
                     data={this.state.TSPReportSettingsSTD}
-                    // selectRow={selectRowProp}
                   >
-                    {/*{this.testRendColums}*/}
-
                     <TableHeaderColumn
                       isKey
                       dataField="field_desc"
@@ -2231,12 +2211,10 @@ class REPORT_SETTINGS_TSP extends React.Component {
                     </TableHeaderColumn>
                   </BootstrapTable>
                 ) : (
-                  <>
                     <div className="coverloader">
                       <div className="loader"></div>
                     </div>
-                  </>
-                )}
+                  )}
               </div>
             </div>
           </>

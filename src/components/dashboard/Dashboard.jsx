@@ -1,12 +1,9 @@
 import React from "react";
-import { NavLink, Route } from "react-router-dom";
-
 import * as axios from "axios";
 import Header from "./header/Header";
 import Menu from "./menu/Menu";
 import CoverTable from "./coverTable/CoverTable";
 import PopupTable from "./popup/PopupTable";
-import DashboardContainer from "./DashboardContainer";
 import LoaderUI from "../UI/LoaderUI";
 
 class Dashboard extends React.Component {
@@ -15,24 +12,12 @@ class Dashboard extends React.Component {
     this.state = {
       loading: true,
     };
-    console.log(this.props);
-    //console.log(this.props.userState.user_name);
-    // console.log(baseURL);
   }
   componentDidMount() {
-    //this.props.stepLoginChange('step1');
-    //this.checkUser();
-    //this.test_fetch();
-    //this.rr();
-    //console.log(window.localStorage.getItem('token') !== null);
-    //console.log( window.localStorage.getItem('token') );
-    //console.log(this.props.location.pathname);
-    if (window.localStorage.getItem("token") == null) {
+    if (!window.localStorage.getItem("token")) {
       this.props.history.push("/login");
     } else {
       this.authToken();
-      //this.props.changeOperation(this.props.location.pathname.substr(11));
-      //this.props.changeOperation(this.props.location.pathname); - для визначення ОПЕРАЦІЇ  в урл
     }
   }
 
@@ -43,29 +28,23 @@ class Dashboard extends React.Component {
         headers: { Token: `${window.localStorage.getItem("token")}` },
       })
       .then((response) => {
-        console.log(response.data);
-        //console.log(response.data.token);
+        const { token, user_code, user_name, user_position, OPERATIONS } = response.data;
+
         this.props.addUserData(
-          response.data.token,
-          response.data.user_code,
-          response.data.user_name,
-          response.data.user_position,
-          response.data.OPERATIONS
+          token,
+          user_code,
+          user_name,
+          user_position,
+          OPERATIONS
         );
         this.setState({ loading: false });
       })
       .catch((error) => {
-        console.log(error.response);
-        console.log(error.response.data);
-        console.log(error.response.data.ErrorStatus.ErrorMessage);
         let ErrorMessage = error.response.data.ErrorStatus.ErrorMessage;
-        console.log(ErrorMessage == "Помилка токена.");
-        if (ErrorMessage == "Помилка токена.") {
+        if (ErrorMessage === "Помилка токена.") {
           window.localStorage.removeItem("token");
-          //this.setState({ loading: false });
           this.props.history.push("/login");
         }
-        //console.log('error_catch');
       });
   }
 
@@ -73,7 +52,7 @@ class Dashboard extends React.Component {
     return (
       <div className="wrapper">
         {this.state.loading ? (
-          <LoaderUI/>
+          <LoaderUI />
         ) : (
           <>
             <Header store={this.props}></Header>
@@ -82,7 +61,6 @@ class Dashboard extends React.Component {
                 store={this.props}
                 params={this.props.location.pathname.substr(11)}
               />
-              {/*<Route  path="/dashboard/:dictionary" render={ () => <CoverTable store={this.props} /> } />*/}
               <CoverTable
                 store={this.props}
                 params={this.props.location.pathname.substr(11)}

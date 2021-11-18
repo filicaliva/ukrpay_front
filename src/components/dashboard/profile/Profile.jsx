@@ -1,12 +1,9 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-
 import * as axios from "axios";
 import {Accordion} from "react-bootstrap";
 import {Button} from "react-bootstrap";
 import InputMask from "react-input-mask";
-
-
 
 class Profile extends React.Component{
     constructor(props) {

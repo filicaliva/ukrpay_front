@@ -61,7 +61,7 @@ class Header extends React.Component {
       <header>
         <div className="blockNav">
           <div className="menuBtn">
-            <svg
+            {/* <svg
               xmlns="http://www.w3.org/2000/svg"
               width="100%"
               height="100%"
@@ -103,7 +103,7 @@ class Header extends React.Component {
                   ></rect>
                 </g>
               </g>
-            </svg>
+            </svg> */}
           </div>
           <div className="logoBank">ОЩАДБАНК</div>
         </div>
