@@ -1,6 +1,14 @@
+// TODO: refacoring render menu
+import { useContext } from "react";
 import { Component } from "react";
 import { Accordion } from "react-bootstrap";
 
+
+const AccordionContent = (content) => (
+  <div className="indent">
+    {content}
+  </div>
+)
 class Menu extends Component {
   constructor(props) {
     super(props);
@@ -13,28 +21,33 @@ class Menu extends Component {
     );
   }
   generateUserRoutingMenu = (menuItems) => {
-    let parentIndexData = {},
-      parentIndex = 0;
     let mappedUserConfig = menuItems.reduce((res, item) => {
       const isMenu = item && item.menu && item.operation;
       try {
         if (isMenu) {
-          if (!item["parent_operation"]) {
-            if (!parentIndexData[item.operation]) {
-              parentIndexData[item.operation] = parentIndex;
-              parentIndex++;
-              res.push({ ...item, children: [] });
-            }
-            return res;
-          }
-          const updatedItem = {
-            ...item,
-            operation: item.operation,
-          };
-
-          res[parentIndexData[item["parent_operation"]]].children.push(
-            updatedItem
+          let firstLevelMenu = menuItems.filter(
+            (item) => item.parent_operation === null
           );
+          let notFirstLevelMenu = menuItems.filter(
+            (item) => item.parent_operation !== null
+          );
+          firstLevelMenu = firstLevelMenu.map((i) => {
+            const secondLevel = notFirstLevelMenu.filter(
+              (item) => i.operation === item.parent_operation
+            );
+            return { ...i, children: secondLevel };
+          });
+
+          for (let i = 0; i < firstLevelMenu.length; i++) {
+            const el = firstLevelMenu[i];
+            el.children = el.children.map((i) => {
+              const thirdLevel = notFirstLevelMenu.filter(
+                (item) => i.operation === item.parent_operation
+              );
+              return { ...i, children: thirdLevel };
+            });
+          }
+          return firstLevelMenu;
         }
         return res;
       } catch (e) {
@@ -63,8 +76,35 @@ class Menu extends Component {
             let subMenu = (objItem) => {
               if (objItem != 0) {
                 return (
-                  <Accordion.Body>
-                    {objItem.map((item) => {
+                  <div>
+                    {objItem.map((item, indexTwo) => {
+                      if (item.children.length !== 0) {
+                        return (
+                          <Accordion.Item eventKey={indexTwo+10}>
+                            <Accordion.Header >{item.name}</Accordion.Header>
+                            <Accordion.Body>
+                              {item.children.map((i) => {
+                                return (
+                                  <div
+                                    className={`dropdownMenuItemLink ${
+                                      this.props.store.location.pathname.substr(
+                                        11
+                                      ) === i.operation
+                                        ? "itemAct"
+                                        : ""
+                                    }`}
+                                    name={i.name}
+                                    operation={i.operation}
+                                    onClick={this.itemLink}
+                                  >
+                                    <span>{i.name}</span>
+                                  </div>
+                                );
+                              })}
+                            </Accordion.Body>
+                          </Accordion.Item>
+                        );
+                      }
                       return (
                         <div
                           className={`dropdownMenuItemLink ${
@@ -81,21 +121,21 @@ class Menu extends Component {
                         </div>
                       );
                     })}
-                  </Accordion.Body>
+                  </div>
                 );
               }
             };
             if (item.children != 0) {
               return (
-                <Accordion.Item eventKey={index}>
-                  <Accordion.Header>{item.name}</Accordion.Header>
+                <div>
+                  <h5 style={{fontWeight: "500"}}>{item.name}</h5>
                   {subMenu(item.children)}
-                </Accordion.Item>
+                </div>
               );
             } else {
               return (
                 <div className="accordion-item">
-                  <h2 className="accordion-header">
+                  <h5 className="accordion-header">
                     <button
                       type="button"
                       aria-expanded="false"
@@ -103,7 +143,7 @@ class Menu extends Component {
                     >
                       {item.name}
                     </button>
-                  </h2>
+                  </h5>
                 </div>
               );
             }

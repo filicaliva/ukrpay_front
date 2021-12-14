@@ -51,7 +51,7 @@ class CoverTable extends React.Component {
         this.props.store.changeLoading(false);
       })
       .catch((error) => {
-        console.error(error.response);
+        throw new Error(error)
       });
   }
 
@@ -117,19 +117,6 @@ class CoverTable extends React.Component {
         return <Default />;
     }
   };
-  //   default = () => {
-  //     return (
-  //       <div className="coverTable">
-  //         <div className="headerTable">
-  //           <span>Не вибрано жодного звіту!!!</span>
-  //           <div className="optionBlock"></div>
-  //         </div>
-  //         <div className="innerTable">
-  //           <div className="Table"></div>
-  //         </div>
-  //       </div>
-  //     );
-  //   };
   render() {
     return this.tableType(this.props.params);
   }

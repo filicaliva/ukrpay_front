@@ -1,4 +1,3 @@
-import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
 import React from "react";
 import * as axios from "axios";
 import LoaderUI from "../../../UI/LoaderUI";
@@ -562,9 +561,7 @@ class AutocompleteInputMerchantName extends React.Component {
     this.setState({
       isLoading: true,
     });
-    console.log(token);
     const baseUrl = `/api/Dictionary/QueryMerchant`;
-    console.log(baseUrl);
     const body = {
       institution_id: this.props.institution_id,
       // branch_id: this.props.branch_id,
@@ -578,7 +575,9 @@ class AutocompleteInputMerchantName extends React.Component {
     } else {
       body.client_id = 0;
     }
-    console.log(body);
+    if(this.state.merchant_arr) return this.setState({
+      isLoading: false,
+    });
 
     await axios
       .post(baseUrl, body, {
@@ -616,9 +615,7 @@ class AutocompleteInputMerchantName extends React.Component {
         });
       })
       .catch((error) => {
-        console.log(error.response);
         console.log(error.response.data);
-        //console.log('error_catch');
       });
   }
   search(param) {
@@ -629,9 +626,6 @@ class AutocompleteInputMerchantName extends React.Component {
       const itemString = item.merchant_id.toString();
       return itemString.includes(param.toString());
     });
-
-    console.log("data: ", data);
-
     if (data === null) {
       this.setState({
         data: [{ client_name: "Незнайдено жодного результату" }],
@@ -651,11 +645,11 @@ class AutocompleteInputMerchantName extends React.Component {
           }form-control merchant-input`}
           placeholder="Введіть цифри..."
           type="text"
-          onBlur={this.onBlurAutocompleteInput}
+          // onBlur={this.onBlurAutocompleteInput}
           onChange={this.onChangeAutocompleteInput}
-          onClick={this.onClickAutocompleteInput}
+          onClick={() => this.request(this.props.token, "", false)}
           value={this.state.inputRequest}
-          onFocus={() => this.request(this.props.token, "", false)}
+          // onFocus={() => this.request(this.props.token, "", false)}
         />
         <input
           className={`${this.state.selected ? "selected " : ""}${
@@ -834,12 +828,14 @@ class AutocompleteInputTerminalName extends React.Component {
 
     if (this.props.tsp_id) {
       body.client_id = +this.props.tsp_id;
-    } else if (this.props.ident_code){
+    } else if (this.props.ident_code) {
       body.client_id = this.props.ident_code;
-    }else{
-        body.client_id = 0;
+    } else {
+      body.client_id = 0;
     }
-    console.log(body);
+    if(this.state.terminal_arr) return this.setState({
+      isLoading: false,
+    });
     await axios
       .post(baseUrl, body, {
         headers: {
@@ -862,11 +858,9 @@ class AutocompleteInputTerminalName extends React.Component {
             isShowBlockSelect: true,
           });
         }
-          this.setState({
-            isLoading: false,
-          });
-        
-
+        this.setState({
+          isLoading: false,
+        });
       })
       .catch((error) => {
         console.log(error.response);
@@ -888,7 +882,7 @@ class AutocompleteInputTerminalName extends React.Component {
         data: [{ client_name: "Незнайдено жодного результату" }],
       });
     } else {
-      this.setState({data});
+      this.setState({ data });
     }
   }
   render() {
@@ -900,11 +894,11 @@ class AutocompleteInputTerminalName extends React.Component {
           }form-control terminal-input`}
           placeholder="Введіть цифри..."
           type="text"
-          onBlur={this.onBlurAutocompleteInput}
+          // onBlur={this.onBlurAutocompleteInput}
           onChange={this.onChangeAutocompleteInput}
-          onClick={this.onClickAutocompleteInput}
+          onClick={() => this.request(this.props.token, "", false)}
           value={this.state.inputRequest}
-          onFocus={() => this.request(this.props.token)}
+          // onFocus={() => this.request(this.props.token)}
         />
         <input
           className={`${this.state.selected ? "selected " : ""}${
@@ -1437,14 +1431,14 @@ class REPORT_OPERATIONS extends React.Component {
         format_type_id: 1,
         terminal_type_id: 2,
         institution_id: 0,
-        date_type_id: 2,
+        date_type_id: 1,
         merchant_id: 0,
         terminal_id: 0,
       },
 
       date_from: null,
       date_to: null,
-      date_type_id: 2,
+      date_type_id: 1,
       institution_id: 0,
       merchant_id: null,
 
@@ -1504,6 +1498,21 @@ class REPORT_OPERATIONS extends React.Component {
         //this.props.store.showTable(true);
 
         // this.props.store.addTableData(true, response.data.Table);
+
+        if (response.data.Table.TableRows.length === 1) {
+          const param = response.data.Table.TableRows[0].institution_id;
+          let inputDataObj = this.state.AcquiringReportsCriteria;
+          inputDataObj.institution_id = param;
+
+          this.setState({
+            isShowSelectTVBV: false,
+            TSPReportSettingsSearchObj: inputDataObj,
+            AcquiringReportsCriteria: inputDataObj,
+            isInstitution_idValidation: true,
+            institution_id: param,
+          });
+          this.requestDICT_BRANCH(this.props.store.userState.token, param);
+        }
         this.setState({
           DICT_INSTITUTION: response.data.Table.TableRows,
           isShowSelectDICT_INSTITUTION: true,
@@ -1706,7 +1715,7 @@ class REPORT_OPERATIONS extends React.Component {
   }
   async requestDICT_TERMINAL_SYSTEM() {
     this.props.store.changeLoading(true);
-    const baseUrl = `/api/Dictionary/QueryTerminal`;
+    const baseUrl = `/api/Dictionary/QueryMCC`;
     const userBody = {
       institution_id: +this.state.institution_id,
       merchant_id: +this.state.merchant_id || 0,

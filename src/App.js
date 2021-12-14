@@ -1,7 +1,7 @@
 import "./App.scss";
 import { BrowserRouter, Route } from "react-router-dom";
 import DashboardContainer from "./components/dashboard/DashboardContainer";
-import React, { Component, useEffect } from "react";
+import React from "react";
 import LoginContainer from "./components/login/LoginContainer";
 import MainContainer from "./components/main/MainContainer";
 import ProfileContainer from "./components/dashboard/profile/ProfileContainer";

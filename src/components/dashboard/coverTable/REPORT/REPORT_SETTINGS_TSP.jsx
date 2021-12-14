@@ -1476,7 +1476,7 @@ class REPORT_SETTINGS_TSP extends React.Component {
         <div className="coverBtn border">
           <div className="title">Вид екварингу</div>
           <button
-            className="btn btn-secondary customBtnAc"
+            className="btn btn-primary customBtnAc"
             disabled={this.state.type_acquiring == 1 ? "disabled" : ""}
             onClick={this.changeTypeAcquiring}
             type_acquiring={1}
@@ -1484,7 +1484,7 @@ class REPORT_SETTINGS_TSP extends React.Component {
             Фізичний
           </button>
           <button
-            className="btn btn-secondary customBtnAc"
+            className="btn btn-primary customBtnAc"
             disabled={this.state.type_acquiring == 2 ? "disabled" : ""}
             onClick={this.changeTypeAcquiring}
             type_acquiring={2}
@@ -1505,7 +1505,7 @@ class REPORT_SETTINGS_TSP extends React.Component {
           </div>
 
           <button
-            className="btn btn-secondary"
+            className="btn btn-primary"
             disabled={this.state.physical_standard_report ? "" : "disabled"}
             onClick={this.openStandardReport}
           >
@@ -1576,17 +1576,6 @@ class REPORT_SETTINGS_TSP extends React.Component {
             )}
           </div>
           <div className="coverInput">
-            <label htmlFor="file_name_mask">Маска назви файлу</label>
-            <input
-              onChange={this.changeInputTsp}
-              name="physical_file_name_mask"
-              className="customInput form-control"
-              id="file_name_mask"
-              type="text"
-              value={this.state.physical_file_name_mask}
-            />
-          </div>
-          <div className="coverInput">
             <label htmlFor="catalog">Каталог</label>
             <input
               onChange={this.changeInputTsp}
@@ -1595,6 +1584,17 @@ class REPORT_SETTINGS_TSP extends React.Component {
               id="catalog"
               type="text"
               value={this.state.physical_file_name}
+            />
+          </div>
+          <div className="coverInput">
+            <label htmlFor="file_name_mask">Маска назви файлу</label>
+            <input
+              onChange={this.changeInputTsp}
+              name="physical_file_name_mask"
+              className="customInput form-control"
+              id="file_name_mask"
+              type="text"
+              value={this.state.physical_file_name_mask}
             />
           </div>
           <div className="coverInput">
@@ -1666,7 +1666,7 @@ class REPORT_SETTINGS_TSP extends React.Component {
           <br />
           <div className="reportCoverBtn">
             <button
-              className="btn btn-secondary"
+              className="btn btn-primary"
               disabled={this.state.isDisabledSaveBtn ? "" : "disabled"}
               onClick={this.saveReport}
             >
@@ -1687,7 +1687,7 @@ class REPORT_SETTINGS_TSP extends React.Component {
           </div>
 
           <button
-            className="btn btn-secondary"
+            className="btn btn-primary"
             disabled={this.state.internet_standard_report ? "" : "disabled"}
             onClick={this.openStandardReport}
           >
@@ -1854,7 +1854,7 @@ class REPORT_SETTINGS_TSP extends React.Component {
           <br />
           <div className="reportCoverBtn">
             <button
-              className="btn btn-secondary"
+              className="btn btn-primary"
               disabled={this.state.isDisabledSaveBtn ? "" : "disabled"}
               onClick={this.saveReport}
             >

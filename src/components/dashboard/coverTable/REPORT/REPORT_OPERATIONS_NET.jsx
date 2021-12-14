@@ -184,7 +184,7 @@ class REPORT_OPERATIONS_NET extends React.Component {
       },
       date_from: null,
       date_to: null,
-      date_type_id: null,
+      date_type_id: 1,
       institution_id: null,
       merchant_id: null,
       terminal_type_id: null,
@@ -2414,7 +2414,6 @@ class REPORT_OPERATIONS_NET extends React.Component {
                   } form-select`}
                   title="DICT_DATE_TYPE"
                 >
-                  <option></option>
                   {this.state.isShowSelectDICT_DATE_TYPE
                     ? this.state.DICT_DATE_TYPE.map((item, index) => {
                         //// console.log(item)
