@@ -61,8 +61,8 @@ const OptionItemDICT_MERCHANT_SYSTEM = (props) => {
 const OptionItemDICT_TERMINAL_SYSTEM = (props) => {
   //console.log( props )
   return (
-    <option value={props.optionItem.terminal_id}>
-      {props.optionItem.terminal_id}
+    <option value={props.optionItem.mcc_code}>
+      {props.optionItem.mcc_name}
     </option>
     // <Dropdown.Item  onClick={() => this.selectRoleID} value={props.optionItem.role_id} >{props.optionItem.role_name}</Dropdown.Item>
   );
@@ -214,6 +214,7 @@ const BlockSelectItemIdentCode = (props) => {
       className="blockSelectItem"
       value={props.item.ident_code}
       onClick={(e) => props.onClickBlockSelectItem(e)}
+      data-id={props.item.client_id}
     >
       {props.item.ident_code}
     </div>
@@ -240,9 +241,9 @@ class AutocompleteInputTspName extends React.Component {
     this.myRef = React.createRef();
   }
 
-  componentDidMount() {
-    window.addEventListener("mousedown", this.clickTest);
-  }
+  // componentDidMount() {
+  //   window.addEventListener("mousedown", this.clickTest);
+  // }
   componentWillUnmount() {
     window.addEventListener("mousedown", null);
   }
@@ -302,6 +303,8 @@ class AutocompleteInputTspName extends React.Component {
     if (val != "") {
       //console.log(this.state.InputDICT_MCC);
       //console.log(this.state.mcc_code);
+      this.props.addTspName(val);
+
       if (val != this.state.inputRequest) {
         this.request(this.props.token, val, false);
 
@@ -309,7 +312,6 @@ class AutocompleteInputTspName extends React.Component {
         // inputDataObj.tsp_name = val;
         console.log(val);
         //console.log(typeof val);
-        this.props.addTspName(val);
         this.setState({
           inputResult: name,
           inputRequest: name,
@@ -326,15 +328,15 @@ class AutocompleteInputTspName extends React.Component {
     }
   };
 
-  clickTest = (e) => {
-    if (this.myRef.current != null) {
-      if (this.myRef.current.className != e.target.parentElement.className) {
-        this.setState({
-          isShowBlockSelect: false,
-        });
-      }
-    }
-  };
+  // clickTest = (e) => {
+  //   if (this.myRef.current != null) {
+  //     if (this.myRef.current.className != e.target.parentElement.className) {
+  //       this.setState({
+  //         isShowBlockSelect: false,
+  //       });
+  //     }
+  //   }
+  // };
 
   async request(token, param, showBlock) {
     this.setState({
@@ -384,8 +386,6 @@ class AutocompleteInputTspName extends React.Component {
       })
       .catch((error) => {
         console.log(error.response);
-        console.log(error.response.data);
-        //console.log('error_catch');
       });
   }
   render() {
@@ -459,9 +459,9 @@ class AutocompleteInputIdentCode extends React.Component {
     this.myRef = React.createRef();
   }
 
-  componentDidMount() {
-    window.addEventListener("mousedown", this.clickTest);
-  }
+  // componentDidMount() {
+  //   window.addEventListener("mousedown", this.clickTest);
+  // }
   componentWillUnmount() {
     window.addEventListener("mousedown", null);
   }
@@ -515,6 +515,7 @@ class AutocompleteInputIdentCode extends React.Component {
   onClickBlockSelectItem = (e) => {
     //console.log('----onClickBlockSelectItem-----');
     let val = e.currentTarget.getAttribute("value");
+    let client_id = e.currentTarget.getAttribute("data-id");
     //console.log(val);
     //console.log('----onClickBlockSelectItem-----');
     if (val != "") {
@@ -527,7 +528,8 @@ class AutocompleteInputIdentCode extends React.Component {
         // inputDataObj.tsp_name = val;
         console.log(val);
         //console.log(typeof val);
-        this.props.addIdentCode(Number(val));
+        // this.props.addIdentCode(Number(val));
+        this.props.addClientID(Number(client_id));
         this.setState({
           inputResult: val,
           inputRequest: val,
@@ -544,15 +546,15 @@ class AutocompleteInputIdentCode extends React.Component {
     }
   };
 
-  clickTest = (e) => {
-    if (this.myRef.current != null) {
-      if (this.myRef.current.className != e.target.parentElement.className) {
-        this.setState({
-          isShowBlockSelect: false,
-        });
-      }
-    }
-  };
+  // clickTest = (e) => {
+  //   if (this.myRef.current != null) {
+  //     if (this.myRef.current.className != e.target.parentElement.className) {
+  //       this.setState({
+  //         isShowBlockSelect: false,
+  //       });
+  //     }
+  //   }
+  // };
 
   async request(token, param, showBlock) {
     this.setState({
@@ -603,13 +605,10 @@ class AutocompleteInputIdentCode extends React.Component {
       })
       .catch((error) => {
         console.log(error.response);
-        console.log(error.response.data);
         //console.log('error_catch');
       });
   }
   render() {
-    console.log(this.props);
-    console.log(this.state);
     return (
       <div className="autocomplete">
         <InputMask
@@ -701,17 +700,16 @@ class AutocompleteInputMerchantName extends React.Component {
     this.myRef = React.createRef();
   }
 
-  componentDidMount() {
-    window.addEventListener("mousedown", this.clickTest);
-  }
+  // componentDidMount() {
+  //   window.addEventListener("mousedown", this.clickTest);
+  // }
   componentWillUnmount() {
     window.addEventListener("mousedown", null);
   }
 
   onChangeAutocompleteInput = (e) => {
     let param = e.target.value;
-    console.log(param);
-    this.props.addTspName(Number(0));
+    // this.props.addTspName(Number(0));
     this.setState({
       inputRequest: param,
       selected: false,
@@ -720,7 +718,6 @@ class AutocompleteInputMerchantName extends React.Component {
   };
   onClickAutocompleteInput = (e) => {
     let param = e.target.value;
-    console.log(param);
     this.search(param);
     // this.setState({
     //     isShowBlockSelect: true
@@ -728,7 +725,6 @@ class AutocompleteInputMerchantName extends React.Component {
   };
   onBlurAutocompleteInput = (e) => {
     let param = e.target.value;
-    console.log(param);
     // if(param != '' && param.length >= 3){
     //     this.request(this.props.token, param, false);
     // }
@@ -756,23 +752,12 @@ class AutocompleteInputMerchantName extends React.Component {
     //console.log(val);
     //console.log('----onClickBlockSelectItem-----');
     if (val !== "") {
-      //console.log(this.state.InputDICT_MCC);
-      //console.log(this.state.mcc_code);
+      this.props.addTspName(val);
       if (+val !== +this.state.inputRequest) {
         this.search(val);
-
-        // let inputDataObj = this.props.AcquiringReportsCriteria;
-        // inputDataObj.tsp_name = val;
-        console.log(val);
-        //console.log(typeof val);
-        this.props.addTspName(val);
         this.setState({
-          // inputResult: name,
           inputRequest: name,
           isShowBlockSelect: false,
-          // isShowInputResult: false,
-          // isShowInputRequest: true,
-
           selected: true,
         });
       }
@@ -783,13 +768,13 @@ class AutocompleteInputMerchantName extends React.Component {
   };
 
   clickTest = (e) => {
-    if (this.myRef.current != null) {
-      if (this.myRef.current.className != e.target.parentElement.className) {
-        this.setState({
-          isShowBlockSelect: false,
-        });
-      }
-    }
+    // if (this.myRef.current != null) {
+    //   if (this.myRef.current.className != e.target.parentElement.className) {
+    //     this.setState({
+    //       isShowBlockSelect: false,
+    //     });
+    //   }
+    // }
   };
 
   async request(token, param, showBlock) {
@@ -951,9 +936,9 @@ class AutocompleteInputTerminalName extends React.Component {
     this.myRef = React.createRef();
   }
 
-  componentDidMount() {
-    window.addEventListener("mousedown", this.clickTest);
-  }
+  // componentDidMount() {
+  //   window.addEventListener("mousedown", this.clickTest);
+  // }
   componentWillUnmount() {
     window.addEventListener("mousedown", null);
   }
@@ -1037,13 +1022,13 @@ class AutocompleteInputTerminalName extends React.Component {
   };
 
   clickTest = (e) => {
-    if (this.myRef.current != null) {
-      if (this.myRef.current.className != e.target.parentElement.className) {
-        this.setState({
-          isShowBlockSelect: false,
-        });
-      }
-    }
+    // if (this.myRef.current != null) {
+    //   if (this.myRef.current.className != e.target.parentElement.className) {
+    //     this.setState({
+    //       isShowBlockSelect: false,
+    //     });
+    //   }
+    // }
   };
 
   async request(token, param, showBlock) {
@@ -1196,9 +1181,9 @@ class AutocompleteInputMccCode extends React.Component {
     this.myRef = React.createRef();
   }
 
-  componentDidMount() {
-    window.addEventListener("mousedown", this.clickTest);
-  }
+  // componentDidMount() {
+  //   window.addEventListener("mousedown", this.clickTest);
+  // }
   componentWillUnmount() {
     window.addEventListener("mousedown", null);
   }
@@ -1281,13 +1266,13 @@ class AutocompleteInputMccCode extends React.Component {
   };
 
   clickTest = (e) => {
-    if (this.myRef.current != null) {
-      if (this.myRef.current.className != e.target.parentElement.className) {
-        this.setState({
-          isShowBlockSelect: false,
-        });
-      }
-    }
+    // if (this.myRef.current != null) {
+    //   if (this.myRef.current.className != e.target.parentElement.className) {
+    //     this.setState({
+    //       isShowBlockSelect: false,
+    //     });
+    //   }
+    // }
   };
   async request(token, param, showBlock) {
     this.setState({
@@ -1473,7 +1458,6 @@ class REPORT_OPERATIONS extends React.Component {
     //console.log(this.data.sort());
   }
   componentDidMount() {
-    window.addEventListener("mousedown", this.clickTest);
     this.requestDICT_INSTITUTION(this.props.store.userState.token);
     this.requestDICT_ACQUIRING_REPORTS(this.props.store.userState.token);
     this.requestDICT_ACQUIRING_TYPE(this.props.store.userState.token);
@@ -1729,11 +1713,12 @@ class REPORT_OPERATIONS extends React.Component {
         headers: { Token: `${this.props.store.userState.token}` },
       })
       .then((response) => {
-        console.log(response.data);
-
         this.setState({
-          DICT_TERMINAL_SYSTEM: response.data.terminal_list.TableRows,
+          DICT_TERMINAL_SYSTEM: response.data.Table.TableRows,
+          DICT_MCC_SYSTEM: response.data.Table.TableRows,
           isShowSelectDICT_TERMINAL_SYSTEM: true,
+          isShowSelectDICT_MCC_SYSTEM: true,
+
         });
 
         this.props.store.changeLoading(false);
@@ -1787,11 +1772,11 @@ class REPORT_OPERATIONS extends React.Component {
         headers: { Token: `${this.props.store.userState.token}` },
       })
       .then((response) => {
-        console.log(response.data);
 
         this.setState({
           DICT_TERMINAL_SYSTEM: response.data.mcc_list.TableRows,
           isShowSelectDICT_MCC_SYSTEM: true,
+          DICT_MCC_SYSTEM: response.data.Table.TableRows,
         });
 
         this.props.store.changeLoading(false);
@@ -3067,13 +3052,13 @@ class REPORT_OPERATIONS extends React.Component {
     // console.log(e.target.parentElement);
     // console.log(e.target.parentElement.className);
     // console.log(e.target.parentElement.className != null && this.myRef.current != null);
-    if (this.myRef.current != null) {
-      if (this.myRef.current.className != e.target.parentElement.className) {
-        this.setState({
-          isShowBlockSelectDICT_MCC: false,
-        });
-      }
-    }
+    // if (this.myRef.current != null) {
+    //   if (this.myRef.current.className != e.target.parentElement.className) {
+    //     this.setState({
+    //       isShowBlockSelectDICT_MCC: false,
+    //     });
+    //   }
+    // }
   };
 
   async requestDICT_MCC(token, param, showBlock) {
@@ -3125,10 +3110,8 @@ class REPORT_OPERATIONS extends React.Component {
 
   //
   addMerchantName = (val) => {
-    console.log(val);
     let inputDataObj = this.state.AcquiringReportsCriteria;
     inputDataObj.merchant_id = val;
-    console.log(inputDataObj);
     this.setState({
       AcquiringReportsCriteria: inputDataObj,
     });
@@ -3155,19 +3138,22 @@ class REPORT_OPERATIONS extends React.Component {
     console.log(this.state.AcquiringReportsCriteria.tsp_name);
   };
   addIdentCode = (val) => {
-    console.log(val);
     let inputDataObj = this.state.AcquiringReportsCriteria;
     inputDataObj.ident_code = val;
-    console.log(inputDataObj);
+    this.setState({
+      AcquiringReportsCriteria: inputDataObj,
+    });
+  };
+  addClientID = (val) => {
+    let inputDataObj = this.state.AcquiringReportsCriteria;
+    inputDataObj.tsp_id = val;
     this.setState({
       AcquiringReportsCriteria: inputDataObj,
     });
   };
   addMccCode = (val) => {
-    console.log(val);
     let inputDataObj = this.state.AcquiringReportsCriteria;
     inputDataObj.mcc_code = val;
-    console.log(inputDataObj);
     this.setState({
       AcquiringReportsCriteria: inputDataObj,
     });
@@ -3261,6 +3247,7 @@ class REPORT_OPERATIONS extends React.Component {
               }
               branch_id={this.state.AcquiringReportsCriteria.bank_branch_id}
               addIdentCode={this.addIdentCode}
+              addClientID={this.addClientID}
               ident_code={this.state.AcquiringReportsCriteria.ident_code}
               // onBlur={()=>{this.requestDICT_MERCHANT_SYSTEM();this.requestDICT_TERMINAL_SYSTEM()}}
             />

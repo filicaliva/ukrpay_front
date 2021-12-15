@@ -359,12 +359,12 @@ export default function NETWORK_EDIT({ store }) {
                   <option value={option.brand_1id}>{option.brand_name}</option>
                 )}
               /> */}
-              <AsyncSelect
+              {/* <AsyncSelect
                 cacheOptions
                 loadOptions={loadOptions}
                 defaultOptions
                 onInputChange={handleInputChange}
-              />
+              /> */}
             </div>
             <div>
               {/* <label>Назва статуса мережі</label> */}
@@ -384,14 +384,14 @@ export default function NETWORK_EDIT({ store }) {
                   ))
                 : null}
             </Form.Select> */}
-              <Form.Check
+              {/* <Form.Check
                 style={{ marginTop: "20px" }}
                 type={"checkbox"}
                 id={`brand_name_checkbox`}
                 label={`I Рівень`}
                 checked={firstLevel}
                 onChange={handleFirstLevel}
-              />
+              /> */}
             </div>
             <div>
               {/* <label>ПІБ менеджера мережі</label> */}
@@ -828,9 +828,9 @@ export default function NETWORK_EDIT({ store }) {
       </div>
 
       <div class="btnBlock" style={{ background: "white", padding: "10px" }}>
-        <button class="btn btn-success" onClick={confirm}>
+        {/* <button class="btn btn-success" onClick={confirm}>
           Зберегти
-        </button>
+        </button> */}
       </div>
     </div>
   );

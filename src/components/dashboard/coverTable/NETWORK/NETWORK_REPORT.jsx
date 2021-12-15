@@ -38,6 +38,27 @@ export default function NETWORK_REPORT({ store }) {
   const [optionsTSP, setOptionsTSP] = useState([]);
   const [tsp, setTSP] = useState(null);
 
+  const [form, setForm] = useState({
+    brand_id: 1,
+    brand_name: 1,
+    brand_status_code: 1,
+    brand_status_name: 1,
+    brand_manager_id: 1,
+    brand_manager_institution_id: 1,
+    brand_contact_name: 1,
+    brand_contact_position: 1,
+    brand_contact_phone: 1,
+    brand_contact_email: 1,
+    level2_ident_code: 1,
+    level2_id: 1,
+    level2_name: 1,
+    level2_manager_id: 1,
+    level2_manager_institution_id: 1,
+    client_name: 1,
+    ident_code: 1,
+    client_manager_id: 1,
+    client_manager_institution_id: 1,
+  });
   const handleSearchBrandName = async (query) => {
     setIsLoading(true);
     await axios
@@ -48,9 +69,7 @@ export default function NETWORK_REPORT({ store }) {
       })
       .then((res) => {
         const options =
-          res.data.record_count > 0
-            ? res.data.Table.TableRows
-            : [];
+          res.data.record_count > 0 ? res.data.Table.TableRows : [];
         setOptions(options);
         setIsLoading(false);
       });
@@ -64,12 +83,14 @@ export default function NETWORK_REPORT({ store }) {
         },
       })
       .then((res) => {
-        const options = res.data.Table?res.data.Table.TableRows.map((i) => ({
-          id: i.entity_id,
-          value: i.entity_name,
-          manager_name: +i.ident_code,
-          institution_name: i.brand_region,
-        })):null;
+        const options = res.data.Table
+          ? res.data.Table.TableRows.map((i) => ({
+              id: i.entity_id,
+              value: i.entity_name,
+              manager_name: +i.ident_code,
+              institution_name: i.brand_region,
+            }))
+          : null;
         setOptionsSecondLvl(options);
         setIsLoadingSecondLvl(true);
       });
@@ -83,10 +104,12 @@ export default function NETWORK_REPORT({ store }) {
         },
       })
       .then((res) => {
-        const options = res.data.Table ? res.data.Table.TableRows.map((i) => ({
-          id: i.institution_id,
-          value: i.institution_name,
-        })): null;
+        const options = res.data.Table
+          ? res.data.Table.TableRows.map((i) => ({
+              id: i.institution_id,
+              value: i.institution_name,
+            }))
+          : null;
         setOptionsSecondLvlRU(options);
         setIsLoadingSecondLvlRU(true);
       });
@@ -165,7 +188,7 @@ export default function NETWORK_REPORT({ store }) {
   const handleSearchTSP = async () => {
     const data = {
       institution_id: +secondLvlRU.level2_manager_institution_id,
-      branch_id:  +brand.id,
+      branch_id: +brand.id,
       ident_code: contact.ident_code,
       network_brand_id: brand.id,
     };
@@ -177,10 +200,13 @@ export default function NETWORK_REPORT({ store }) {
         },
       })
       .then((res) => {
-        const options = res.data.record_count > 0 ? res.data.tsp_list.TableRows.map((i) => ({
-          id: i.ident_code,
-          value: i.client_name,
-        })): [];
+        const options =
+          res.data.record_count > 0
+            ? res.data.tsp_list.TableRows.map((i) => ({
+                id: i.ident_code,
+                value: i.client_name,
+              }))
+            : [];
         setOptionsTSP(options);
         setIsLoadingTSP(true);
       });
@@ -190,9 +216,9 @@ export default function NETWORK_REPORT({ store }) {
     handleSearchBrandStatus();
     handleSearchNameManager();
     handleSearchRUManager();
-    handleSearchBrandNameSecondLvl();
-    handleSearchBrandNameSecondLvlRU();
-    handleSearchManager();
+    // handleSearchBrandNameSecondLvl();
+    // handleSearchBrandNameSecondLvlRU();
+    // handleSearchManager();
   }, []);
 
   const handleContactInput = (e) => {
@@ -203,16 +229,10 @@ export default function NETWORK_REPORT({ store }) {
   };
 
   const confirm = async () => {
+    console.log(brand);
     const data = {
-      ...brand,
-      ...contact,
-      ...brandStatus,
-      ...nameManager,
-      ...ruManager,
-      ...secondLvl,
-      ...secondLvlRU,
-      ...manager,
-      ...tsp,
+      ...form,
+      brand_id: brand.brand_id,
     };
 
     await axios
@@ -220,26 +240,36 @@ export default function NETWORK_REPORT({ store }) {
         headers: {
           token: store.userState.token,
         },
-        responseType: 'blob',
-       
+        responseType: "blob",
       })
       .then((response) => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
+        const link = document.createElement("a");
+        let fileTitle = decodeURI(
+          response.headers["content-disposition"].split("filename*=UTF-8''")[1]
+        );
         link.href = url;
-        link.setAttribute('download', 'network_report.xlsx');
+        link.setAttribute("download", fileTitle);
         document.body.appendChild(link);
         link.click();
-
       });
+  };
+
+  const handleForm = (e) => {
+    if (!e.target.name) return;
+    let name = e.target.name;
+    let val = e.target.checked;
+    setForm((i) => {
+      return { ...i, [name]: val ? 1 : 0 };
+    });
   };
 
   return (
     <div className="coverTable DICT_NET_BRAND">
       <div className="headerTable">
-        <h3 className="titleTable">Звіт по мережевим клієнтам</h3>
+        <h3 className="titleTable">Інформація по мережевих клієнтах</h3>
       </div>
-      <div className="addbBlock">
+      <div className="addbBlock" onChange={handleForm}>
         <div className="row col-4">
           <div className="row col-8">
             <AsyncTypeahead
@@ -279,13 +309,14 @@ export default function NETWORK_REPORT({ store }) {
                   ))
                 : null}
             </Form.Select> */}
-              <Form.Check 
-                style={{marginTop: "20px"}}
-                type={"checkbox"}
-                id={`brand_name_checkbox`}
-                label={`Назва статуса мережі`}
-                
-              />
+            <Form.Check
+              defaultChecked={true}
+              style={{ marginTop: "20px" }}
+              type={"checkbox"}
+              name={`brand_manager_status`}
+              label={`Назва статуса мережі`}
+              name="brand_status_name"
+            />
           </div>
           <div>
             {/* <label>ПІБ менеджера мережі</label>
@@ -303,13 +334,13 @@ export default function NETWORK_REPORT({ store }) {
                   ))
                 : null}
             </Form.Select> */}
-                <Form.Check 
-                style={{marginTop: "20px"}}
-                type={"checkbox"}
-                id={`brand_contact_name`}
-                label={`ПІБ менеджера мережі`}
-                
-              />
+            <Form.Check
+              defaultChecked={true}
+              style={{ marginTop: "20px" }}
+              type={"checkbox"}
+              name={`brand_manager_name`}
+              label={`ПІБ менеджера мережі`}
+            />
           </div>
           <div>
             {/* <label>РУ менеджера мережі</label>
@@ -327,104 +358,124 @@ export default function NETWORK_REPORT({ store }) {
                   ))
                 : null}
             </Form.Select> */}
-              <Form.Check 
-                style={{marginTop: "20px"}}
-                type={"checkbox"}
-                id={`brand_manager_id`}
-                label={`РУ менеджера мережі`}
-                
-              />
+            <Form.Check
+              defaultChecked={true}
+              style={{ marginTop: "20px" }}
+              type={"checkbox"}
+              name={`brand_manager_id`}
+              label={`РУ менеджера мережі`}
+            />
+            <Form.Check
+              defaultChecked={true}
+              style={{ marginTop: "20px" }}
+              type={"checkbox"}
+              name={`client_manager_id`}
+              label={`Менеджера ТСП`}
+            />
+            <Form.Check
+              defaultChecked={true}
+              style={{ marginTop: "20px" }}
+              type={"checkbox"}
+              name={`client_manager_institution_id`}
+              label={`РУ менеджера ТСП`}
+            />
           </div>
 
-          <h5 className="mt-4" >Контактна особа мережі</h5>
+          <h5 className="mt-4">Контактна особа мережі</h5>
 
           {/* <div className="form" onChange={handleContactInput}>
             <label>ПІБ</label>
             <Form.Control
               type="text"
               name="brand_contact_name"
-              id="brand_contact_name"
+              name="brand_contact_name"
             />
             <label>Посада</label>
             <Form.Control
               type="text"
               name="brand_contact_position"
-              id="brand_contact_position"
+              name="brand_contact_position"
             />
             <label>Телефон</label>
             <Form.Control
               type="phone"
               name="brand_contact_phone"
-              id="brand_contact_phone"
+              name="brand_contact_phone"
             />
             <label>Email</label>
             <Form.Control
               type="email"
               name="brand_contact_email"
-              id="brand_contact_email"
+              name="brand_contact_email"
             />
           </div>*/}
           <div>
-            <Form.Check 
-                style={{marginTop: "10px"}}
-                type={"checkbox"}
-                id={`brand_contact_name`}
-                label={`ПІБ`}
-                
-              />
-
+            <Form.Check
+              defaultChecked={true}
+              style={{ marginTop: "10px" }}
+              type={"checkbox"}
+              name={`brand_contact_name`}
+              label={`ПІБ`}
+            />
           </div>
-            <div>
-              <Form.Check
-                  style={{marginTop: "20px"}}
-                  type={"checkbox"}
-                  id={`brand_contact_position`}
-                  label={`Посада`}
-                  
-                />
-            </div>
-            <div>
-              <Form.Check
-                  style={{marginTop: "20px"}}
-                  type={"checkbox"}
-                  id={`brand_contact_phone`}
-                  label={`Телефон`}
-                  
-                />
-            </div>
-            <div>
-              <Form.Check
-                  style={{marginTop: "20px"}}
-                  type={"checkbox"}
-                  id={`brand_contact_email`}
-                  label={`Email`}
-                  
-                />
-            </div>
-        </div> 
+          <div>
+            <Form.Check
+              defaultChecked={true}
+              style={{ marginTop: "20px" }}
+              type={"checkbox"}
+              name={`brand_contact_position`}
+              label={`Посада`}
+            />
+          </div>
+          <div>
+            <Form.Check
+              defaultChecked={true}
+              style={{ marginTop: "20px" }}
+              type={"checkbox"}
+              name={`brand_contact_phone`}
+              label={`Телефон`}
+            />
+          </div>
+          <div>
+            <Form.Check
+              defaultChecked={true}
+              style={{ marginTop: "20px" }}
+              type={"checkbox"}
+              name={`brand_contact_email`}
+              label={`Email`}
+            />
+          </div>
+        </div>
 
         <div className="col-4">
           <div>
-          <h5>2 рівень</h5>
-
+            <h5>2 рівень</h5>
           </div>
           {/* <div className="form" onChange={handleContactInput}>
             <label>ЄДРПОУ 2 рівень</label>
             <Form.Control
               type="number"
               name="level2_ident_code"
-              id="level2_ident_code"
+              name="level2_ident_code"
             />
           </div> */}
 
+          <Form.Check
+            defaultChecked={true}
+            style={{ marginTop: "20px" }}
+            type={"checkbox"}
+            name={`level2_manager_id`}
+            label={`ПІБ менеджера 2го рівня`}
+          />
+
           <div>
-            <Form.Check 
-                style={{marginTop: "20px"}}
-                type={"checkbox"}
-                id={`level2_ident_code`}
-                label={`ЄДРПОУ 2 рівень`}
-                
-              />
+            <Form.Check
+              defaultChecked={true}
+              style={{ marginTop: "20px" }}
+              type={"checkbox"}
+              name={`level2_ident_code`}
+              label={`ЄДРПОУ 2 рівень`}
+            />
           </div>
 
           <div>
@@ -477,53 +528,52 @@ export default function NETWORK_REPORT({ store }) {
             </Form.Select> */}
 
             <div>
-              <Form.Check 
-                  style={{marginTop: "20px"}}
-                  type={"checkbox"}
-                  id={`level2_name`}
-                  label={`Назва 2 рівня:`}
-                  
-                />
+              <Form.Check
+                defaultChecked={true}
+                style={{ marginTop: "20px" }}
+                type={"checkbox"}
+                name={`level2_name`}
+                label={`Назва 2 рівня:`}
+              />
             </div>
 
             <div>
-              <Form.Check 
-                  style={{marginTop: "20px"}}
-                  type={"checkbox"}
-                  id={`level2_id`}
-                  label={`ID 2 рівня:`}
-                  
-                />
+              <Form.Check
+                defaultChecked={true}
+                style={{ marginTop: "20px" }}
+                type={"checkbox"}
+                name={`level2_id`}
+                label={`ID 2 рівня:`}
+              />
             </div>
 
             <div>
-              <Form.Check 
-                  style={{marginTop: "20px"}}
-                  type={"checkbox"}
-                  id={`level2_manager_id`}
-                  label={`Менеджер 2 рівня:`}
-                  
-                />
+              <Form.Check
+                defaultChecked={true}
+                style={{ marginTop: "20px" }}
+                type={"checkbox"}
+                name={`level2_manager_id`}
+                label={`Менеджер 2 рівня:`}
+              />
             </div>
 
             <div>
-              <Form.Check 
-                  style={{marginTop: "20px"}}
-                  type={"checkbox"}
-                  id={`level2_manager_institution_id`}
-                  label={`РУ менеджера 2 рівня:`}
-                  
-                />
+              <Form.Check
+                defaultChecked={true}
+                style={{ marginTop: "20px" }}
+                type={"checkbox"}
+                name={`level2_manager_institution_id`}
+                label={`РУ менеджера 2 рівня:`}
+              />
             </div>
           </div>
         </div>
 
         <div className="col-4">
-          <div className="row" >
+          <div className="row">
             <h5>ТСП</h5>
-
           </div>
-{/* 
+          {/* 
           <div
             style={{ height: "120px" }}
             className="form"
@@ -531,17 +581,17 @@ export default function NETWORK_REPORT({ store }) {
             onBlur={handleSearchTSP}
           >
             <label>ІНН/ЄДРПОУ</label>
-            <Form.Control type="number" name="ident_code" id="ident_code" />
+            <Form.Control type="number" name="ident_code" name="ident_code" />
           </div> */}
 
-      <div>
-            <Form.Check 
-                style={{marginTop: "20px"}}
-                type={"checkbox"}
-                id={`inn`}
-                label={`ІНН/ЄДРПОУ`}
-                
-              />
+          <div>
+            <Form.Check
+              defaultChecked={true}
+              style={{ marginTop: "20px" }}
+              type={"checkbox"}
+              name={`ident_code`}
+              label={`ІНН/ЄДРПОУ`}
+            />
           </div>
 
           <div>
@@ -585,7 +635,7 @@ export default function NETWORK_REPORT({ store }) {
                   ? optionsManager.map((option) => (
                       <option
                         value={option.id}
-                        institution-id={option.institution_id}
+                        institution-name={option.institution_id}
                         institution-name={option.institution_name}
                       >
                         {option.value}
@@ -604,34 +654,33 @@ export default function NETWORK_REPORT({ store }) {
             </div>
            */}
 
-          <div>
-            <Form.Check 
-                style={{marginTop: "20px"}}
+            <div>
+              <Form.Check
+                defaultChecked={true}
+                style={{ marginTop: "20px" }}
                 type={"checkbox"}
-                id={`name_tsp`}
+                name={`client_name`}
                 label={`Назва ТСП:`}
-                
               />
-          </div>
-          <div>
-            <Form.Check 
-                style={{marginTop: "20px"}}
+            </div>
+            <div>
+              <Form.Check
+                defaultChecked={true}
+                style={{ marginTop: "20px" }}
                 type={"checkbox"}
-                id={`manager_tsp`}
+                name={`manager_tsp`}
                 label={`Менеджер ТСП:`}
-                
               />
-          </div>
-          <div>
-            <Form.Check 
-                style={{marginTop: "20px"}}
+            </div>
+            <div>
+              <Form.Check
+                defaultChecked={true}
+                style={{ marginTop: "20px" }}
                 type={"checkbox"}
-                id={`ru_tsp`}
+                name={`ru_tsp`}
                 label={`РУ менеджера ТСП:`}
-                
               />
-          </div>
-          
+            </div>
           </div>
         </div>
       </div>

@@ -20,6 +20,7 @@ class Menu extends Component {
       const isMenu = item && item.menu && item.operation;
       try {
         if (isMenu) {
+          menuItems = menuItems.filter((i)=>i.menu)
           let firstLevelMenu = menuItems.filter(
             (item) => item.parent_operation === null
           );

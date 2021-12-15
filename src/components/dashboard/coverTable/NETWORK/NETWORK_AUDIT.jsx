@@ -30,10 +30,13 @@ export default function NETWORK_AUDIT({ store }) {
   };
 
   const confirm = async () => {
+    let date_from = dateFrom.split("-");
+    let date_to = dateTo.split("-");
+    console.log(date_from);
     const body = {
       brand_id: brand.brand_id,
-      date_from: dateFrom,
-      date_to: dateTo,
+      date_from: `${date_from[0]}${date_from[1]}${date_from[2]}`,
+      date_to: `${date_to[0]}${date_to[1]}${date_to[2]}`,
     };
     await axios
       .post(`/api/Dictionary/GetNetworkAuditReport`, body, {
@@ -43,10 +46,13 @@ export default function NETWORK_AUDIT({ store }) {
         responseType: "blob",
       })
       .then((response) => {
+        let fileTitle = decodeURI(
+          response.headers["content-disposition"].split("filename*=UTF-8''")[1]
+        );
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", brand.brand_name+".xlsx");
+        link.setAttribute("download", `${fileTitle.slice(0,fileTitle.length-5)}.${fileTitle.slice(-4)}`);
         document.body.appendChild(link);
         link.click();
       });
@@ -96,7 +102,7 @@ export default function NETWORK_AUDIT({ store }) {
                     <Form.Control
                       onChange={handleDateFrom}
                       type="date"
-                      style={{ marginLeft: "10px", maxWidth: "150px" }}
+                      style={{ marginLeft: "10px", minWidth: "150px" }}
                     />
                   </div>
                   <div className="d-flex align-items-center  col-3">
@@ -104,7 +110,7 @@ export default function NETWORK_AUDIT({ store }) {
                     <Form.Control
                       onChange={handleDateTo}
                       type="date"
-                      style={{ marginLeft: "10px", maxWidth: "150px"  }}
+                      style={{ marginLeft: "10px", minWidth: "150px"  }}
                     />
                   </div>
                 </div>

@@ -103,8 +103,6 @@ class REPORTS_ACQUIRING_MONITOR extends React.Component {
         },
       })
       .then((response) => {
-        console.log(response);
-        console.log(response.data);
         let fileTitle = decodeURI(
           response.headers["content-disposition"].split("filename*=UTF-8''")[1]
         );

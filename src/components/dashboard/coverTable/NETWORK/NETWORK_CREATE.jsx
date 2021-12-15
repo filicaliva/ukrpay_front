@@ -109,7 +109,7 @@ const SampleComponent = (props) => {
         <label htmlFor="brand_region">РУ менеджера</label>
         <input
           api_name="brand_region"
-          value={props.brand_region}
+          value={props.data.brand_manager_name}
           id="brand_region"
           type="text"
           className="form-control"
@@ -165,6 +165,8 @@ const OptionItemDICT_NETWORK_MANAGERS = (props) => {
       selected={
         props.optionItem.manager_id == props.manager_id ? "selected" : ""
       }
+      data-brandid={props.optionItem.institution_id}
+      data-brandname={props.optionItem.institution_name}
       value={props.optionItem.manager_id}
     >
       {props.optionItem.manager_name}
@@ -231,6 +233,7 @@ class NETWORK_CREATE extends React.Component {
       contact_email: "",
       brand_status_code: null,
       brand_region: null,
+      brand_id: null,
       manager_name: null,
       manager_id: null,
 
@@ -859,6 +862,7 @@ class NETWORK_CREATE extends React.Component {
       brand_region: this.state.brand_region,
       manager_name: this.state.manager_name,
       manager_id: this.state.manager_id,
+      institution_id: this.state.institution_id,
 
       //twoLevelArr: this.state.twoLevelArr
     };
@@ -1045,9 +1049,7 @@ class NETWORK_CREATE extends React.Component {
   };
   changeInput = (e) => {
     let apiName = e.currentTarget.getAttribute("api_name");
-    console.log(apiName);
-    let inputValue = e.target.value;
-    console.log(inputValue);
+    let inputValue = e.currentTarget.value;
 
     if (apiName == "contact_person") {
       this.setState({
@@ -1106,7 +1108,7 @@ class NETWORK_CREATE extends React.Component {
           contact_email: inputValue,
         });
       } else {
-        console.log("email НЕ валідний !!!");
+        console.log("email не валідний!");
         this.setState({
           isContact_emailError: true,
           isDisabledSaveBtn: true,
@@ -1121,26 +1123,25 @@ class NETWORK_CREATE extends React.Component {
       this.setState({
         brand_region: inputValue,
       });
-    } else if (apiName == "manager_name") {
+    } else if (apiName === "manager_name") {
+      let brand = this.state.DICT_NETWORK_MANAGERS.filter(
+        (i) => i.manager_id === +inputValue
+      )[0];
+
       let rr, manager_name;
       rr = (arr, number) => {
-        //console.log(arr);
-        console.log(number);
         arr.filter(function (currentElement, index, array) {
-          // console.log(currentElement.name);
-          // console.log(index);
-          // console.log(array);
           if (currentElement.manager_id == number) {
-            console.log(currentElement.manager_name);
             manager_name = currentElement.manager_name;
           }
         });
       };
-      console.log(rr(this.state.DICT_NETWORK_MANAGERS, inputValue));
-      console.log(manager_name);
       this.setState({
         manager_name: manager_name,
         manager_id: Number(inputValue),
+        institution_id: brand.institution_id,
+        brand_region: brand.institution_id,
+        brand_manager_name: brand.institution_name,
       });
     }
   };
@@ -1195,11 +1196,6 @@ class NETWORK_CREATE extends React.Component {
     console.log(get_entity_id);
 
     if (api_name === "manager_name") {
-      this.setState({
-        brand_region: this.state.DICT_NETWORK_MANAGERS.filter(
-            (item) => +item.manager_id === +e.target.value
-          )[0].institution_name,
-      });
     }
 
     // let newObj = {
@@ -1214,6 +1210,17 @@ class NETWORK_CREATE extends React.Component {
 
     let indexItem = cloneArr.findIndex((el) => el.entity_id == get_entity_id);
     console.log(indexItem);
+
+    if (api_name === "manager_name") {
+      const manager_name = this.state.DICT_NETWORK_MANAGERS.filter(
+        (item) => +item.manager_id === +e.target.value
+      )[0];
+      cloneArr[indexItem]['brand_manager_name'] = manager_name.institution_name;
+      cloneArr[indexItem]['manager_id'] = manager_name.manager_id;
+      cloneArr[indexItem]['brand_region'] = manager_name.institution_id;
+
+    }
+
     cloneArr[indexItem][api_name] = param;
     // stateArr.push(newObj);
     console.log(cloneArr);
@@ -1309,30 +1316,15 @@ class NETWORK_CREATE extends React.Component {
               type="text"
               className="form-control"
             />
-            <label htmlFor="brand_region">РУ менеджера</label>
-            <select
-              disabled={this.state.isDisableInput ? "disabled" : ""}
-              onChange={this.changeInput}
-              api_name="brand_region"
-              id="brand_region"
-              className="form-select"
-              title="Регіональні управління"
-            >
-              <option>-</option>
-              {this.state.isShowSelectDICT_INSTITUTION ? (
-                this.state.DICT_INSTITUTION.map((item, index) => {
-                  return (
-                    <OptionItemDICT_INSTITUTION
-                      key={index}
-                      optionItem={item}
-                      institution_id={this.state.brand_region}
-                    />
-                  );
-                })
-              ) : (
-                <></>
-              )}
-            </select>
+            <label htmlFor="brand_name">РУ менеджера</label>
+            <input
+              disabled={true}
+              value={this.state.brand_manager_name}
+              api_name="brand_name"
+              id="brand_name"
+              type="text"
+              className="form-control"
+            />
           </div>
           <div className="coverInputs contactPerson">
             <span>Контактна особа</span>
