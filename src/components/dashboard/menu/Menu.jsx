@@ -3,12 +3,7 @@ import { useContext } from "react";
 import { Component } from "react";
 import { Accordion } from "react-bootstrap";
 
-
-const AccordionContent = (content) => (
-  <div className="indent">
-    {content}
-  </div>
-)
+const AccordionContent = (content) => <div className="indent">{content}</div>;
 class Menu extends Component {
   constructor(props) {
     super(props);
@@ -76,33 +71,35 @@ class Menu extends Component {
             let subMenu = (objItem) => {
               if (objItem != 0) {
                 return (
-                  <div>
+                  <Accordion.Body>
                     {objItem.map((item, indexTwo) => {
                       if (item.children.length !== 0) {
                         return (
-                          <Accordion.Item eventKey={indexTwo+10}>
-                            <Accordion.Header >{item.name}</Accordion.Header>
-                            <Accordion.Body>
-                              {item.children.map((i) => {
-                                return (
-                                  <div
-                                    className={`dropdownMenuItemLink ${
-                                      this.props.store.location.pathname.substr(
-                                        11
-                                      ) === i.operation
-                                        ? "itemAct"
-                                        : ""
-                                    }`}
-                                    name={i.name}
-                                    operation={i.operation}
-                                    onClick={this.itemLink}
-                                  >
-                                    <span>{i.name}</span>
-                                  </div>
-                                );
-                              })}
-                            </Accordion.Body>
-                          </Accordion.Item>
+                          <Accordion>
+                            <Accordion.Item eventKey={indexTwo}>
+                              <Accordion.Header>{item.name}</Accordion.Header>
+                              <Accordion.Body>
+                                {item.children.map((i) => {
+                                  return (
+                                    <div
+                                      className={`dropdownMenuItemLink ${
+                                        this.props.store.location.pathname.substr(
+                                          11
+                                        ) === i.operation
+                                          ? "itemAct"
+                                          : ""
+                                      }`}
+                                      name={i.name}
+                                      operation={i.operation}
+                                      onClick={this.itemLink}
+                                    >
+                                      <span>{i.name}</span>
+                                    </div>
+                                  );
+                                })}
+                              </Accordion.Body>
+                            </Accordion.Item>
+                          </Accordion>
                         );
                       }
                       return (
@@ -121,16 +118,16 @@ class Menu extends Component {
                         </div>
                       );
                     })}
-                  </div>
+                  </Accordion.Body>
                 );
               }
             };
             if (item.children != 0) {
               return (
-                <div>
-                  <h5 style={{fontWeight: "500"}}>{item.name}</h5>
+                <Accordion.Item eventKey={index}>
+                  <Accordion.Header style={{fontWeight: "500"}}>{item.name}</Accordion.Header>
                   {subMenu(item.children)}
-                </div>
+                </Accordion.Item>
               );
             } else {
               return (
@@ -150,7 +147,7 @@ class Menu extends Component {
           }
         });
       };
-      return <Accordion defaultActiveKey="0">{li(obj[key])}</Accordion>;
+      return <Accordion>{li(obj[key])}</Accordion>;
     }
   };
 

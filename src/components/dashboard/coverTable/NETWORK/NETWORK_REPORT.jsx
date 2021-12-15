@@ -64,12 +64,12 @@ export default function NETWORK_REPORT({ store }) {
         },
       })
       .then((res) => {
-        const options = res.data.Table.TableRows.map((i) => ({
+        const options = res.data.Table?res.data.Table.TableRows.map((i) => ({
           id: i.entity_id,
           value: i.entity_name,
           manager_name: +i.ident_code,
           institution_name: i.brand_region,
-        }));
+        })):null;
         setOptionsSecondLvl(options);
         setIsLoadingSecondLvl(true);
       });
@@ -83,10 +83,10 @@ export default function NETWORK_REPORT({ store }) {
         },
       })
       .then((res) => {
-        const options = res.data.Table.TableRows.map((i) => ({
+        const options = res.data.Table ? res.data.Table.TableRows.map((i) => ({
           id: i.institution_id,
           value: i.institution_name,
-        }));
+        })): null;
         setOptionsSecondLvlRU(options);
         setIsLoadingSecondLvlRU(true);
       });
@@ -284,7 +284,7 @@ export default function NETWORK_REPORT({ store }) {
                 type={"checkbox"}
                 id={`brand_name_checkbox`}
                 label={`Назва статуса мережі`}
-                checked={true}
+                
               />
           </div>
           <div>
@@ -308,7 +308,7 @@ export default function NETWORK_REPORT({ store }) {
                 type={"checkbox"}
                 id={`brand_contact_name`}
                 label={`ПІБ менеджера мережі`}
-                checked={true}
+                
               />
           </div>
           <div>
@@ -332,7 +332,7 @@ export default function NETWORK_REPORT({ store }) {
                 type={"checkbox"}
                 id={`brand_manager_id`}
                 label={`РУ менеджера мережі`}
-                checked={true}
+                
               />
           </div>
 
@@ -370,7 +370,7 @@ export default function NETWORK_REPORT({ store }) {
                 type={"checkbox"}
                 id={`brand_contact_name`}
                 label={`ПІБ`}
-                checked={true}
+                
               />
 
           </div>
@@ -380,7 +380,7 @@ export default function NETWORK_REPORT({ store }) {
                   type={"checkbox"}
                   id={`brand_contact_position`}
                   label={`Посада`}
-                  checked={true}
+                  
                 />
             </div>
             <div>
@@ -389,7 +389,7 @@ export default function NETWORK_REPORT({ store }) {
                   type={"checkbox"}
                   id={`brand_contact_phone`}
                   label={`Телефон`}
-                  checked={true}
+                  
                 />
             </div>
             <div>
@@ -398,7 +398,7 @@ export default function NETWORK_REPORT({ store }) {
                   type={"checkbox"}
                   id={`brand_contact_email`}
                   label={`Email`}
-                  checked={true}
+                  
                 />
             </div>
         </div> 
@@ -423,7 +423,7 @@ export default function NETWORK_REPORT({ store }) {
                 type={"checkbox"}
                 id={`level2_ident_code`}
                 label={`ЄДРПОУ 2 рівень`}
-                checked={true}
+                
               />
           </div>
 
@@ -482,7 +482,7 @@ export default function NETWORK_REPORT({ store }) {
                   type={"checkbox"}
                   id={`level2_name`}
                   label={`Назва 2 рівня:`}
-                  checked={true}
+                  
                 />
             </div>
 
@@ -492,7 +492,7 @@ export default function NETWORK_REPORT({ store }) {
                   type={"checkbox"}
                   id={`level2_id`}
                   label={`ID 2 рівня:`}
-                  checked={true}
+                  
                 />
             </div>
 
@@ -502,7 +502,7 @@ export default function NETWORK_REPORT({ store }) {
                   type={"checkbox"}
                   id={`level2_manager_id`}
                   label={`Менеджер 2 рівня:`}
-                  checked={true}
+                  
                 />
             </div>
 
@@ -512,7 +512,7 @@ export default function NETWORK_REPORT({ store }) {
                   type={"checkbox"}
                   id={`level2_manager_institution_id`}
                   label={`РУ менеджера 2 рівня:`}
-                  checked={true}
+                  
                 />
             </div>
           </div>
@@ -540,7 +540,7 @@ export default function NETWORK_REPORT({ store }) {
                 type={"checkbox"}
                 id={`inn`}
                 label={`ІНН/ЄДРПОУ`}
-                checked={true}
+                
               />
           </div>
 
@@ -610,7 +610,7 @@ export default function NETWORK_REPORT({ store }) {
                 type={"checkbox"}
                 id={`name_tsp`}
                 label={`Назва ТСП:`}
-                checked={true}
+                
               />
           </div>
           <div>
@@ -619,7 +619,7 @@ export default function NETWORK_REPORT({ store }) {
                 type={"checkbox"}
                 id={`manager_tsp`}
                 label={`Менеджер ТСП:`}
-                checked={true}
+                
               />
           </div>
           <div>
@@ -628,7 +628,7 @@ export default function NETWORK_REPORT({ store }) {
                 type={"checkbox"}
                 id={`ru_tsp`}
                 label={`РУ менеджера ТСП:`}
-                checked={true}
+                
               />
           </div>
           

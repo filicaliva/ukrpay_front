@@ -181,11 +181,12 @@ class REPORT_OPERATIONS_NET extends React.Component {
         report_type_id: "REPORT_OPERATIONS_NET",
         payment_system_id: 0,
         format_type_id: 1,
+        date_type_id: 1,
       },
       date_from: null,
       date_to: null,
       date_type_id: 1,
-      institution_id: null,
+      institution_id: 0,
       merchant_id: null,
       terminal_type_id: null,
       brand_name: null,
@@ -947,9 +948,9 @@ class REPORT_OPERATIONS_NET extends React.Component {
     if ( this.state.DICT_BRAND_NAME_VAL == null ||  this.state.DICT_BRAND_NAME_VAL == "") {
       this.setState({ isBrandName_toValidation: false });
     }
-    if ( this.state.institution_id == null ||  this.state.institution_id == "") {
-      this.setState({ isInstitution_idValidation: false });
-    }
+    // if ( this.state.institution_id == null ||  this.state.institution_id == "") {
+    //   this.setState({ isInstitution_idValidation: false });
+    // }
 
     if (this.state.date_type_id == null || this.state.date_type_id == "") {
       this.setState({ isDate_type_idValidation: false });

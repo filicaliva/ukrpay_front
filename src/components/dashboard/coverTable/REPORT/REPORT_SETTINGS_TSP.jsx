@@ -1576,28 +1576,6 @@ class REPORT_SETTINGS_TSP extends React.Component {
             )}
           </div>
           <div className="coverInput">
-            <label htmlFor="catalog">Каталог</label>
-            <input
-              onChange={this.changeInputTsp}
-              name="catalog-physicall"
-              className="customInput form-control"
-              id="catalog"
-              type="text"
-              value={this.state.physical_file_name}
-            />
-          </div>
-          <div className="coverInput">
-            <label htmlFor="file_name_mask">Маска назви файлу</label>
-            <input
-              onChange={this.changeInputTsp}
-              name="physical_file_name_mask"
-              className="customInput form-control"
-              id="file_name_mask"
-              type="text"
-              value={this.state.physical_file_name_mask}
-            />
-          </div>
-          <div className="coverInput">
             <label htmlFor="сhannel">Канал</label>
             {this.state.isShowDICT_REPORT_CHANNEL_TYPE ? (
               <select
@@ -1663,6 +1641,32 @@ class REPORT_SETTINGS_TSP extends React.Component {
             )}
             {/*<input placeholder="ftp" value={this.state.physical_channel_address} onChange={ this.changeInputTsp} name="physical_channel_address" className="customInput form-control"  type="text"/>*/}
           </div>
+          <div className="coverInput">
+            <label htmlFor="catalog">Каталог</label>
+            <input
+              onChange={this.changeInputTsp}
+              name="catalog-physicall"
+              className="customInput form-control"
+              id="catalog"
+              type="text"
+              value={this.state.physical_file_name}
+              disabled={this.state.physical_channel_type_id===2}
+            />
+          </div>
+          <div className="coverInput">
+            <label htmlFor="file_name_mask">Маска назви файлу</label>
+            <input
+              onChange={this.changeInputTsp}
+              name="physical_file_name_mask"
+              className="customInput form-control"
+              id="file_name_mask"
+              type="text"
+              value={this.state.physical_file_name_mask}
+              disabled={this.state.physical_channel_type_id===2}
+            />
+          </div>
+        
+        
           <br />
           <div className="reportCoverBtn">
             <button
@@ -1758,28 +1762,6 @@ class REPORT_SETTINGS_TSP extends React.Component {
             )}
           </div>
           <div className="coverInput">
-            <label htmlFor="file_name_mask">Маска назви файлу</label>
-            <input
-              value={this.state.internet_file_name_mask}
-              onChange={this.changeInputTsp}
-              name="internet_file_name_mask"
-              className="customInput form-control"
-              id="file_name_mask"
-              type="text"
-            />
-          </div>
-          <div className="coverInput">
-            <label htmlFor="сatalog">Каталог</label>
-            <input
-              onChange={this.changeInputTsp}
-              apiName="catalog-internet"
-              className="customInput form-control"
-              id="сatalog"
-              type="text"
-              value={this.state.internet_file_name}
-            />
-          </div>
-          <div className="coverInput">
             <label htmlFor="сhannel">Канал</label>
             {this.state.isShowDICT_REPORT_CHANNEL_TYPE ? (
               <select
@@ -1851,6 +1833,32 @@ class REPORT_SETTINGS_TSP extends React.Component {
 
             {/*<input value={this.state.internet_channel_address} onChange={this.changeInputTsp} name="internet_channel_address" className="customInput form-control"  type="text"/>*/}
           </div>
+          <div className="coverInput">
+            <label htmlFor="file_name_mask">Маска назви файлу</label>
+            <input
+              value={this.state.internet_file_name_mask}
+              onChange={this.changeInputTsp}
+              name="internet_file_name_mask"
+              className="customInput form-control"
+              id="file_name_mask"
+              type="text"
+              disabled={this.state.internet_channel_type_id===2}
+            />
+          </div>
+          <div className="coverInput">
+            <label htmlFor="сatalog">Каталог</label>
+            <input
+              onChange={this.changeInputTsp}
+              apiName="catalog-internet"
+              className="customInput form-control"
+              id="сatalog"
+              type="text"
+              value={this.state.internet_file_name}
+              disabled={this.state.internet_channel_type_id===2}
+            />
+          </div>
+         
+       
           <br />
           <div className="reportCoverBtn">
             <button

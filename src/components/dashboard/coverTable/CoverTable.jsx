@@ -6,6 +6,8 @@ import DICT_BIN_TABLE from "./DICT/DICT_BIN_TABLE";
 import DICT_BANK_RANGE from "./DICT/DICT_BANK_RANGE";
 import NETWORK_ADD_CLIENT from "./NETWORK/NETWORK_ADD_CLIENT";
 import NETWORK_CREATE from "./NETWORK/NETWORK_CREATE";
+import NETWORK_EDIT from "./NETWORK/NETWORK_EDIT";
+import NETWORK_AUDIT from "./NETWORK/NETWORK_AUDIT";
 import TableADMIN_USERS from "./ADMIN/TableADMIN_USERS";
 import TableADMIN_OPERATIONS from "./ADMIN/TableADMIN_OPERATIONS";
 import TableADMIN_ROLE_OPERATIONS from "./ADMIN/TableADMIN_ROLE_OPERATIONS";
@@ -105,6 +107,10 @@ class CoverTable extends React.Component {
         return <TableBootstrapDICT store={this.props.store} />;
       case "NETWORK_CREATE":
         return <NETWORK_CREATE store={this.props.store} />;
+      case "NETWORK_EDIT":
+        return <NETWORK_EDIT store={this.props.store} />;
+      case "NETWORK_AUDIT":
+        return <NETWORK_AUDIT store={this.props.store} />;
       case "NETWORK_ADD_CLIENT":
         return <NETWORK_ADD_CLIENT store={this.props.store} />;
       case "NETWORK_REPORT":
