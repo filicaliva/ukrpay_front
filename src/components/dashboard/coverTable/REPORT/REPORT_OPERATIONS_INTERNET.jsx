@@ -275,6 +275,8 @@ class AutocompleteInputTspName extends React.Component {
   onBlurAutocompleteInput = (e) => {
     let param = e.target.value;
     console.log(param);
+        this.setState({isShowBlockSelect: false})
+
     // if(param != '' && param.length >= 3){
     //     this.request(this.props.token, param, false);
     // }
@@ -402,7 +404,7 @@ class AutocompleteInputTspName extends React.Component {
           type="text"
           onBlur={this.onBlurAutocompleteInput}
           onChange={this.onChangeAutocompleteInput}
-          onClick={this.onClickAutocompleteInput}
+          onClick={(e)=>this.state.isShowBlockSelect ?   this.setState({isShowBlockSelect: false}) :this.onClickAutocompleteInput(e)}
           value={this.state.inputRequest}
         />
         <input
@@ -649,7 +651,7 @@ class AutocompleteInputMerchantName extends React.Component {
           type="text"
           // onBlur={this.onBlurAutocompleteInput}
           onChange={this.onChangeAutocompleteInput}
-          onClick={() => this.request(this.props.token, "", false)}
+          onClick={() => this.state.isShowBlockSelect ?   this.setState({isShowBlockSelect: false}) : this.request(this.props.token, "", false)}
           value={this.state.inputRequest}
           // onFocus={() => this.request(this.props.token, "", false)}
         />
@@ -898,7 +900,7 @@ class AutocompleteInputTerminalName extends React.Component {
           type="text"
           // onBlur={this.onBlurAutocompleteInput}
           onChange={this.onChangeAutocompleteInput}
-          onClick={() => this.request(this.props.token, "", false)}
+          onClick={() =>  this.state.isShowBlockSelect ?   this.setState({isShowBlockSelect: false}) : this.request(this.props.token, "", false)}
           value={this.state.inputRequest}
           // onFocus={() => this.request(this.props.token)}
         />

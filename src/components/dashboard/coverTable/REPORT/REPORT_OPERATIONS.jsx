@@ -399,7 +399,7 @@ class AutocompleteInputTspName extends React.Component {
           type="text"
           onBlur={this.onBlurAutocompleteInput}
           onChange={this.onChangeAutocompleteInput}
-          onClick={this.onClickAutocompleteInput}
+          onClick={(e)=>this.state.isShowBlockSelect ?  this.setState({isShowBlockSelect: false}) :this.onClickAutocompleteInput(e)}
           value={this.state.inputRequest}
         />
         <input
@@ -869,7 +869,7 @@ class AutocompleteInputMerchantName extends React.Component {
           type="text"
           // onBlur={this.onBlurAutocompleteInput}
           onChange={this.onChangeAutocompleteInput}
-          onClick={() => this.request(this.props.token, "", false)}
+          onClick={() => this.state.isShowBlockSelect ?   this.setState({isShowBlockSelect: false}) : this.request(this.props.token, "", false)}
           value={this.state.inputRequest}
           // onFocus={() => this.request(this.props.token, "", false)}
         />
@@ -1116,7 +1116,7 @@ class AutocompleteInputTerminalName extends React.Component {
           type="text"
           // onBlur={this.onBlurAutocompleteInput}
           onChange={this.onChangeAutocompleteInput}
-          onClick={() => this.request(this.props.token, "", false)}
+          onClick={() => this.state.isShowBlockSelect ?   this.setState({isShowBlockSelect: false}) :  this.request(this.props.token, "", false)}
           value={this.state.inputRequest}
           // onFocus={() => this.request(this.props.token)}
         />

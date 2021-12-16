@@ -41,10 +41,10 @@ export default function NETWORK_REPORT({ store }) {
   const [form, setForm] = useState({
     brand_id: 1,
     brand_name: 1,
-    brand_status_code: 1,
+    // brand_status_code: 1,
     brand_status_name: 1,
     brand_manager_id: 1,
-    brand_manager_institution_id: 1,
+    // brand_manager_institution_id: 1,
     brand_contact_name: 1,
     brand_contact_position: 1,
     brand_contact_phone: 1,
@@ -229,20 +229,17 @@ export default function NETWORK_REPORT({ store }) {
   };
 
   const confirm = async () => {
-    console.log(brand);
-    const data = {
-      ...form,
-      brand_id: brand.brand_id,
-    };
-
+    store.changeLoading(true);
     await axios
-      .post(`/api/Dictionary/GetNetworkClientsReport`, data, {
+      .post(`/api/Dictionary/GetNetworkClientsReport`, {...form, brand_id: brand ? brand.brand_id : 0}, {
         headers: {
           token: store.userState.token,
         },
         responseType: "blob",
       })
       .then((response) => {
+    store.changeLoading(false);
+
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         let fileTitle = decodeURI(
@@ -252,6 +249,7 @@ export default function NETWORK_REPORT({ store }) {
         link.setAttribute("download", fileTitle);
         document.body.appendChild(link);
         link.click();
+
       });
   };
 
@@ -313,9 +311,9 @@ export default function NETWORK_REPORT({ store }) {
               defaultChecked={true}
               style={{ marginTop: "20px" }}
               type={"checkbox"}
-              name={`brand_manager_status`}
+              name={`brand_status_name`}
               label={`Назва статуса мережі`}
-              name="brand_status_name"
+              name="brand_name"
             />
           </div>
           <div>
@@ -338,7 +336,7 @@ export default function NETWORK_REPORT({ store }) {
               defaultChecked={true}
               style={{ marginTop: "20px" }}
               type={"checkbox"}
-              name={`brand_manager_name`}
+              name={`brand_manager_id`}
               label={`ПІБ менеджера мережі`}
             />
           </div>
@@ -362,7 +360,7 @@ export default function NETWORK_REPORT({ store }) {
               defaultChecked={true}
               style={{ marginTop: "20px" }}
               type={"checkbox"}
-              name={`brand_manager_id`}
+              name={`brand_manager_institution_id`}
               label={`РУ менеджера мережі`}
             />
             <Form.Check
@@ -668,7 +666,7 @@ export default function NETWORK_REPORT({ store }) {
                 defaultChecked={true}
                 style={{ marginTop: "20px" }}
                 type={"checkbox"}
-                name={`manager_tsp`}
+                name={`client_manager_id`}
                 label={`Менеджер ТСП:`}
               />
             </div>
@@ -677,7 +675,7 @@ export default function NETWORK_REPORT({ store }) {
                 defaultChecked={true}
                 style={{ marginTop: "20px" }}
                 type={"checkbox"}
-                name={`ru_tsp`}
+                name={`client_manager_institution_id`}
                 label={`РУ менеджера ТСП:`}
               />
             </div>
