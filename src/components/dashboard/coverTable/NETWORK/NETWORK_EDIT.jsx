@@ -1,3 +1,4 @@
+import React from "react";
 import Button from "@restart/ui/esm/Button";
 import axios from "axios";
 import { Fragment, useEffect, useState } from "react";
@@ -5,15 +6,222 @@ import { Form } from "react-bootstrap";
 import { AsyncTypeahead } from "react-bootstrap-typeahead";
 import AsyncSelect from "react-select/async";
 
+const BlockSelectItemBrandName = (props) => {
+  return (
+    <option
+      className="blockSelectItem"
+      onClick={(e) => props.onClickBlockSelectItem(e)}
+      value={props.item.brand_id}
+      name={props.item.brand_name}
+    >
+      {props.item.brand_name}
+    </option>
+  );
+};
+
+class AutocompleteInputBrandName extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: null,
+
+      inputRequest: "",
+      inputResult: this.props.tsp_name,
+
+      isShowBlockSelect: false,
+      isShowInputResult: false,
+      isShowInputRequest: true,
+
+      isLoading: false,
+
+      selected: false,
+      data: null,
+      brand_arr: null,
+    };
+    this.myRef = React.createRef();
+  }
+
+  onChangeAutocompleteInput = (e) => {
+    let param = e.target.value;
+    this.setState({
+      inputRequest: param,
+      selected: false,
+    });
+    if (param.length > 2) {
+      this.search(param);
+    }
+  };
+  onClickAutocompleteInput = (e) => {
+    let param = e.target.value;
+    this.search(param);
+  };
+
+  onClickAutocompleteInputRes = () => {
+    this.setState({
+      inputResult: null,
+      isShowBlockSelect: true,
+      isShowInputResult: false,
+      isShowInputRequest: true,
+    });
+  };
+
+  onBlurBlockSelect = () => {
+    this.setState({
+      isShowBlockSelect: false,
+    });
+  };
+
+  onClickBlockSelectItem = (e) => {
+    let val = e.currentTarget.getAttribute("value");
+    let name = e.currentTarget.getAttribute("name");
+    if (val !== "") {
+      this.props.addBrandName(
+        this.state.data.filter((item) => item.brand_id === +val)[0]
+      );
+      if (val !== this.state.inputRequest) {
+        this.search(val);
+        this.setState({
+          inputRequest: name,
+          isShowBlockSelect: false,
+          selected: true,
+        });
+      }
+      this.setState({
+        isShowBlockSelect: false,
+      });
+    }
+  };
+
+  async request(token, param) {
+    this.setState({
+      isLoading: true,
+    });
+    const baseUrl = `/api/Dictionary/DICT_NET_BRAND?name=brand_name`;
+
+    await axios
+      .get(baseUrl, {
+        headers: {
+          Token: `${token}`,
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        if (response.data.Table.TableRows === null) {
+          this.setState({
+            brand_arr: [],
+          });
+        } else {
+          this.setState({
+            data: response.data.Table.TableRows,
+            brand_arr: response.data.Table.TableRows,
+          });
+        }
+
+        this.setState({
+          isLoading: false,
+          isShowBlockSelect: true,
+        });
+      })
+      .catch((error) => {
+        console.log(error.response);
+      });
+  }
+  search(param) {
+    this.setState({
+      isShowBlockSelect: true,
+    });
+    const data =
+      this.state.data !== null
+        ? this.state.data.filter((item) => {
+            const itemString = item.brand_name.toString();
+            return itemString
+              .toLowerCase()
+              .includes(param.toString().toLowerCase());
+          })
+        : null;
+
+    if (data === null) {
+      this.setState({
+        brand_arr: [{ client_name: "Незнайдено жодного результату" }],
+      });
+    } else {
+      this.setState({
+        brand_arr: data,
+      });
+    }
+  }
+
+   componentDidUpdate(prevProps, prevState, snapshot) {
+    if(prevProps.update !== this.props.update) {
+      this.setState({inputRequest: ""});
+    }
+  }
+  render() {
+    return (
+      <div className="autocomplete">
+        <input
+          className={`${this.state.selected ? "selected " : ""}${
+            this.state.isShowInputRequest ? "" : "dn "
+          }form-control merchant-input`}
+          placeholder="Введіть назву мережі..."
+          type="text"
+          id="brand_name_val"
+          onBlur={this.props.onBlur}
+          onChange={this.onChangeAutocompleteInput}
+          onClick={() =>
+            this.state.isShowBlockSelect
+              ? this.setState({ isShowBlockSelect: false })
+              : this.request(this.props.token, "", false)
+          }
+          value={this.state.inputRequest}
+        />
+        <div
+          className={`${this.state.isShowBlockSelect ? "" : "dn "}blockSelect`}
+          ref={this.myRef}
+        >
+          {this.state.isShowBlockSelect ? (
+            this.state.brand_arr != null ? (
+              this.state.brand_arr.map((item, index) => {
+                return (
+                  <BlockSelectItemBrandName
+                    key={index}
+                    item={item}
+                    onClickBlockSelectItem={this.onClickBlockSelectItem}
+                  />
+                );
+              })
+            ) : (
+              <></>
+            )
+          ) : (
+            <></>
+          )}
+        </div>
+        {this.state.isLoading ? (
+          <div className="coverloader">
+            <div className="loader"></div>
+          </div>
+        ) : null}
+      </div>
+    );
+  }
+}
+
 export default function NETWORK_EDIT({ store }) {
   const [isLoading, setIsLoading] = useState(false);
   const [options, setOptions] = useState([]);
   const [brand, setBrand] = useState(null);
   const [contact, setContact] = useState();
+  const [updateVal, setUpdateVal] = useState(false)
   const [firstLevel, setFirstLevel] = useState(false);
   const [secondLevel, setSecondLevel] = useState(false);
   const [thirdLevel, setThirdLevel] = useState(false);
   const [query, setQuery] = useState("");
+  const [clientArr, setClientArr] = useState([]);
+
+  const [isShowFirstLvl, setIsShowFirstLvl] = useState(false);
+  const [isShowSecondLvl, setIsShowSecondLvl] = useState(false);
+  const [isShowThirdLvl, setIsShowThirdLvl] = useState(false);
 
   const [brandName, setBrandName] = useState(null);
 
@@ -32,12 +240,14 @@ export default function NETWORK_EDIT({ store }) {
   const [ruManager, setRUManager] = useState(null);
 
   const [isLoadingSecondLvl, setIsLoadingSecondLvl] = useState(false);
-  const [optionsSecondLvl, setOptionsSecondLvl] = useState([]);
+  const [optionsSecondLvl, setOptionsSecondLvl] = useState(null);
+  const [optionsThirdLvl, setOptionsThirdLvl] = useState(null);
   const [secondLvl, setSecondLvl] = useState(null);
 
   const [isLoadingSecondLvlRU, setIsLoadingSecondLvlRU] = useState(false);
   const [optionsSecondLvlRU, setOptionsSecondLvlRU] = useState([]);
   const [secondLvlRU, setSecondLvlRU] = useState(null);
+  const [test, setTest] = useState(null);
 
   const [isLoadingManager, setIsLoadingManager] = useState(false);
   const [optionsManager, setOptionsManager] = useState([]);
@@ -47,7 +257,7 @@ export default function NETWORK_EDIT({ store }) {
   const [optionsTSP, setOptionsTSP] = useState([]);
   const [tsp, setTSP] = useState(null);
 
-  const handleSearchBrandName = async (query='') => {
+  const handleSearchBrandName = async (query = "") => {
     setIsLoading(true);
     await axios
       .get(`/api/Dictionary/DICT_NET_BRAND?name=brand_name&param1=${query}`, {
@@ -71,16 +281,19 @@ export default function NETWORK_EDIT({ store }) {
         },
       })
       .then((res) => {
+        let index = 0;
         if (res.data.ErrorStatus.ErrorCode !== 0) return;
-        const options = res.data.Table.TableRows
-          ? res.data.Table.TableRows.map((i) => ({
-              id: i.entity_id,
-              value: i.entity_name,
-              manager_name: +i.ident_code,
-              institution_name: i.brand_region,
-            }))
-          : null;
-        setOptionsSecondLvl(options);
+        const hasData = res.data.Table.TableRows !== null;
+        if (hasData) {
+          setOptionsSecondLvl(
+            res.data.Table.TableRows.map((i) => {
+              return { ...i, index: index++ };
+            })
+          );
+          setIsShowSecondLvl(true);
+        } else {
+          setIsShowSecondLvl(false);
+        }
         setIsLoadingSecondLvl(true);
       });
   };
@@ -132,13 +345,15 @@ export default function NETWORK_EDIT({ store }) {
       })
       .then((res) => {
         if (res.data.ErrorStatus.ErrorCode !== 0) return;
-        const options = res.data.Table.TableRows
-          ? res.data.Table.TableRows.map((i) => ({
-              id: i.status_code,
-              value: i.status_name,
-            }))
-          : null;
-        setOptionsStatus(options);
+        const hasData = res.data.Table.TableRows !== null;
+
+        if (hasData) {
+          setOptionsThirdLvl(res.data.Table.TableRows);
+          setIsShowThirdLvl(true);
+        } else {
+          setIsShowThirdLvl(false);
+        }
+        // setOptionsStatus(res.data.Table.TableRows);
         setIsLoadingStatus(true);
       });
   };
@@ -218,38 +433,45 @@ export default function NETWORK_EDIT({ store }) {
   }, []);
 
   const confirm = async () => {
-    // const data = {
-    //   ...brand,
-    //   ...contact,
-    //   ...brandStatus,
-    //   ...nameManager,
-    //   ...ruManager,
-    //   ...secondLvl,
-    //   ...secondLvlRU,
-    //   ...manager,
-    //   ...tsp,
-    // };
+    store.changeLoading(true);
+    if (firstLevel) {
+      await axios.post(
+        `/api/Dictionary/DICT_NET_BRAND`,
+        { ...formFirstLevel },
+        {
+          headers: {
+            token: store.userState.token,
+          },
+        }
+      );
+    }
+    if (secondLevel) {
+      await axios.post(
+        `/api/Dictionary/DICT_NET_ENTITY`,
+        { ...optionsSecondLvl },
+        {
+          headers: {
+            token: store.userState.token,
+          },
+        }
+      );
+    }
 
-    const brand = { ...formFirstLevel };
-    const entity = {};
-
-    await axios
-      .post(`/api/Dictionary/DICT_NET_BRAND`, brand, {
-        headers: {
-          token: store.userState.token,
-        },
-      })
-      .then((response) => {
-        setFirstLevel(false);
-        setFormFirstLevel({});
-      });
-    await axios
-      .post(`/api/Dictionary/DICT_NET_ENTITY`, entity, {
-        headers: {
-          token: store.userState.token,
-        },
-      })
-      .then((response) => {});
+    if (clientArr.lenght !== 0) {
+      for (let i = 0; i < clientArr.length; i++) {
+        const el = clientArr[i];
+        await axios.delete(`/api/Dictionary/DICT_NET_CLIENT/${el}`, {
+          headers: {
+            token: store.userState.token,
+          },
+        });
+      }
+    }
+    setFirstLevel(false);
+    setSecondLevel(false);
+    setThirdLevel(false);
+    setUpdateVal(!updateVal)
+    store.changeLoading(false);
   };
 
   const handleFirstLevel = () => {
@@ -262,11 +484,6 @@ export default function NETWORK_EDIT({ store }) {
     setThirdLevel(!thirdLevel);
   };
 
-  const handleSearchSubmit = () => {
-    handleSearchBrandNameSecondLvl(brand.brand_id);
-    handleSearchBrandStatus(brand.brand_id);
-  };
-
   function handleForm(e, type) {
     const handleLevel = (param) => {
       return { ...param, [e.target.dataset.id]: e.target.value };
@@ -276,58 +493,72 @@ export default function NETWORK_EDIT({ store }) {
         setFormFirstLevel(handleLevel);
         break;
       case "secondLevel":
-        setSecondLevel(handleLevel);
-        break;
-      case "thirdLevel":
-        setThirdLevel(handleLevel);
-        break;
+        const selectedArr = optionsSecondLvl[+e.target.dataset.index];
+        const otherArr = optionsSecondLvl.filter(
+          (i) => i.index !== selectedArr.index
+        );
+        console.log(e);
+        const arr = [handleLevel(selectedArr), ...otherArr];
+        console.log(handleLevel(selectedArr));
 
+        setOptionsSecondLvl(arr.sort((a, b) => (a.index < b.index ? -1 : 1)));
+        break;
       default:
         throw new Error("this type no exist!");
     }
   }
 
-  const handlePIB = (e) => {
+  const handlePIB = (e, type = "firstLevel") => {
+    e.stopPropagation();
     const eventManagerID = {
-      target: { value: e.target.value, dataset: { id: "manager_id" } },
+      target: {
+        value: e.target.value,
+        dataset: { id: "manager_id", index: e.target.dataset.index },
+      },
     };
     const manager = optionsManager.filter((i) => +i.id === +e.target.value)[0];
     const eventManagerName = {
-      target: { value: manager.value, dataset: { id: "manager_name" } },
+      target: {
+        value: manager.value,
+        dataset: { id: "manager_name", index: e.target.dataset.index },
+      },
     };
-    const eventBrandID = {
-      target: { value: manager.institution_id, dataset: { id: "brand_id" } },
-    };
+    // const eventBrandID = {
+    //   target: {
+    //     value: manager.institution_id,
+    //     dataset: { id: "brand_id", index: e.target.dataset.index },
+    //   },
+    // };
     const eventBrandRegion = {
       target: {
         value: manager.institution_name,
-        dataset: { id: "brand_region" },
+        dataset: { id: "brand_region", index: e.target.dataset.index },
       },
     };
-    handleForm(eventManagerID, "firstLevel");
-    handleForm(eventManagerName, "firstLevel");
-    handleForm(eventBrandID, "firstLevel");
-    handleForm(eventBrandRegion, "firstLevel");
-  };
-
-  const filterColors = (inputValue) => {
-    return options.filter((i) =>
-      i.brand_name.toLowerCase().includes(inputValue.toLowerCase())
-    );
-  };
-
-  const loadOptions = (inputValue, callback) => {
-    setTimeout(() => {
-      callback(filterColors(inputValue));
-    }, 1000);
+    handleForm(eventManagerID, type);
+    handleForm(eventManagerName, type);
+    // handleForm(eventBrandID, type);
+    handleForm(eventBrandRegion, type);
   };
 
   const handleInputChange = (newValue) => {
     return newValue;
   };
+  const handleAddBrandName = (option) => {
+    setBrand(option);
+    setFormFirstLevel(option);
+    setBrandName(option.brand_name);
+    setIsShowFirstLvl(true);
+    handleSearchBrandNameSecondLvl(option.brand_id);
+    handleSearchBrandStatus(option.brand_id);
+  };
 
+  const handleRemove = (id) => {
+    setOptionsThirdLvl(optionsThirdLvl.filter((i) => i.client_id !== id));
+    setClientArr([...clientArr, id]);
+  };
   return (
-    <div className="coverTable DICT_NET_BRAND">
+    <div className="coverTable NETWORK_EDIT">
       {/* <div className="headerTable">
         <h3 className="titleTable">Звіт по мережевим клієнтам</h3>
       </div> */}
@@ -354,11 +585,16 @@ export default function NETWORK_EDIT({ store }) {
                 placeholder="Назва мережі..."
                 onBlur={handleSearchSubmit}
                 value={query}
-                onChange={setQuery}
+                // onChange={setQuery}
                 renderMenuItemChildren={(option, props) => (
-                  <option value={option.brand_1id}>{option.brand_name}</option>
+                  <option value={option.brand_id}>{option.brand_name}</option>
                 )}
               /> */}
+              <AutocompleteInputBrandName
+                token={store.userState.token}
+                addBrandName={handleAddBrandName}
+                update={updateVal}
+              />
               {/* <AsyncSelect
                 cacheOptions
                 loadOptions={loadOptions}
@@ -384,14 +620,15 @@ export default function NETWORK_EDIT({ store }) {
                   ))
                 : null}
             </Form.Select> */}
-              {/* <Form.Check
+              <Form.Check
                 style={{ marginTop: "20px" }}
                 type={"checkbox"}
                 id={`brand_name_checkbox`}
                 label={`I Рівень`}
                 checked={firstLevel}
                 onChange={handleFirstLevel}
-              /> */}
+                className={!isShowFirstLvl ? "d-none" : null}
+              />
             </div>
             <div>
               {/* <label>ПІБ менеджера мережі</label> */}
@@ -409,14 +646,15 @@ export default function NETWORK_EDIT({ store }) {
                   ))
                 : null}
             </Form.Select> */}
-              {/* <Form.Check
+              <Form.Check
                 style={{ marginTop: "20px" }}
                 type={"checkbox"}
                 id={`brand_contact_name`}
                 label={`II Рівень`}
                 checked={secondLevel}
                 onChange={handleSecondLevel}
-              /> */}
+                className={!isShowSecondLvl ? "d-none" : null}
+              />
             </div>
             <div>
               {/* <label>РУ менеджера мережі</label>
@@ -434,14 +672,15 @@ export default function NETWORK_EDIT({ store }) {
                   ))
                 : null}
             </Form.Select> */}
-              {/* <Form.Check
+              <Form.Check
                 style={{ marginTop: "20px" }}
                 type={"checkbox"}
                 id={`brand_manager_id`}
                 label={`III Рівень`}
                 checked={thirdLevel}
                 onChange={handleThirdLevel}
-              /> */}
+                className={!isShowThirdLvl ? "d-none" : null}
+              />
             </div>
 
             {/* <h5 className="mt-4">Контактна особа мережі</h5>
@@ -588,13 +827,118 @@ export default function NETWORK_EDIT({ store }) {
             </div>
           ) : null}
           {secondLevel ? (
-            <div className="row col-12 mt-5">
+            <div
+              className="row col-12 mt-5"
+              onChange={(e) => handleForm(e, "secondLevel")}
+            >
               <h2>II Рівень </h2>
+
+              {optionsSecondLvl
+                ? optionsSecondLvl.map((item) => {
+                    return (
+                      <div style={{ margin: "20px 0" }}>
+                        <div className="col-5 mt-2">
+                          <label>Назва мережі</label>
+                          <Form.Control
+                            type="text"
+                            data-id="brand_name"
+                            data-index={item.index}
+                            value={item.brand_name}
+                          />
+                        </div>
+                        <div className="col-5 mt-2">
+                          <label>ID мережі</label>
+                          <Form.Control
+                            type="text"
+                            data-id="brand_id"
+                            data-index={item.index}
+                            value={item.brand_id}
+                          />
+                        </div>
+                        <div className="col-5 mt-2">
+                          <label>ПІБ менеджера мережі</label>
+                          <Form.Select
+                            onChange={(e) => handlePIB(e, "secondLevel")}
+                            data-id="manager_id"
+                            data-index={item.index}
+                          >
+                            <option>{item.manager_name}</option>
+                            {isLoadingNameManager
+                              ? optionsNameManager.map((option) => (
+                                  <option value={option.id}>
+                                    {option.value}
+                                  </option>
+                                ))
+                              : null}
+                          </Form.Select>
+                        </div>
+                        <div className="col-5 mt-2">
+                          <label>РУ менеджера</label>
+                          <Form.Control
+                            type="text"
+                            data-id="brand_region"
+                            disabled={true}
+                            data-index={item.index}
+                            value={item.brand_region}
+                          />
+                        </div>
+                        <div className="col-5 mt-2">
+                          <label>ІНН/ЄДРПОУ</label>
+                          <Form.Control
+                            type="text"
+                            data-id="ident_code"
+                            data-index={item.index}
+                            value={item.ident_code}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })
+                : null}
             </div>
           ) : null}
           {thirdLevel ? (
             <div className="row col-12 mt-5">
               <h2>III Рівень </h2>
+
+              <div class="container">
+                <div class="row">
+                  <div class="col-12">
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th scope="col">Клієнт</th>
+                          <th scope="col">ЄДРПОУ</th>
+                          <th scope="col">Менеджер</th>
+                          <th scope="col"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {optionsThirdLvl
+                          ? optionsThirdLvl.map((i) => {
+                              return (
+                                <tr>
+                                  <td>{i.entity_name}</td>
+                                  <td>{i.ident_code}</td>
+                                  <td>{i.manager_name}</td>
+                                  <td>
+                                    <button
+                                      type="button"
+                                      class="btn btn-danger"
+                                      onClick={() => handleRemove(i.client_id)}
+                                    >
+                                      Видалити
+                                    </button>
+                                  </td>
+                                </tr>
+                              );
+                            })
+                          : null}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
             </div>
           ) : null}
         </div>
@@ -828,9 +1172,9 @@ export default function NETWORK_EDIT({ store }) {
       </div>
 
       <div class="btnBlock" style={{ background: "white", padding: "10px" }}>
-        {/* <button class="btn btn-success" onClick={confirm}>
+        <button class="btn btn-success" onClick={confirm}>
           Зберегти
-        </button> */}
+        </button>
       </div>
     </div>
   );

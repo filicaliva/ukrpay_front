@@ -9,7 +9,7 @@ export default function NETWORK_REPORT({ store }) {
   const [options, setOptions] = useState([]);
   const [brand, setBrand] = useState(null);
   const [contact, setContact] = useState();
-
+  const [nameBrand, setNameBrand] = useState(null)
   const [isLoadingStatus, setIsLoadingStatus] = useState(false);
   const [optionsStatus, setOptionsStatus] = useState([]);
   const [brandStatus, setBrandStatus] = useState(null);
@@ -75,82 +75,6 @@ export default function NETWORK_REPORT({ store }) {
       });
   };
 
-  const handleSearchBrandNameSecondLvl = async () => {
-    await axios
-      .get(`/api/Dictionary/DICT_NET_ENTITY?name=entity_name`, {
-        headers: {
-          token: store.userState.token,
-        },
-      })
-      .then((res) => {
-        const options = res.data.Table
-          ? res.data.Table.TableRows.map((i) => ({
-              id: i.entity_id,
-              value: i.entity_name,
-              manager_name: +i.ident_code,
-              institution_name: i.brand_region,
-            }))
-          : null;
-        setOptionsSecondLvl(options);
-        setIsLoadingSecondLvl(true);
-      });
-  };
-
-  const handleSearchBrandNameSecondLvlRU = async () => {
-    await axios
-      .get(`/api/Dictionary/DICT_INSTITUTION?name=institution_name`, {
-        headers: {
-          token: store.userState.token,
-        },
-      })
-      .then((res) => {
-        const options = res.data.Table
-          ? res.data.Table.TableRows.map((i) => ({
-              id: i.institution_id,
-              value: i.institution_name,
-            }))
-          : null;
-        setOptionsSecondLvlRU(options);
-        setIsLoadingSecondLvlRU(true);
-      });
-  };
-
-  const handleSearchManager = async () => {
-    await axios
-      .get(`/api/Dictionary/DICT_NETWORK_MANAGERS?name=manager_name`, {
-        headers: {
-          token: store.userState.token,
-        },
-      })
-      .then((res) => {
-        const options = res.data.Table.TableRows.map((i) => ({
-          id: i.manager_id,
-          value: i.manager_name,
-          institution_id: i.institution_id,
-          institution_name: i.institution_name,
-        }));
-        setOptionsManager(options);
-        setIsLoadingManager(true);
-      });
-  };
-
-  const handleSearchBrandStatus = async () => {
-    await axios
-      .get(`/api/Dictionary/DICT_NET_CLIENT_STATUS?name=status_name`, {
-        headers: {
-          token: store.userState.token,
-        },
-      })
-      .then((res) => {
-        const options = res.data.Table.TableRows.map((i) => ({
-          id: i.status_code,
-          value: i.status_name,
-        }));
-        setOptionsStatus(options);
-        setIsLoadingStatus(true);
-      });
-  };
-
   const handleSearchNameManager = async () => {
     await axios
       .get(`/api/Dictionary/DICT_NETWORK_MANAGERS?name=manager_name`, {
@@ -168,54 +92,11 @@ export default function NETWORK_REPORT({ store }) {
       });
   };
 
-  const handleSearchRUManager = async () => {
-    await axios
-      .get(`/api/Dictionary/DICT_INSTITUTION?name=institution_name`, {
-        headers: {
-          token: store.userState.token,
-        },
-      })
-      .then((res) => {
-        const options = res.data.Table.TableRows.map((i) => ({
-          id: i.institution_id,
-          value: i.institution_name,
-        }));
-        setOptionsRUManager(options);
-        setIsLoadingRUManager(true);
-      });
-  };
-
-  const handleSearchTSP = async () => {
-    const data = {
-      institution_id: +secondLvlRU.level2_manager_institution_id,
-      branch_id: +brand.id,
-      ident_code: contact.ident_code,
-      network_brand_id: brand.id,
-    };
-
-    await axios
-      .post(`/api/Dictionary/QueryTSP`, data, {
-        headers: {
-          token: store.userState.token,
-        },
-      })
-      .then((res) => {
-        const options =
-          res.data.record_count > 0
-            ? res.data.tsp_list.TableRows.map((i) => ({
-                id: i.ident_code,
-                value: i.client_name,
-              }))
-            : [];
-        setOptionsTSP(options);
-        setIsLoadingTSP(true);
-      });
-  };
 
   useEffect(() => {
-    handleSearchBrandStatus();
+    // handleSearchBrandStatus();
     handleSearchNameManager();
-    handleSearchRUManager();
+    // handleSearchRUManager();
     // handleSearchBrandNameSecondLvl();
     // handleSearchBrandNameSecondLvlRU();
     // handleSearchManager();
@@ -230,8 +111,9 @@ export default function NETWORK_REPORT({ store }) {
 
   const confirm = async () => {
     store.changeLoading(true);
+    console.log(nameBrand);
     await axios
-      .post(`/api/Dictionary/GetNetworkClientsReport`, {...form, brand_id: brand ? brand.brand_id : 0}, {
+      .post(`/api/Dictionary/GetNetworkClientsReport`, {...form, brand_id: nameBrand.length!==0 ? brand.brand_id  : 0}, {
         headers: {
           token: store.userState.token,
         },
@@ -283,7 +165,7 @@ export default function NETWORK_REPORT({ store }) {
               options={options}
               searchText="Пошук..."
               placeholder="Назва мережі..."
-              promptText=""
+              onChange={setNameBrand}
               renderMenuItemChildren={(option, props) => (
                 <option value={option.brand_id}>{option.brand_name}</option>
               )}
@@ -313,7 +195,6 @@ export default function NETWORK_REPORT({ store }) {
               type={"checkbox"}
               name={`brand_status_name`}
               label={`Назва статуса мережі`}
-              name="brand_name"
             />
           </div>
           <div>

@@ -281,6 +281,47 @@ header {
   }
 }
 
+.NETWORK_EDIT {
+  .addbBlock {
+    background: white;
+    padding: 15px 5px;
+  }
+  .coverloader .loader {
+    font-size: 19px;
+  }
+  .autocomplete {
+    position: relative;
+    max-width: 320px;
+  }
+  input.form-control.merchant-input {
+    max-width: 320px;
+    position: relative;
+    margin: 0;
+  }
+  .autocomplete .blockSelect {
+    position: absolute;
+    top: 38px;
+    border: 1px solid #ced4da;
+    background: #fff;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 300px;
+    width: 92%;
+    border-top: none;
+    z-index: 1;
+    box-sizing: border-box;
+    box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+  }
+  .autocomplete .blockSelect .blockSelectItem {
+    padding: 2px 5px;
+    cursor: pointer;
+  }
+  .autocomplete .blockSelect .blockSelectItem:hover {
+    color: white;
+    background-color: grey;
+  }
+}
+
 .TableADMIN_USERS {
   .controlBlock {
     padding: 0 30px 5px 0;
@@ -879,7 +920,7 @@ table {
     }
   }
 }
-.accordion-header button{
+.accordion-header button {
   font-weight: 500;
 }
 
@@ -991,7 +1032,7 @@ table {
   padding: 5px;
   display: block;
   cursor: pointer;
-  transition: all .3s ease;
+  transition: all 0.3s ease;
   font-size: 15px;
   &:hover {
     opacity: 1;
@@ -1000,13 +1041,14 @@ table {
   }
 }
 
-.accordion-button::after{
+.accordion-button::after {
   width: 1.05rem !important;
   height: 1.05rem !important;
   background-size: 0.95rem !important;
 }
 
-.accordion-button:not(.collapsed), .accordion-button:focus{
+.accordion-button:not(.collapsed),
+.accordion-button:focus {
   outline: none;
   box-shadow: none !important;
   border: 0 !important;
