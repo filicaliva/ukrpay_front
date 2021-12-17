@@ -9,7 +9,7 @@ export default function NETWORK_REPORT({ store }) {
   const [options, setOptions] = useState([]);
   const [brand, setBrand] = useState(null);
   const [contact, setContact] = useState();
-  const [nameBrand, setNameBrand] = useState(null)
+  const [nameBrand, setNameBrand] = useState(null);
   const [isLoadingStatus, setIsLoadingStatus] = useState(false);
   const [optionsStatus, setOptionsStatus] = useState([]);
   const [brandStatus, setBrandStatus] = useState(null);
@@ -92,7 +92,6 @@ export default function NETWORK_REPORT({ store }) {
       });
   };
 
-
   useEffect(() => {
     // handleSearchBrandStatus();
     handleSearchNameManager();
@@ -113,14 +112,18 @@ export default function NETWORK_REPORT({ store }) {
     store.changeLoading(true);
     console.log(nameBrand);
     await axios
-      .post(`/api/Dictionary/GetNetworkClientsReport`, {...form, brand_id: nameBrand.length!==0 ? brand.brand_id  : 0}, {
-        headers: {
-          token: store.userState.token,
-        },
-        responseType: "blob",
-      })
+      .post(
+        `/api/Dictionary/GetNetworkClientsReport`,
+        { ...form, brand_id: nameBrand.length !== 0 ? brand.brand_id : 0 },
+        {
+          headers: {
+            token: store.userState.token,
+          },
+          responseType: "blob",
+        }
+      )
       .then((response) => {
-    store.changeLoading(false);
+        store.changeLoading(false);
 
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
@@ -131,7 +134,6 @@ export default function NETWORK_REPORT({ store }) {
         link.setAttribute("download", fileTitle);
         document.body.appendChild(link);
         link.click();
-
       });
   };
 
@@ -143,11 +145,26 @@ export default function NETWORK_REPORT({ store }) {
       return { ...i, [name]: val ? 1 : 0 };
     });
   };
-
+const activeOperation = (operationArr, operation) => {
+  let res;
+  operationArr.map((item, index) => {
+    if (item.operation == operation) {
+      console.log(item.name);
+      res = item.name;
+    }
+  });
+  return res;
+};
   return (
     <div className="coverTable DICT_NET_BRAND">
       <div className="headerTable">
-        <h3 className="titleTable">Інформація по мережевих клієнтах</h3>
+        <div className="titleTable">
+          {activeOperation(
+            store.userState.OPERATIONS,
+            store.location.pathname.substr(11)
+          )}
+        </div>
+        <div className="optionBlock"></div>
       </div>
       <div className="addbBlock" onChange={handleForm}>
         <div className="row col-4">

@@ -223,7 +223,7 @@ class REPORT_OPERATIONS_NET extends React.Component {
 
       isShow_DICT_TERMINAL: false,
       DICT_TERMINAL_VALUE: [],
-      error_text: "Заповніть будь ласка поле!"
+      error_text: "Заповніть, будь ласка, значення!"
     };
     this.myRef = React.createRef();
     this.handleRequestDICT_BRANCH_NAME =
@@ -2458,7 +2458,7 @@ class REPORT_OPERATIONS_NET extends React.Component {
                   />
                 </div>
               </div>
-              <p className="error">{this.state.isDate_fromValidation &&this.state.isDate_toValidation  ? null : "Заповніть будь-ласка поля!"}</p>
+              <p className="error">{this.state.isDate_fromValidation &&this.state.isDate_toValidation  ? null : "Заповніть, будь ласка, дати!"}</p>
             </div>
           </div>
         </div>

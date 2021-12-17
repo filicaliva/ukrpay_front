@@ -662,8 +662,12 @@ header {
   .btnBlock {
     background: #ffffff;
     padding: 15px;
+    display: flex;
+    justify-content: flex-end;
   }
 }
+
+
 
 .DICT_BIN_TABLE {
   .filter {

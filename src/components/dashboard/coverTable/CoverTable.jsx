@@ -14,6 +14,7 @@ import TableADMIN_ROLE_OPERATIONS from "./ADMIN/TableADMIN_ROLE_OPERATIONS";
 import TableADMIN_USER_OPERATIONS from "./ADMIN/TableADMIN_USER_OPERATIONS";
 import TableADMIN_ROLES from "./ADMIN/TableADMIN_ROLES";
 import REPORT_SETTINGS_TSP from "./REPORT/REPORT_SETTINGS_TSP";
+import REPORT_SETTINGS_NET from "./REPORT/REPORT_SETTINGS_NET";
 import REPORTS_acquiring from "./REPORT/REPORTS_acquiring";
 import REPORTS_ACQUIRING_MONITOR from "./REPORT/REPORTS_ACQUIRING_MONITOR";
 import REPORT_OPERATIONS from "./REPORT/REPORT_OPERATIONS";
@@ -71,6 +72,8 @@ class CoverTable extends React.Component {
         return <TableADMIN_USER_OPERATIONS store={this.props.store} />;
       case "REPORT_SETTINGS_TSP":
         return <REPORT_SETTINGS_TSP store={this.props.store} />;
+      case "REPORT_SETTINGS_NET":
+        return <REPORT_SETTINGS_NET store={this.props.store} />;
       case "REPORTS_ACQUIRING":
         return <REPORTS_acquiring store={this.props.store} />;
       case "REPORTS_ACQUIRING_MONITOR":

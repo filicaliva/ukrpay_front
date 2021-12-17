@@ -12,7 +12,7 @@ const endpoints = {
         '/api/UserOperations'
     ],
     8471: ['/api/Dictionary'],
-    8472: [`/api/TSPReportSettings`],
+    8472: [`/api/TSPReportSettings`, `/api/NetReportSettings`],
     8473: [`/api/Reports`],
     //8474: [`/api/Dictionary/DICT_MCC`],
 };
