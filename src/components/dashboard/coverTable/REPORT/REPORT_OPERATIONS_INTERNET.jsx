@@ -1038,20 +1038,13 @@ class AutocompleteInputIdentCode extends React.Component {
   onClickBlockSelectItem = (e) => {
     //console.log('----onClickBlockSelectItem-----');
     let val = e.currentTarget.getAttribute("value");
-    let client_id = e.currentTarget.getAttribute("data-id");
+    const currentVal = this.state.data.filter((i) => i.ident_code === val)[0];
+    let client_id = currentVal.client_id;
 
     //console.log(val);
     //console.log('----onClickBlockSelectItem-----');
     if (val != "") {
-      //console.log(this.state.InputDICT_MCC);
-      //console.log(this.state.mcc_code);
-      if (val != this.state.inputRequest) {
-        this.request(this.props.token, val, false);
-
-        // let inputDataObj = this.props.AcquiringReportsCriteria;
-        // inputDataObj.tsp_name = val;
-        //console.log(typeof val);
-        this.props.addIdentCode(Number(val));
+      this.props.addIdentCode(Number(val));
         this.props.addClientID(Number(client_id));
         this.setState({
           inputResult: val,
@@ -1062,6 +1055,14 @@ class AutocompleteInputIdentCode extends React.Component {
 
           selected: true,
         });
+      if (val != this.state.inputRequest) {
+
+        this.request(this.props.token, val, false);
+
+        // let inputDataObj = this.props.AcquiringReportsCriteria;
+        // inputDataObj.tsp_name = val;
+        //console.log(typeof val);
+        
       }
       this.setState({
         isShowBlockSelect: false,
@@ -1148,7 +1149,7 @@ class AutocompleteInputIdentCode extends React.Component {
           }form-control`}
           placeholder="Введіть цифри..."
           type="text"
-          onBlur={this.onBlurAutocompleteInput}
+          onBlur={this.onClickBlockSelectItem}
           onChange={this.onChangeAutocompleteInput}
           onClick={(e)=>
             this.state.isShowBlockSelect

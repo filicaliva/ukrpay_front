@@ -392,9 +392,9 @@ class AutocompleteInputTspName extends React.Component {
     return (
       <div className="autocomplete">
         <input
-          className={`${this.props.isError ? "" : "validError "} ${this.state.selected ? "selected " : ""}${
-            this.state.isShowInputRequest ? "" : "dn "
-          }form-control`}
+          className={`${this.props.isError ? "" : "validError "} ${
+            this.state.selected ? "selected " : ""
+          }${this.state.isShowInputRequest ? "" : "dn "}form-control`}
           placeholder="Введіть перші букви..."
           type="text"
           onBlur={this.onBlurAutocompleteInput}
@@ -473,7 +473,7 @@ class AutocompleteInputIdentCode extends React.Component {
   onChangeAutocompleteInput = (e) => {
     let param = e.target.value;
     this.props.addClientID(Number(0));
-      this.props.addIdentCode(Number(0));
+    this.props.addIdentCode(Number(0));
     this.setState({
       inputRequest: param,
       selected: false,
@@ -513,13 +513,29 @@ class AutocompleteInputIdentCode extends React.Component {
 
   onClickBlockSelectItem = (e) => {
     //console.log('----onClickBlockSelectItem-----');
+
     let val = e.currentTarget.getAttribute("value");
-    let client_id = e.currentTarget.getAttribute("data-id");
+
+    const currentVal = this.state.data.filter((i) => i.ident_code === val)[0];
+    let client_id = currentVal.client_id;
+
     //console.log(val);
     //console.log('----onClickBlockSelectItem-----');
     if (val != "") {
       //console.log(this.state.InputDICT_MCC);
       //console.log(this.state.mcc_code);
+      console.log(val, this.state.inputRequest);
+      this.props.addIdentCode(Number(val));
+      this.props.addClientID(Number(client_id));
+      this.setState({
+        inputResult: val,
+        inputRequest: val,
+        isShowBlockSelect: false,
+        isShowInputResult: true,
+        isShowInputRequest: false,
+
+        selected: true,
+      });
       if (val != this.state.inputRequest) {
         this.request(this.props.token, val, false);
 
@@ -527,17 +543,6 @@ class AutocompleteInputIdentCode extends React.Component {
         // inputDataObj.tsp_name = val;
         console.log(val);
         //console.log(typeof val);
-        this.props.addIdentCode(Number(val));
-        this.props.addClientID(Number(client_id));
-        this.setState({
-          inputResult: val,
-          inputRequest: val,
-          isShowBlockSelect: false,
-          isShowInputResult: true,
-          isShowInputRequest: false,
-
-          selected: true,
-        });
       }
       this.setState({
         isShowBlockSelect: false,
@@ -616,17 +621,17 @@ class AutocompleteInputIdentCode extends React.Component {
           maskChar=""
           alwaysShowMask="false"
           pattern="[0-9]"
-          className={`${this.props.isError ? "" : "validError "}${this.state.selected ? "selected " : ""}${
-            this.state.isShowInputRequest ? "" : "dn "
-          }form-control`}
+          className={`${this.props.isError ? "" : "validError "}${
+            this.state.selected ? "selected " : ""
+          }${this.state.isShowInputRequest ? "" : "dn "}form-control`}
           placeholder="Введіть цифри..."
           type="text"
-          onBlur={this.onBlurAutocompleteInput}
+          onBlur={this.onClickBlockSelectItem}
           onChange={this.onChangeAutocompleteInput}
-          onClick={(e)=>
+          onClick={(e) =>
             this.state.isShowBlockSelect
-            ? this.setState({ isShowBlockSelect: false })
-            : this.onClickAutocompleteInput(e)
+              ? this.setState({ isShowBlockSelect: false })
+              : this.onClickAutocompleteInput(e)
           }
           value={this.state.inputRequest}
         />
@@ -1124,7 +1129,9 @@ class AutocompleteInputTerminalName extends React.Component {
     return (
       <div className="autocomplete">
         <input
-          className={`${this.props.isError ? "" : "validError "} ${this.state.selected ? "selected " : ""}${
+          className={`${this.props.isError ? "" : "validError "} ${
+            this.state.selected ? "selected " : ""
+          }${
             this.state.isShowInputRequest ? "" : "dn "
           }form-control terminal-input`}
           placeholder="Введіть цифри..."
@@ -2053,7 +2060,7 @@ class REPORT_OPERATIONS extends React.Component {
       this.state.isTerminal_type_idValidation &&
       this.state.isDate_type_idValidation &&
       this.state.isDate_fromValidation &&
-      this.state.isDate_toValidation && 
+      this.state.isDate_toValidation &&
       this.state.isForm_toValidation
     ) {
       this.requestReports_Acquiring(
@@ -2126,7 +2133,7 @@ class REPORT_OPERATIONS extends React.Component {
       this.state.AcquiringReportsCriteria.terminal_id == 0
     ) {
       this.setState({ isForm_toValidation: false });
-    }else{
+    } else {
       this.setState({ isForm_toValidation: true });
     }
 
