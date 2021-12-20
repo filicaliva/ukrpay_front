@@ -20,6 +20,7 @@ import REPORTS_ACQUIRING_MONITOR from "./REPORT/REPORTS_ACQUIRING_MONITOR";
 import REPORT_OPERATIONS from "./REPORT/REPORT_OPERATIONS";
 import REPORT_OPERATIONS_INTERNET from "./REPORT/REPORT_OPERATIONS_INTERNET";
 import REPORT_OPERATIONS_NET from "./REPORT/REPORT_OPERATIONS_NET";
+import REPORT_TERMINALS_INTERNET from "./REPORT/REPORT_TERMINALS_INTERNET";
 
 function Default() {
   return (
@@ -78,6 +79,8 @@ class CoverTable extends React.Component {
         return <REPORTS_acquiring store={this.props.store} />;
       case "REPORTS_ACQUIRING_MONITOR":
         return <REPORTS_ACQUIRING_MONITOR store={this.props.store} />;
+      case "REPORT_TERMINALS_INTERNET":
+        return <REPORT_TERMINALS_INTERNET store={this.props.store} />;
       case "REPORT_OPERATIONS":
         return <REPORT_OPERATIONS store={this.props.store} />;
       case "REPORT_OPERATIONS_INTERNET":

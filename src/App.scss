@@ -583,6 +583,11 @@ header {
     }
   }
 }
+.DICT_NET_BRAND{
+  input#type-date {
+    background: none;
+}
+}
 .REPORT_aquiring {
   .error {
     color: red;
@@ -692,6 +697,13 @@ header {
 }
 
 .DICT_NET_BRAND {
+  .error{
+    margin-top: 5px;
+    color: red;
+  }
+  input.validError {
+    border: 1px solid red;
+}
   .addbBlock {
     display: flex;
     padding: 10px;
