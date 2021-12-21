@@ -73,13 +73,13 @@ export default function REPORT_TERMINALS_INTERNET({ store }) {
   const handleTerminal = (e) => {
     let param = e.target.value;
     if (param) {
-      setInstitution(param);
+      setTerminal(param);
     }
   };
   const handleInstitution = (e) => {
     let param = e.target.value;
     if (param) {
-      setTerminal(param);
+      setInstitution(param);
     }
   };
   const reqInstitution = async (token) => {

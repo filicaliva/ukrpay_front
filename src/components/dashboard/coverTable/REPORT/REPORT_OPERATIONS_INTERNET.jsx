@@ -275,7 +275,7 @@ class AutocompleteInputTspName extends React.Component {
   onBlurAutocompleteInput = (e) => {
     let param = e.target.value;
     console.log(param);
-    this.setState({ isShowBlockSelect: false });
+    // this.setState({ isShowBlockSelect: false });
 
     // if(param != '' && param.length >= 3){
     //     this.request(this.props.token, param, false);
@@ -306,6 +306,7 @@ class AutocompleteInputTspName extends React.Component {
     if (val != "") {
       //console.log(this.state.InputDICT_MCC);
       //console.log(this.state.mcc_code);
+      this.props.addTspName(val);
       if (val != this.state.inputRequest) {
         this.request(this.props.token, val, false);
 
@@ -318,8 +319,8 @@ class AutocompleteInputTspName extends React.Component {
           inputResult: name,
           inputRequest: name,
           isShowBlockSelect: false,
-          // isShowInputResult: false,
-          // isShowInputRequest: true,
+          isShowInputResult: false,
+          isShowInputRequest: true,
 
           selected: true,
         });
@@ -1038,7 +1039,7 @@ class AutocompleteInputIdentCode extends React.Component {
   onClickBlockSelectItem = (e) => {
     //console.log('----onClickBlockSelectItem-----');
     let val = e.currentTarget.getAttribute("value");
-    const currentVal = this.state.data.filter((i) => i.ident_code === val)[0];
+    const currentVal = this.state.data.filter((i) => i.ident_code.toString().includes(val))[0];    
     let client_id = currentVal.client_id;
 
     //console.log(val);
@@ -1047,8 +1048,7 @@ class AutocompleteInputIdentCode extends React.Component {
       this.props.addIdentCode(Number(val));
         this.props.addClientID(Number(client_id));
         this.setState({
-          inputResult: val,
-          inputRequest: val,
+          inputResult: currentVal.ident_code,
           isShowBlockSelect: false,
           isShowInputResult: true,
           isShowInputRequest: false,
@@ -1767,19 +1767,20 @@ class REPORT_OPERATIONS extends React.Component {
       .then((response) => {
         console.log(response.data);
 
-        this.setState({
-          DICT_TERMINAL_SYSTEM: response.data.Table.TableRows,
-          DICT_MCC_SYSTEM: response.data.Table.TableRows,
-          isShowSelectDICT_TERMINAL_SYSTEM: true,
-          isShowSelectDICT_MCC_SYSTEM: true,
-        });
+        if(response.data.record_count!==0){
+          this.setState({
+            DICT_TERMINAL_SYSTEM: response.data.Table.TableRows,
+            DICT_MCC_SYSTEM: response.data.Table.TableRows,
+            isShowSelectDICT_TERMINAL_SYSTEM: true,
+            isShowSelectDICT_MCC_SYSTEM: true,
+          });
+        }
+
 
         this.props.store.changeLoading(false);
       })
       .catch((error) => {
         console.log(error.response);
-        console.log(error.response.data);
-        //console.log('error_catch');
       });
   }
   async requestDICT_MCC_SYSTEM() {
@@ -1800,19 +1801,17 @@ class REPORT_OPERATIONS extends React.Component {
         headers: { Token: `${this.props.store.userState.token}` },
       })
       .then((response) => {
-        console.log(response.data);
 
-        this.setState({
-          DICT_TERMINAL_SYSTEM: response.data.mcc_list.TableRows,
-          isShowSelectDICT_MCC_SYSTEM: true,
-        });
-
+        if(response.data.record_count!==0){
+          this.setState({
+            DICT_TERMINAL_SYSTEM: response.data.mcc_list.TableRows,
+            isShowSelectDICT_MCC_SYSTEM: true,
+          });
+        }
         this.props.store.changeLoading(false);
       })
       .catch((error) => {
         console.log(error.response);
-        console.log(error.response.data);
-        //console.log('error_catch');
       });
   }
   async requestDICT_DATE_TYPE(token) {
@@ -3594,6 +3593,7 @@ class REPORT_OPERATIONS extends React.Component {
                     this.state.isDate_type_idValidation ? "" : "validError"
                   } form-select`}
                   title="DICT_DATE_TYPE"
+                  disabled={true}
                 >
                   {this.state.isShowSelectDICT_DATE_TYPE ? (
                     this.state.DICT_DATE_TYPE.map((item, index) => {

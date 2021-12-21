@@ -316,8 +316,8 @@ class AutocompleteInputTspName extends React.Component {
           inputResult: name,
           inputRequest: name,
           isShowBlockSelect: false,
-          isShowInputResult: false,
-          isShowInputRequest: true,
+          // isShowInputResult: false,
+          // isShowInputRequest: true,
 
           selected: true,
         });
@@ -513,11 +513,10 @@ class AutocompleteInputIdentCode extends React.Component {
 
   onClickBlockSelectItem = (e) => {
     //console.log('----onClickBlockSelectItem-----');
-
+    if(!e) return;
     let val = e.currentTarget.getAttribute("value");
-
-    const currentVal = this.state.data.filter((i) => i.ident_code === val)[0];
-    let client_id = currentVal.client_id;
+    const currentVal = this.state.data.filter((i) => i.ident_code.toString().includes(val))[0];
+    let client_id = currentVal.client_id===undefined ?  e.currentTarget.getAttribute("name") : currentVal.client_id;
 
     //console.log(val);
     //console.log('----onClickBlockSelectItem-----');
@@ -528,8 +527,7 @@ class AutocompleteInputIdentCode extends React.Component {
       this.props.addIdentCode(Number(val));
       this.props.addClientID(Number(client_id));
       this.setState({
-        inputResult: val,
-        inputRequest: val,
+        inputResult: currentVal.ident_code,
         isShowBlockSelect: false,
         isShowInputResult: true,
         isShowInputRequest: false,
@@ -1742,12 +1740,14 @@ class REPORT_OPERATIONS extends React.Component {
         headers: { Token: `${this.props.store.userState.token}` },
       })
       .then((response) => {
-        this.setState({
-          DICT_TERMINAL_SYSTEM: response.data.Table.TableRows,
-          DICT_MCC_SYSTEM: response.data.Table.TableRows,
-          isShowSelectDICT_TERMINAL_SYSTEM: true,
-          isShowSelectDICT_MCC_SYSTEM: true,
-        });
+        if(response.data.record_count!==0){
+          this.setState({
+            DICT_TERMINAL_SYSTEM: response.data.Table.TableRows,
+            DICT_MCC_SYSTEM: response.data.Table.TableRows,
+            isShowSelectDICT_TERMINAL_SYSTEM: true,
+            isShowSelectDICT_MCC_SYSTEM: true,
+          });
+        }
 
         this.props.store.changeLoading(false);
       })
@@ -3511,6 +3511,8 @@ class REPORT_OPERATIONS extends React.Component {
                     this.state.isDate_type_idValidation ? "" : "validError"
                   } form-select`}
                   title="DICT_DATE_TYPE"
+                  disabled={true}
+
                 >
                   {this.state.isShowSelectDICT_DATE_TYPE
                     ? this.state.DICT_DATE_TYPE.map((item, index) => {
