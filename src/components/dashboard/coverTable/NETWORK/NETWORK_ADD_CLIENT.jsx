@@ -32,14 +32,14 @@ const OptionItemDICT_NETWORK_MANAGERS = (props) => {
 
 const BlockSelectItemIdentCode = (props) => {
   return (
-    <div
+    <option
       className="blockSelectItem"
       value={props.item.ident_code}
       name={props.item.client_name}
       onClick={(e) => props.onClickBlockSelectItem(e)}
     >
       {props.item.ident_code}
-    </div>
+    </option>
   );
 };
 class AutocompleteInputIdentCode extends React.Component {
@@ -109,20 +109,25 @@ class AutocompleteInputIdentCode extends React.Component {
   };
 
   onClickBlockSelectItem = (e) => {
+    e.stopPropagation()
+    if(!e) return;
     let val = e.currentTarget.getAttribute("value");
     let name = e.currentTarget.getAttribute("name");
+    const currentVal = this.state.data.filter((i) => i.ident_code.toString().includes(val))[0];    
+
     if (val !== "") {
+      this.props.addIdentCode(Number(val), name, true);
+      this.setState({
+        inputRequest: currentVal.ident_code,
+        inputResult: currentVal.ident_code,
+        isShowBlockSelect: false,
+        isShowInputResult: true,
+        isShowInputRequest: false,
+
+        selected: true,
+      });
       if (val !== this.state.inputRequest) {
         this.request(this.props.token, val, false);
-        this.props.addIdentCode(Number(val), name, true);
-        this.setState({
-          inputResult: val,
-          inputRequest: val,
-          isShowBlockSelect: false,
-          isShowInputResult: true,
-          isShowInputRequest: false,
-          selected: true,
-        });
       }
       this.setState({
         isShowBlockSelect: false,
@@ -202,7 +207,11 @@ class AutocompleteInputIdentCode extends React.Component {
           type="text"
           onBlur={this.onBlurAutocompleteInput}
           onChange={this.onChangeAutocompleteInput}
-          onClick={this.onClickAutocompleteInput}
+           onClick={(e)=>
+            this.state.isShowBlockSelect
+            ? this.setState({ isShowBlockSelect: false })
+            : this.onClickAutocompleteInput(e)
+          }
           value={this.state.inputRequest}
         />
         <input
@@ -434,9 +443,14 @@ class NETWORK_ADD_CLIENT extends React.Component {
       .then((response) => {
         this.setState({
           isDisableInputDICT_NET_ENTITY: false,
-          isShowSelectDICT_NET_ENTITY: true,
-          DICT_NET_ENTITY: response.data.Table.TableRows,
         });
+        if(response.data.Table.TableRows){
+          this.setState({
+            isShowSelectDICT_NET_ENTITY: true,
+            DICT_NET_ENTITY: response.data.Table.TableRows,
+          });
+
+        }
         this.props.store.changeLoading(false);
       })
       .catch((error) => {
@@ -665,7 +679,7 @@ class NETWORK_ADD_CLIENT extends React.Component {
                   })
                 : null}
             </select>
-            <label htmlFor="status">ID менеджера ТСП</label>
+            <label htmlFor="status">РУ менеджера</label>
             <input
               disabled
               value={this.state.manager_id}

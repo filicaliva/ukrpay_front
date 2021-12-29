@@ -29,7 +29,7 @@ class TableADMIN_USER_OPERATIONS extends React.Component {
 
   render() {
     return (
-      <div className="coverTable">
+      <div className="coverTable ADMIN_USER_OPERATIONS">
         <div className="headerTable">
           <div className="titleTable">
             {activeOperation(

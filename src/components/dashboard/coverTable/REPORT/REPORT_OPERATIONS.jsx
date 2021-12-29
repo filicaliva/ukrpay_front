@@ -3511,8 +3511,6 @@ class REPORT_OPERATIONS extends React.Component {
                     this.state.isDate_type_idValidation ? "" : "validError"
                   } form-select`}
                   title="DICT_DATE_TYPE"
-                  disabled={true}
-
                 >
                   {this.state.isShowSelectDICT_DATE_TYPE
                     ? this.state.DICT_DATE_TYPE.map((item, index) => {

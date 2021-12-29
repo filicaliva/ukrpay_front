@@ -143,7 +143,7 @@ class TableADMIN_ROLE_OPERATIONS extends React.Component {
     const editModifyColumn = (cell, row) => this.checkbox(row, cell, "modify");
 
     return (
-      <div className="coverTable">
+      <div className="coverTable ADMIN_ROLE_OPERATIONS">
         <div className="headerTable">
           <div className="titleTable">
             {this.activeOperation(

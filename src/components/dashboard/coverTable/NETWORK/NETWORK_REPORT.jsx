@@ -9,7 +9,7 @@ export default function NETWORK_REPORT({ store }) {
   const [options, setOptions] = useState([]);
   const [brand, setBrand] = useState(null);
   const [contact, setContact] = useState();
-  const [nameBrand, setNameBrand] = useState(null);
+  const [nameBrand, setNameBrand] = useState([]);
   const [isLoadingStatus, setIsLoadingStatus] = useState(false);
   const [optionsStatus, setOptionsStatus] = useState([]);
   const [brandStatus, setBrandStatus] = useState(null);
@@ -39,12 +39,12 @@ export default function NETWORK_REPORT({ store }) {
   const [tsp, setTSP] = useState(null);
 
   const [form, setForm] = useState({
-    brand_id: 1,
+    brand_id: 0,
     brand_name: 1,
     // brand_status_code: 1,
     brand_status_name: 1,
     brand_manager_id: 1,
-    // brand_manager_institution_id: 1,
+    brand_manager_institution_id: 1,
     brand_contact_name: 1,
     brand_contact_position: 1,
     brand_contact_phone: 1,
@@ -261,20 +261,7 @@ const activeOperation = (operationArr, operation) => {
               name={`brand_manager_institution_id`}
               label={`РУ менеджера мережі`}
             />
-            <Form.Check
-              defaultChecked={true}
-              style={{ marginTop: "20px" }}
-              type={"checkbox"}
-              name={`client_manager_id`}
-              label={`Менеджера ТСП`}
-            />
-            <Form.Check
-              defaultChecked={true}
-              style={{ marginTop: "20px" }}
-              type={"checkbox"}
-              name={`client_manager_institution_id`}
-              label={`РУ менеджера ТСП`}
-            />
+       
           </div>
 
           <h5 className="mt-4">Контактна особа мережі</h5>
