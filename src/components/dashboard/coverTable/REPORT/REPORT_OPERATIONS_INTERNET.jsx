@@ -1027,6 +1027,7 @@ class AutocompleteInputIdentCode extends React.Component {
       isShowBlockSelect: true,
       isShowInputResult: false,
       isShowInputRequest: true,
+      inputRequest: this.state.inputResult,
     });
   };
 
@@ -1045,7 +1046,7 @@ class AutocompleteInputIdentCode extends React.Component {
     //console.log(val);
     //console.log('----onClickBlockSelectItem-----');
     if (val != "") {
-      this.props.addIdentCode(Number(val));
+      this.props.addIdentCode(Number(currentVal.ident_code));
         this.props.addClientID(Number(client_id));
         this.setState({
           inputResult: currentVal.ident_code,
@@ -1084,9 +1085,7 @@ class AutocompleteInputIdentCode extends React.Component {
     this.setState({
       isLoading: true,
     });
-    console.log(token);
     const baseUrl = `/api/Dictionary/QueryTSP`;
-    console.log(baseUrl);
     const body = {
       institution_id: this.props.institution_id,
       branch_id: this.props.branch_id,

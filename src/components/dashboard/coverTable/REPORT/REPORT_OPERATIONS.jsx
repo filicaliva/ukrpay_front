@@ -498,6 +498,7 @@ class AutocompleteInputIdentCode extends React.Component {
 
   onClickAutocompleteInputRes = () => {
     this.setState({
+      inputRequest: this.state.inputResult,
       inputResult: null,
       isShowBlockSelect: true,
       isShowInputResult: false,
@@ -523,8 +524,7 @@ class AutocompleteInputIdentCode extends React.Component {
     if (val != "") {
       //console.log(this.state.InputDICT_MCC);
       //console.log(this.state.mcc_code);
-      console.log(val, this.state.inputRequest);
-      this.props.addIdentCode(Number(val));
+      this.props.addIdentCode(Number(currentVal.ident_code));
       this.props.addClientID(Number(client_id));
       this.setState({
         inputResult: currentVal.ident_code,
@@ -536,11 +536,6 @@ class AutocompleteInputIdentCode extends React.Component {
       });
       if (val != this.state.inputRequest) {
         this.request(this.props.token, val, false);
-
-        // let inputDataObj = this.props.AcquiringReportsCriteria;
-        // inputDataObj.tsp_name = val;
-        console.log(val);
-        //console.log(typeof val);
       }
       this.setState({
         isShowBlockSelect: false,

@@ -62,12 +62,12 @@ class AutocompleteInputIdentCode extends React.Component {
     this.myRef = React.createRef();
   }
 
-  componentDidMount() {
-    window.addEventListener("mousedown", this.clickTest);
-  }
-  componentWillUnmount() {
-    window.addEventListener("mousedown", null);
-  }
+  // componentDidMount() {
+  //   window.addEventListener("mousedown", this.clickTest);
+  // }
+  // componentWillUnmount() {
+  //   window.addEventListener("mousedown", null);
+  // }
 
   onChangeAutocompleteInput = (e) => {
     let param = e.target.value;
@@ -76,22 +76,26 @@ class AutocompleteInputIdentCode extends React.Component {
       inputRequest: param,
       selected: false,
     });
-    if (param !== "" && param.length >= 3) {
+    if (param !== "" && param.length >= 0) {
       this.request(this.props.token, param, true);
     }
   };
   onClickAutocompleteInput = (e) => {
     let param = e.target.value;
     if (param !== "" && param.length >= 3) {
-      this.request(this.props.token, param, true);
+    //   this.request(this.props.token, param, true);
+    // } else {
+      // this.setState({
+      //   isShowBlockSelect: true,
+      // });
     }
   };
-  onBlurAutocompleteInput = (e) => {
-    let param = e.target.value;
-    if (param !== "" && param.length >= 3) {
-      this.request(this.props.token, param, false);
-    }
-  };
+  // onBlurAutocompleteInput = (e) => {
+  //   let param = e.target.value;
+  //   // if (param !== "" && param.length >= 3) {
+  //   //   this.request(this.props.token, param, false);
+  //   // }
+  // };
 
   onClickAutocompleteInputRes = () => {
     this.setState({
@@ -100,6 +104,8 @@ class AutocompleteInputIdentCode extends React.Component {
       isShowInputResult: false,
       isShowInputRequest: true,
     });
+
+    document.getElementById("inputmask").focus();
   };
 
   onBlurBlockSelect = () => {
@@ -109,24 +115,26 @@ class AutocompleteInputIdentCode extends React.Component {
   };
 
   onClickBlockSelectItem = (e) => {
-    e.stopPropagation()
-    if(!e) return;
+    e.stopPropagation();
+    if (!e) return;
     let val = e.currentTarget.getAttribute("value");
     let name = e.currentTarget.getAttribute("name");
-    const currentVal = this.state.data.filter((i) => i.ident_code.toString().includes(val))[0];    
+    const currentVal = this.state.data.filter((i) =>
+      i.ident_code.toString().includes(val)
+    )[0];
 
     if (val !== "") {
-      this.props.addIdentCode(Number(val), name, true);
+      this.props.addIdentCode(Number(val), currentVal.client_name, true);
       this.setState({
         inputRequest: currentVal.ident_code,
         inputResult: currentVal.ident_code,
         isShowBlockSelect: false,
-        isShowInputResult: true,
-        isShowInputRequest: false,
+        // isShowInputResult: true,
+        // isShowInputRequest: false,
 
         selected: true,
       });
-      if (val !== this.state.inputRequest) {
+      if (val.toString() !== this.state.inputRequest.toString()) {
         this.request(this.props.token, val, false);
       }
       this.setState({
@@ -135,16 +143,16 @@ class AutocompleteInputIdentCode extends React.Component {
     }
   };
 
-  clickTest = (e) => {
-    if (
-      this.myRef.current !== null &&
-      this.myRef.current.className != e.target.parentElement.className
-    ) {
-      this.setState({
-        isShowBlockSelect: false,
-      });
-    }
-  };
+  // clickTest = (e) => {
+  //   if (
+  //     this.myRef.current !== null &&
+  //     this.myRef.current.className != e.target.parentElement.className
+  //   ) {
+  //     this.setState({
+  //       isShowBlockSelect: false,
+  //     });
+  //   }
+  // };
 
   async request(token, param, showBlock) {
     this.setState({
@@ -198,6 +206,7 @@ class AutocompleteInputIdentCode extends React.Component {
           mask="999999999999"
           type="text"
           maskChar=""
+          id="inputmask"
           alwaysShowMask="false"
           pattern="[0-9]"
           className={`${this.state.selected ? "selected " : ""}${
@@ -205,12 +214,12 @@ class AutocompleteInputIdentCode extends React.Component {
           }form-control`}
           placeholder="Введіть перші три цифри..."
           type="text"
-          onBlur={this.onBlurAutocompleteInput}
+          onBlur={this.onClickBlockSelectItem}
           onChange={this.onChangeAutocompleteInput}
-           onClick={(e)=>
+          onClick={(e) =>
             this.state.isShowBlockSelect
-            ? this.setState({ isShowBlockSelect: false })
-            : this.onClickAutocompleteInput(e)
+              ? this.setState({ isShowBlockSelect: false })
+              : this.onClickAutocompleteInput(e)
           }
           value={this.state.inputRequest}
         />
@@ -444,12 +453,11 @@ class NETWORK_ADD_CLIENT extends React.Component {
         this.setState({
           isDisableInputDICT_NET_ENTITY: false,
         });
-        if(response.data.Table.TableRows){
+        if (response.data.Table.TableRows) {
           this.setState({
             isShowSelectDICT_NET_ENTITY: true,
             DICT_NET_ENTITY: response.data.Table.TableRows,
           });
-
         }
         this.props.store.changeLoading(false);
       })
