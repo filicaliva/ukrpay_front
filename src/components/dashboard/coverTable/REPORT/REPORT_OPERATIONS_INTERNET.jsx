@@ -1,6 +1,8 @@
 import React from "react";
 import * as axios from "axios";
 import LoaderUI from "../../../UI/LoaderUI";
+import Select from "react-select";
+
 
 import { Field, reduxForm } from "redux-form";
 import InputMask from "react-input-mask";
@@ -177,9 +179,10 @@ const BlockSelectItemTspName = (props) => {
       className="blockSelectItem"
       value={props.item.client_id}
       name={props.item.client_name}
+      data-id={props.item.institution_id}
       onClick={(e) => props.onClickBlockSelectItem(e)}
     >
-      {props.item.client_name}
+      {props.item.client_name} - {props.item.institution_id}
     </div>
   );
 };
@@ -218,7 +221,7 @@ const BlockSelectItemIdentCode = (props) => {
       data-id={props.item.client_id}
       onClick={(e) => props.onClickBlockSelectItem(e)}
     >
-      {props.item.ident_code}
+      {props.item.ident_code} - {props.item.institution_id}
     </div>
   );
 };
@@ -301,6 +304,7 @@ class AutocompleteInputTspName extends React.Component {
     //console.log('----onClickBlockSelectItem-----');
     let val = e.currentTarget.getAttribute("value");
     let name = e.currentTarget.getAttribute("name");
+    let institution = e.currentTarget.getAttribute("data-id");
     //console.log(val);
     //console.log('----onClickBlockSelectItem-----');
     if (val != "") {
@@ -316,8 +320,8 @@ class AutocompleteInputTspName extends React.Component {
         //console.log(typeof val);
         this.props.addTspName(Number(val));
         this.setState({
-          inputResult: name,
-          inputRequest: name,
+          inputResult: `${name} - ${institution}`,
+          inputRequest: `${name} - ${institution}`,
           isShowBlockSelect: false,
           isShowInputResult: false,
           isShowInputRequest: true,
@@ -1049,10 +1053,11 @@ class AutocompleteInputIdentCode extends React.Component {
       this.props.addIdentCode(Number(currentVal.ident_code));
         this.props.addClientID(Number(client_id));
         this.setState({
-          inputResult: currentVal.ident_code,
+          inputResult: `${currentVal.ident_code} - ${currentVal.institution_id}`,
+          inputRequest: `${currentVal.ident_code} - ${currentVal.institution_id}`,
           isShowBlockSelect: false,
-          isShowInputResult: true,
-          isShowInputRequest: false,
+          // isShowInputResult: true,
+          isShowInputRequest: true,
 
           selected: true,
         });
@@ -1138,7 +1143,7 @@ class AutocompleteInputIdentCode extends React.Component {
     return (
       <div className="autocomplete">
         <InputMask
-          mask="999999999999"
+          // mask="999999999999"
           type="text"
           maskChar=""
           alwaysShowMask="false"
@@ -1368,6 +1373,20 @@ class AutocompleteInputMccCode extends React.Component {
         //console.log('error_catch');
       });
   }
+
+  handleSelect = (ev) => {
+    let inputValue;
+    let inputDataObj = this.state.AcquiringReportsCriteria;
+    if (ev.length === 0) {
+      inputValue = 0;
+    } else {
+      inputValue = ev.map((i) => i.value).join(",");
+    }
+    inputDataObj.payment_system_id = inputValue;
+    this.setState({ AcquiringReportsCriteria: inputDataObj });
+  };
+
+
   render() {
     console.log(this.props);
     console.log(this.state);
@@ -1697,7 +1716,9 @@ class REPORT_OPERATIONS extends React.Component {
         console.log(response.data);
 
         this.setState({
-          DICT_PAYMENT_SYSTEM: response.data.Table.TableRows,
+          DICT_PAYMENT_SYSTEM: response.data.Table.TableRows.map((i) => {
+            return { value: i.payment_system_id, label: i.payment_system_name };
+          }),
           isShowSelectDICT_PAYMENT_SYSTEM: true,
         });
 
@@ -3475,7 +3496,7 @@ class REPORT_OPERATIONS extends React.Component {
               <input apiName="base" id="base" type="checkbox" />
             </div>
             <label htmlFor="DICT_PAYMENT_SYSTEM">Карти</label>
-            <select
+            {/* <select
               onChange={this.changeInput}
               apiName="payment_system_id"
               id="dropdown-basic-button"
@@ -3494,7 +3515,14 @@ class REPORT_OPERATIONS extends React.Component {
               ) : (
                 <></>
               )}
-            </select>
+            </select> */}
+              <Select
+              closeMenuOnSelect={false}
+              isMulti
+              options={this.state.DICT_PAYMENT_SYSTEM}
+              placeholder="Всі"
+              onChange={this.handleSelect}
+            />
             <label htmlFor="terminal_id">MCC</label>
             <select
               onChange={this.changeInput}

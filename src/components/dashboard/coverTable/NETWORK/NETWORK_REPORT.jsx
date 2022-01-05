@@ -58,6 +58,7 @@ export default function NETWORK_REPORT({ store }) {
     ident_code: 1,
     client_manager_id: 1,
     client_manager_institution_id: 1,
+    client_institution_id: 1
   });
   const handleSearchBrandName = async (query) => {
     setIsLoading(true);
@@ -416,7 +417,7 @@ const activeOperation = (operationArr, operation) => {
                 style={{ marginTop: "20px" }}
                 type={"checkbox"}
                 name={`level2_name`}
-                label={`Назва 2 рівня:`}
+                label={`Назва 2 рівня`}
               />
             </div>
 
@@ -426,7 +427,7 @@ const activeOperation = (operationArr, operation) => {
                 style={{ marginTop: "20px" }}
                 type={"checkbox"}
                 name={`level2_id`}
-                label={`ID 2 рівня:`}
+                label={`ID 2 рівня`}
               />
             </div>
 
@@ -436,7 +437,7 @@ const activeOperation = (operationArr, operation) => {
                 style={{ marginTop: "20px" }}
                 type={"checkbox"}
                 name={`level2_manager_id`}
-                label={`Менеджер 2 рівня:`}
+                label={`Менеджер 2 рівня`}
               />
             </div>
 
@@ -446,7 +447,7 @@ const activeOperation = (operationArr, operation) => {
                 style={{ marginTop: "20px" }}
                 type={"checkbox"}
                 name={`level2_manager_institution_id`}
-                label={`РУ менеджера 2 рівня:`}
+                label={`РУ менеджера 2 рівня`}
               />
             </div>
           </div>
@@ -543,7 +544,7 @@ const activeOperation = (operationArr, operation) => {
                 style={{ marginTop: "20px" }}
                 type={"checkbox"}
                 name={`client_name`}
-                label={`Назва ТСП:`}
+                label={`Назва ТСП`}
               />
             </div>
             <div>
@@ -552,7 +553,7 @@ const activeOperation = (operationArr, operation) => {
                 style={{ marginTop: "20px" }}
                 type={"checkbox"}
                 name={`client_manager_id`}
-                label={`Менеджер ТСП:`}
+                label={`Менеджер ТСП`}
               />
             </div>
             <div>
@@ -561,7 +562,16 @@ const activeOperation = (operationArr, operation) => {
                 style={{ marginTop: "20px" }}
                 type={"checkbox"}
                 name={`client_manager_institution_id`}
-                label={`РУ менеджера ТСП:`}
+                label={`РУ менеджера ТСП`}
+              />
+            </div>
+            <div>
+              <Form.Check
+                defaultChecked={true}
+                style={{ marginTop: "20px" }}
+                type={"checkbox"}
+                name={`client_institution_id`}
+                label={`РУ рахунка ТСП`}
               />
             </div>
           </div>

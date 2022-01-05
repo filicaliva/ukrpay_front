@@ -2,6 +2,8 @@ import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
 import React from "react";
 import * as axios from "axios";
 import { Typeahead } from "react-bootstrap-typeahead";
+import Select from "react-select";
+
 
 import { Field, reduxForm } from "redux-form";
 import { ListGroup } from "react-bootstrap";
@@ -56,7 +58,7 @@ const OptionItemDICT_ACQUIRING_TYPE = (props) => {
 const OptionItemDICT_TSP_TYPE = ({ optionItem }) => {
   //// console.log( props )
   return (
-    <option value={optionItem.id}>{optionItem.name}</option>
+    <option value={optionItem.id}>{optionItem.name} - {optionItem.institution_id}</option>
     // <Dropdown.Item  onClick={() => this.selectRoleID} value={props.optionItem.role_id} >{props.optionItem.role_name}</Dropdown.Item>
   );
 };
@@ -568,7 +570,9 @@ class REPORT_OPERATIONS_NET extends React.Component {
         // console.log(response.data);
 
         this.setState({
-          DICT_PAYMENT_SYSTEM: response.data.Table.TableRows,
+          DICT_PAYMENT_SYSTEM: response.data.Table.TableRows.map((i) => {
+            return { value: i.payment_system_id, label: i.payment_system_name };
+          }),
           isShowSelectDICT_PAYMENT_SYSTEM: true,
         });
 
@@ -1977,6 +1981,18 @@ class REPORT_OPERATIONS_NET extends React.Component {
       });
   }
   //
+
+    handleSelect = (ev) => {
+      let inputValue;
+      let inputDataObj = this.state.AcquiringReportsCriteria;
+      if (ev.length === 0) {
+        inputValue = 0;
+      } else {
+        inputValue = ev.map((i) => i.value).join(",");
+      }
+      inputDataObj.payment_system_id = inputValue;
+      this.setState({ AcquiringReportsCriteria: inputDataObj });
+    };
   render() {
     // // console.log(this.props.store.menuState.tableData);
     // // console.log(this.state.DICT_INSTITUTION);
@@ -2173,6 +2189,7 @@ class REPORT_OPERATIONS_NET extends React.Component {
                         optionItem={{
                           id: item.client_id,
                           name: item.client_name,
+                          institution_id: item.institution_id
                         }}
                       />
                     );
@@ -2196,6 +2213,7 @@ class REPORT_OPERATIONS_NET extends React.Component {
                         optionItem={{
                           id: item.ident_code,
                           name: item.ident_code,
+                          institution_id: item.institution_id,
                         }}
                       />
                     );
@@ -2308,7 +2326,7 @@ class REPORT_OPERATIONS_NET extends React.Component {
             {/* <label htmlFor="base">Базові поля</label>
             <input apiName="base" id="base" type="checkbox" checked={true} /> */}
             <label htmlFor="DICT_PAYMENT_SYSTEM">Карти</label>
-            <select
+            {/* <select
               onChange={this.changeInput}
               apiName="payment_system_id"
               id="dropdown-basic-button"
@@ -2325,7 +2343,14 @@ class REPORT_OPERATIONS_NET extends React.Component {
                   );
                 })
               ) : null}
-            </select>
+            </select> */}
+              <Select
+              closeMenuOnSelect={false}
+              isMulti
+              options={this.state.DICT_PAYMENT_SYSTEM}
+              placeholder="Всі"
+              onChange={this.handleSelect}
+            />
             <label htmlFor="mcc_code">MCC</label>
             {/*<input onChange={this.changeInput} className="form-control" apiName="mcc_code" id="mcc_code" type="text"/>*/}
             <div className="autocomplete">

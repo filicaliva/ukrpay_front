@@ -80,22 +80,6 @@ class AutocompleteInputIdentCode extends React.Component {
       this.request(this.props.token, param, true);
     }
   };
-  onClickAutocompleteInput = (e) => {
-    let param = e.target.value;
-    if (param !== "" && param.length >= 3) {
-    //   this.request(this.props.token, param, true);
-    // } else {
-      // this.setState({
-      //   isShowBlockSelect: true,
-      // });
-    }
-  };
-  // onBlurAutocompleteInput = (e) => {
-  //   let param = e.target.value;
-  //   // if (param !== "" && param.length >= 3) {
-  //   //   this.request(this.props.token, param, false);
-  //   // }
-  // };
 
   onClickAutocompleteInputRes = () => {
     this.setState({
@@ -104,8 +88,6 @@ class AutocompleteInputIdentCode extends React.Component {
       isShowInputResult: false,
       isShowInputRequest: true,
     });
-
-    document.getElementById("inputmask").focus();
   };
 
   onBlurBlockSelect = () => {
@@ -118,20 +100,15 @@ class AutocompleteInputIdentCode extends React.Component {
     e.stopPropagation();
     if (!e) return;
     let val = e.currentTarget.getAttribute("value");
-    let name = e.currentTarget.getAttribute("name");
     const currentVal = this.state.data.filter((i) =>
       i.ident_code.toString().includes(val)
     )[0];
-
     if (val !== "") {
-      this.props.addIdentCode(Number(val), currentVal.client_name, true);
+      this.props.addIdentCode(currentVal.ident_code, currentVal.client_name, true);
       this.setState({
         inputRequest: currentVal.ident_code,
         inputResult: currentVal.ident_code,
         isShowBlockSelect: false,
-        // isShowInputResult: true,
-        // isShowInputRequest: false,
-
         selected: true,
       });
       if (val.toString() !== this.state.inputRequest.toString()) {
@@ -142,17 +119,6 @@ class AutocompleteInputIdentCode extends React.Component {
       });
     }
   };
-
-  // clickTest = (e) => {
-  //   if (
-  //     this.myRef.current !== null &&
-  //     this.myRef.current.className != e.target.parentElement.className
-  //   ) {
-  //     this.setState({
-  //       isShowBlockSelect: false,
-  //     });
-  //   }
-  // };
 
   async request(token, param, showBlock) {
     this.setState({
@@ -216,10 +182,10 @@ class AutocompleteInputIdentCode extends React.Component {
           type="text"
           onBlur={this.onClickBlockSelectItem}
           onChange={this.onChangeAutocompleteInput}
-          onClick={(e) =>
+          onClick={() =>
             this.state.isShowBlockSelect
               ? this.setState({ isShowBlockSelect: false })
-              : this.onClickAutocompleteInput(e)
+              : null
           }
           value={this.state.inputRequest}
         />
@@ -450,9 +416,6 @@ class NETWORK_ADD_CLIENT extends React.Component {
         },
       })
       .then((response) => {
-        this.setState({
-          isDisableInputDICT_NET_ENTITY: false,
-        });
         if (response.data.Table.TableRows) {
           this.setState({
             isShowSelectDICT_NET_ENTITY: true,
@@ -537,7 +500,6 @@ class NETWORK_ADD_CLIENT extends React.Component {
       client_name: client_name,
       client_id: client_id,
     });
-    this.requestDICT_NETWORK_MANAGERS(this.props.store.userState.token);
   };
   changeInputDICT_NETWORK_MANAGERS = (e) => {
     let inputValue = e.target.value;
@@ -546,19 +508,41 @@ class NETWORK_ADD_CLIENT extends React.Component {
   };
   changeInputDICT_NET_BRAND = (e) => {
     let inputValue = e.target.value;
+    const client = this.state.DICT_NET_BRAND.filter(
+      (i) => +i.brand_id === +inputValue
+    )[0];
+
+    if (client.second_level_flag === 1) {
+      this.setState({
+        isDisableInputDICT_NET_ENTITY: false,
+      });
+    }else{
+      this.setState({
+        isDisableInputDICT_NET_ENTITY: true,
+        entity_id: 0
+      });
+    }
+
     this.setState({ brand_id: inputValue });
     this.requestDICT_NET_ENTITY(this.props.store.userState.token, inputValue);
   };
   changeInputDICT_NET_ENTITY = (e) => {
     let inputValue = e.target.value;
+
+    const client = this.state.DICT_NET_ENTITY.filter(
+      (i) => +i.entity_id === +inputValue
+    )[0];
+
     this.setState({
       entity_id: inputValue,
       isDisableBtnSave: false,
+      manager_id: client.manager_id,
+      manager_name: client.manager_name,
     });
   };
   save = () => {
     let body = {
-      ident_code: Number(this.state.ident_code),
+      ident_code: this.state.ident_code,
       client_id: Number(this.state.client_id),
       manager_id: Number(this.state.manager_id),
       brand_id: Number(this.state.brand_id),
@@ -568,6 +552,8 @@ class NETWORK_ADD_CLIENT extends React.Component {
     this.requestDICT_NET_CLIENT(this.props.store.userState.token, body);
   };
   addIdentCode = (val, name, nextInput) => {
+
+    console.log("value: ", val)
     if (nextInput) {
       this.requestDICT_NETWORK_MANAGERS(this.props.store.userState.token);
       this.setState({
@@ -584,6 +570,11 @@ class NETWORK_ADD_CLIENT extends React.Component {
     }
   };
 
+  componentDidMount() {
+    this.requestDICT_NET_BRAND(this.props.store.userState.token);
+    this.requestDICT_NETWORK_MANAGERS(this.props.store.userState.token);
+  }
+
   render() {
     return (
       <div className="coverTable DICT_NET_BRAND">
@@ -597,54 +588,9 @@ class NETWORK_ADD_CLIENT extends React.Component {
           <div className="optionBlock"></div>
         </div>
         <div className="addbBlock">
-          <div className="coverInputs">
-            <label htmlFor="name_netWork">ІНН/ЄДРПОУ</label>
-            <AutocompleteInputIdentCode
-              token={this.props.store.userState.token}
-              institution_id={0}
-              branch_id={0}
-              addIdentCode={this.addIdentCode}
-              ident_code={this.state.ident_code}
-              client_name={this.state.client_name}
-            />
-            <label htmlFor="status">Назва ТСП</label>
-            <input
-              className="form-control"
-              disabled
-              value={this.state.client_name}
-              type="text"
-            />
-            <label htmlFor="DICT_NETWORK_MANAGERS">Менеджер ТСП</label>
-            <select
-              disabled={
-                this.state.isDisableInputDICT_NETWORK_MANAGERS ? "disabled" : ""
-              }
-              id="dropdown-basic-button"
-              onChange={this.changeInputDICT_NETWORK_MANAGERS}
-              api_name="manager_name"
-              className="form-select"
-              title="ТВБВ"
-            >
-              <option>-</option>
-              {this.state.isShowSelectDICT_NETWORK_MANAGERS
-                ? this.state.DICT_NETWORK_MANAGERS.map((item, index) => {
-                    return (
-                      <OptionItemDICT_NETWORK_MANAGERS
-                        key={index}
-                        optionItem={item}
-                        manager_id={this.state.manager_id}
-                      />
-                    );
-                  })
-                : null}
-            </select>
-          </div>
-          <div className="coverInputs">
+          <div className="coverInputs col-4">
             <label htmlFor="brand_region">Мережа</label>
             <select
-              disabled={
-                this.state.isDisableInputDICT_NET_BRAND ? "disabled" : ""
-              }
               onChange={this.changeInputDICT_NET_BRAND}
               api_name="brand_region"
               id="brand_region"
@@ -687,6 +633,47 @@ class NETWORK_ADD_CLIENT extends React.Component {
                   })
                 : null}
             </select>
+
+            <label htmlFor="DICT_NETWORK_MANAGERS">Менеджер ТСП</label>
+            <select
+              id="dropdown-basic-button"
+              onChange={this.changeInputDICT_NETWORK_MANAGERS}
+              api_name="manager_name"
+              className="form-select"
+              title="ТВБВ"
+            >
+              <option>-</option>
+              {this.state.isShowSelectDICT_NETWORK_MANAGERS
+                ? this.state.DICT_NETWORK_MANAGERS.map((item, index) => {
+                    return (
+                      <OptionItemDICT_NETWORK_MANAGERS
+                        key={index}
+                        optionItem={item}
+                        manager_id={this.state.manager_id}
+                      />
+                    );
+                  })
+                : null}
+            </select>
+          </div>
+
+          <div className="coverInputs col-4">
+            <label htmlFor="name_netWork">ІНН/ЄДРПОУ</label>
+            <AutocompleteInputIdentCode
+              token={this.props.store.userState.token}
+              institution_id={0}
+              branch_id={0}
+              addIdentCode={this.addIdentCode}
+              ident_code={this.state.ident_code}
+              client_name={this.state.client_name}
+            />
+            <label htmlFor="status">Назва ТСП</label>
+            <input
+              className="form-control"
+              disabled
+              value={this.state.client_name}
+              type="text"
+            />
             <label htmlFor="status">РУ менеджера</label>
             <input
               disabled
@@ -702,7 +689,7 @@ class NETWORK_ADD_CLIENT extends React.Component {
         <div className="coverBtn">
           <button
             className="btn btn-success"
-            disabled={this.state.isDisableBtnSave ? "disabled" : ""}
+            // disabled={this.state.isDisableBtnSave ? "disabled" : ""}
             onClick={this.save}
           >
             Зберегти мережу

@@ -3,6 +3,8 @@ import * as axios from "axios";
 import InputMask from "react-input-mask";
 import { Alert } from "react-bootstrap";
 
+import Select from "react-select";
+
 const OptionItemDICT_INSTITUTION = (props) => {
   //console.log( props )
   return (
@@ -201,9 +203,10 @@ const BlockSelectItemTspName = (props) => {
       className="blockSelectItem"
       value={props.item.client_id}
       name={props.item.client_name}
+      data-id={props.item.institution_id}
       onClick={(e) => props.onClickBlockSelectItem(e)}
     >
-      {props.item.client_name}
+      {props.item.client_name} - {props.item.institution_id}
     </div>
   );
 };
@@ -216,7 +219,7 @@ const BlockSelectItemIdentCode = (props) => {
       onClick={(e) => props.onClickBlockSelectItem(e)}
       data-id={props.item.client_id}
     >
-      {props.item.ident_code}
+      {props.item.ident_code} - {props.item.institution_id}
     </div>
   );
 };
@@ -298,6 +301,7 @@ class AutocompleteInputTspName extends React.Component {
     //console.log('----onClickBlockSelectItem-----');
     let val = e.currentTarget.getAttribute("value");
     let name = e.currentTarget.getAttribute("name");
+    let institution = e.currentTarget.getAttribute("data-id");
     //console.log(val);
     //console.log('----onClickBlockSelectItem-----');
     if (val != "") {
@@ -310,11 +314,10 @@ class AutocompleteInputTspName extends React.Component {
 
         // let inputDataObj = this.props.AcquiringReportsCriteria;
         // inputDataObj.tsp_name = val;
-        console.log(val);
         //console.log(typeof val);
         this.setState({
-          inputResult: name,
-          inputRequest: name,
+          inputResult: `${name} - ${institution}`,
+          inputRequest: `${name} - ${institution}`,
           isShowBlockSelect: false,
           // isShowInputResult: false,
           // isShowInputRequest: true,
@@ -514,10 +517,15 @@ class AutocompleteInputIdentCode extends React.Component {
 
   onClickBlockSelectItem = (e) => {
     //console.log('----onClickBlockSelectItem-----');
-    if(!e) return;
+    if (!e) return;
     let val = e.currentTarget.getAttribute("value");
-    const currentVal = this.state.data.filter((i) => i.ident_code.toString().includes(val))[0];
-    let client_id = currentVal.client_id===undefined ?  e.currentTarget.getAttribute("name") : currentVal.client_id;
+    const currentVal = this.state.data.filter((i) =>
+      i.ident_code.toString().includes(val)
+    )[0];
+    let client_id =
+      currentVal.client_id === undefined
+        ? e.currentTarget.getAttribute("name")
+        : currentVal.client_id;
 
     //console.log(val);
     //console.log('----onClickBlockSelectItem-----');
@@ -527,16 +535,17 @@ class AutocompleteInputIdentCode extends React.Component {
       this.props.addIdentCode(Number(currentVal.ident_code));
       this.props.addClientID(Number(client_id));
       this.setState({
-        inputResult: currentVal.ident_code,
+        inputResult: `${currentVal.ident_code} - ${currentVal.institution_id}`,
+        inputRequest: `${currentVal.ident_code} - ${currentVal.institution_id}`,
         isShowBlockSelect: false,
-        isShowInputResult: true,
-        isShowInputRequest: false,
+        // isShowInputResult: true,
+        isShowInputRequest: true,
 
         selected: true,
       });
-      if (val != this.state.inputRequest) {
-        this.request(this.props.token, val, false);
-      }
+      // if (val != this.state.inputRequest) {
+      //   this.request(this.props.token, val, false);
+      // }
       this.setState({
         isShowBlockSelect: false,
       });
@@ -609,7 +618,7 @@ class AutocompleteInputIdentCode extends React.Component {
     return (
       <div className="autocomplete">
         <InputMask
-          mask="999999999999"
+          // mask="999999999999"
           type="text"
           maskChar=""
           alwaysShowMask="false"
@@ -1665,10 +1674,10 @@ class REPORT_OPERATIONS extends React.Component {
         headers: { Token: `${token}` },
       })
       .then((response) => {
-        console.log(response.data);
-
         this.setState({
-          DICT_PAYMENT_SYSTEM: response.data.Table.TableRows,
+          DICT_PAYMENT_SYSTEM: response.data.Table.TableRows.map((i) => {
+            return { value: i.payment_system_id, label: i.payment_system_name };
+          }),
           isShowSelectDICT_PAYMENT_SYSTEM: true,
         });
 
@@ -1735,7 +1744,7 @@ class REPORT_OPERATIONS extends React.Component {
         headers: { Token: `${this.props.store.userState.token}` },
       })
       .then((response) => {
-        if(response.data.record_count!==0){
+        if (response.data.record_count !== 0) {
           this.setState({
             DICT_TERMINAL_SYSTEM: response.data.Table.TableRows,
             DICT_MCC_SYSTEM: response.data.Table.TableRows,
@@ -1813,7 +1822,6 @@ class REPORT_OPERATIONS extends React.Component {
     this.props.store.changeLoading(true);
 
     const baseUrl = `/api/Reports/Acquiring`;
-
     await axios
       .post(baseUrl, userBody, {
         headers: {
@@ -1822,7 +1830,6 @@ class REPORT_OPERATIONS extends React.Component {
         },
       })
       .then((response) => {
-        console.log(response.data);
         //console.log(response.data.users);
         //console.log(response.data.Table);
 
@@ -1949,6 +1956,7 @@ class REPORT_OPERATIONS extends React.Component {
       apiName == "bank_branch_id" ||
       apiName == "institution_id"
     ) {
+      console.log("inputValue: ", inputValue);
       inputDataObj[apiName] = inputValue;
     } else {
       if (apiName == "terminal_type_id") {
@@ -3186,6 +3194,18 @@ class REPORT_OPERATIONS extends React.Component {
       AcquiringReportsCriteria: inputDataObj,
     });
   };
+
+  handleSelect = (ev) => {
+    let inputValue;
+    let inputDataObj = this.state.AcquiringReportsCriteria;
+    if (ev.length === 0) {
+      inputValue = 0;
+    } else {
+      inputValue = ev.map((i) => i.value).join(",");
+    }
+    inputDataObj.payment_system_id = inputValue;
+    this.setState({ AcquiringReportsCriteria: inputDataObj });
+  };
   render() {
     return (
       <div className="coverTable REPORT_aquiring">
@@ -3389,12 +3409,13 @@ class REPORT_OPERATIONS extends React.Component {
               <input apiName="base" id="base" type="checkbox" />
             </div>
             <label htmlFor="DICT_PAYMENT_SYSTEM">Карти</label>
-            <select
+            {/* <select
               onChange={this.changeInput}
               apiName="payment_system_id"
               id="dropdown-basic-button"
               className="form-select"
               title="Карти"
+              multiple
             >
               {this.state.isShowSelectDICT_PAYMENT_SYSTEM ? (
                 this.state.DICT_PAYMENT_SYSTEM.map((item, index) => {
@@ -3408,7 +3429,14 @@ class REPORT_OPERATIONS extends React.Component {
               ) : (
                 <></>
               )}
-            </select>
+            </select> */}
+            <Select
+              closeMenuOnSelect={false}
+              isMulti
+              options={this.state.DICT_PAYMENT_SYSTEM}
+              placeholder="Всі"
+              onChange={this.handleSelect}
+            />
             <label htmlFor="terminal_id">MCC</label>
             <select
               onChange={this.changeInput}
