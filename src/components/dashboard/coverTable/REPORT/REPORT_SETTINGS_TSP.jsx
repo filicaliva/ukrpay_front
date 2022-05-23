@@ -663,6 +663,7 @@ class REPORT_SETTINGS_TSP extends React.Component {
 
       isShowPopupError: false,
       isShowPopupErrorSave: false,
+      isShowPopupDone: false,
 
       currentAcquiring_type_id: null,
 
@@ -978,6 +979,8 @@ class REPORT_SETTINGS_TSP extends React.Component {
 
         this.props.store.changeLoading(false);
         //this.props.store.showTable(true);
+
+        this.setState({ isShowPopupDone: true });
       })
       .catch((error) => {
         console.log(error.response);
@@ -1650,7 +1653,7 @@ class REPORT_SETTINGS_TSP extends React.Component {
               id="catalog"
               type="text"
               value={this.state.physical_file_name}
-              disabled={this.state.physical_channel_type_id===2}
+              disabled={this.state.physical_channel_type_id === 2}
             />
           </div>
           <div className="coverInput">
@@ -1662,11 +1665,10 @@ class REPORT_SETTINGS_TSP extends React.Component {
               id="file_name_mask"
               type="text"
               value={this.state.physical_file_name_mask}
-              disabled={this.state.physical_channel_type_id===2}
+              disabled={this.state.physical_channel_type_id === 2}
             />
           </div>
-        
-        
+
           <br />
           <div className="reportCoverBtn">
             <button
@@ -1842,7 +1844,7 @@ class REPORT_SETTINGS_TSP extends React.Component {
               className="customInput form-control"
               id="file_name_mask"
               type="text"
-              disabled={this.state.internet_channel_type_id===2}
+              disabled={this.state.internet_channel_type_id === 2}
             />
           </div>
           <div className="coverInput">
@@ -1854,11 +1856,10 @@ class REPORT_SETTINGS_TSP extends React.Component {
               id="сatalog"
               type="text"
               value={this.state.internet_file_name}
-              disabled={this.state.internet_channel_type_id===2}
+              disabled={this.state.internet_channel_type_id === 2}
             />
           </div>
-         
-       
+
           <br />
           <div className="reportCoverBtn">
             <button
@@ -2193,9 +2194,7 @@ class REPORT_SETTINGS_TSP extends React.Component {
                   aria-label="Close"
                 ></button>
                 {this.state.isShowBootstrapTable ? (
-                  <BootstrapTable
-                    data={this.state.TSPReportSettingsSTD}
-                  >
+                  <BootstrapTable data={this.state.TSPReportSettingsSTD}>
                     <TableHeaderColumn
                       isKey
                       dataField="field_desc"
@@ -2219,10 +2218,10 @@ class REPORT_SETTINGS_TSP extends React.Component {
                     </TableHeaderColumn>
                   </BootstrapTable>
                 ) : (
-                    <div className="coverloader">
-                      <div className="loader"></div>
-                    </div>
-                  )}
+                  <div className="coverloader">
+                    <div className="loader"></div>
+                  </div>
+                )}
               </div>
             </div>
           </>
@@ -2258,6 +2257,23 @@ class REPORT_SETTINGS_TSP extends React.Component {
                 <button
                   className="btn btn-secondary"
                   onClick={this.closePopupErrorSave}
+                >
+                  Закрити
+                </button>
+              </div>
+            </div>
+          </>
+        ) : null}
+        {this.state.isShowPopupDone ? (
+          <>
+            <div className="coverPopupError">
+              <div className="innerBlock">
+                <div className="title alert alert-success">
+                  Налаштування для формування виписки здійснені
+                </div>
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => this.setState({ isShowPopupDone: false })}
                 >
                   Закрити
                 </button>

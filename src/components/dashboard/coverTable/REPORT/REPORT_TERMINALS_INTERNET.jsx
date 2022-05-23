@@ -6,6 +6,7 @@ export default function REPORT_TERMINALS_INTERNET({ store }) {
   const [isErrorInstitution, setIsErrorInstitution] = useState(false);
   const [isErrorTerminal, setIsErrorTerminal] = useState(false);
   const [isErrorDate, setIsErrorDate] = useState(false);
+  const [isErrorDateMonth, setIsErrorDateMonth] = useState(false);
   const [arrInstitution, setArrInstitution] = useState(null);
   const [isShowInstitution, setIsShowInstitution] = useState(false);
   const [arrTerminal, setArrTerminal] = useState(null);
@@ -18,10 +19,19 @@ export default function REPORT_TERMINALS_INTERNET({ store }) {
   const [dateTo, setDateTo] = useState(null);
 
   const confirm = async () => {
+    const date1 = new Date(dateFrom);
+    const date2 = new Date(dateTo);
+    const diffTime = Math.abs(date2 - date1);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
     setIsErrorDate(false)
   
       if ((isShowTypeDate && !dateFrom)||(!isShowTypeDate && (!dateFrom|| !dateTo))) {
         return setIsErrorDate(true);
+      }
+
+      if (!isShowTypeDate && diffDays > 31) {
+        return setIsErrorDateMonth(true);
       }
     
     
@@ -234,7 +244,7 @@ export default function REPORT_TERMINALS_INTERNET({ store }) {
                         onChange={handleDateFrom}
                         type="date"
                         value={dateFrom}
-                        className={`${isErrorDate ? "validError" : ""}`}
+                        className={`${isErrorDate || isErrorDateMonth ? "validError" : ""}`}
                         style={{ marginLeft: "10px", minWidth: "150px" }}
                       />
                     </div>
@@ -244,12 +254,15 @@ export default function REPORT_TERMINALS_INTERNET({ store }) {
                         onChange={handleDateTo}
                         value={dateTo}
                         type="date"
-                        className={`${isErrorDate ? "validError" : ""}`}
+                        className={`${isErrorDate || isErrorDateMonth ? "validError" : ""}`}
                         style={{ marginLeft: "10px", minWidth: "150px" }}
                       />
                     </div>
                     <p className="error">
                       {isErrorDate ? "Заповніть, будь ласка, поля!" : null}
+                      {!isErrorDateMonth
+                        ? null
+                        : "Максимальний термін 31 день!"}
                     </p>
                   </div>
                 ) : (
@@ -259,12 +272,13 @@ export default function REPORT_TERMINALS_INTERNET({ store }) {
                         onChange={handleDateFrom}
                         type="date"
                         value={dateFrom}
-                        className={`${isErrorDate ? "validError" : ""}`}
+                        className={`${isErrorDate || isErrorDateMonth  ? "validError" : ""}`}
                         style={{ marginLeft: "10px", minWidth: "150px" }}
                       />
                     </div>
                     <p className="error">
                       {isErrorDate ? "Заповніть, будь ласка, поле!" : null}
+                      
                     </p>
                   </div>
                 )}

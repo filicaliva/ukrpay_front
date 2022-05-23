@@ -1469,6 +1469,7 @@ class REPORT_OPERATIONS extends React.Component {
       isMerchant_idValidation: true,
       isTerminal_type_idValidation: true,
       isDate_type_idValidation: true,
+      isDate_month_Validation: true,
       isDate_fromValidation: true,
       isDate_toValidation: true,
       isForm_toValidation: true,
@@ -2027,33 +2028,6 @@ class REPORT_OPERATIONS extends React.Component {
     return year + month + day;
   };
   search = () => {
-    //this.requestTSPReportSettings(this.props.store.userState.token, this.state.TSPReportSettingsSearchObj);
-    //this.requestTSPReportSettings_test(this.props.store.userState.token, this.state.TSPReportSettingsSearchObj);
-
-    // this.setState({
-    //     settings: this.state.responseTSPReportSettings.settings,
-    //     tsp_list: this.state.responseTSPReportSettings.tsp_list,
-    //     isShowTsp: true
-    // });
-    // let res = {
-    //     "institution_id": 0,
-    //     "bank_branch_id": 0,
-    //     "ident_code": "string",
-    //     "tsp_name": "string",
-    //     "tsp_id": "string",
-    //     "merchant_id": 0,
-    //     "date_from": "string",
-    //     "date_to": "string",
-    //     "report_type_id": "string",
-    //     "terminal_type_id": "string",
-    //     "terminal_id": 0,
-    //     "payment_system_id": 0,
-    //     "mcc_code": 0,
-    //     "format_type_id": 0,
-    //     "date_type_id": 0
-    // }
-    //console.log(res);
-
     this.defineValidationInputs();
   };
 
@@ -2064,7 +2038,8 @@ class REPORT_OPERATIONS extends React.Component {
       this.state.isDate_type_idValidation &&
       this.state.isDate_fromValidation &&
       this.state.isDate_toValidation &&
-      this.state.isForm_toValidation
+      this.state.isForm_toValidation && 
+      this.state.isDate_month_Validation
     ) {
       this.requestReports_Acquiring(
         this.props.store.userState.token,
@@ -2117,9 +2092,16 @@ class REPORT_OPERATIONS extends React.Component {
   }
 
   defineValidationInputs = () => {
-    // if (this.state.merchant_id == null || this.state.merchant_id == "") {
-    //     this.setState({isMerchant_idValidation: false});
-    // }
+    const date1 = new Date(this.state.date_from);
+    const date2 = new Date(this.state.date_to);
+    const diffTime = Math.abs(date2 - date1);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    
+   
+    if (this.state.institution_id == null || this.state.institution_id == 0) {
+      this.setState({ isInstitution_idValidation: false });
+    }
     if (this.state.date_type_id == null || this.state.date_type_id == "") {
       this.setState({ isDate_type_idValidation: false });
     }
@@ -2129,10 +2111,14 @@ class REPORT_OPERATIONS extends React.Component {
     if (this.state.date_to === null || this.state.date_to === "") {
       this.setState({ isDate_toValidation: false });
     }
+    if (diffDays > 31) {
+      this.setState({ isDate_month_Validation: false });
+    }
     if (
       this.state.AcquiringReportsCriteria.ident_code == 0 &&
       this.state.AcquiringReportsCriteria.tsp_id == 0 &&
       this.state.AcquiringReportsCriteria.merchant_id == 0 &&
+      !this.state.AcquiringReportsCriteria.trans_rrn &&
       this.state.AcquiringReportsCriteria.terminal_id == 0
     ) {
       this.setState({ isForm_toValidation: false });
@@ -2640,11 +2626,6 @@ class REPORT_OPERATIONS extends React.Component {
                 let standard_report = item.standard_report;
                 let extended_report = item.extended_report;
                 let installment_report = item.installment_report;
-                console.log(acquiring_type_id);
-                console.log(report_period_type_id);
-                console.log(report_format_id);
-                console.log(channel_type_id);
-                console.log(file_name_mask);
                 console.log(this.state.type_acquiring);
                 return (
                   <div
@@ -3253,7 +3234,7 @@ class REPORT_OPERATIONS extends React.Component {
             <p className="error">
               {this.state.isInstitution_idValidation
                 ? null
-                : this.state.error_text}
+                : "Оберіть, будь ласка, значення!"}
             </p>
             <label htmlFor="TVBV">ТВБВ</label>
             <select
@@ -3301,10 +3282,12 @@ class REPORT_OPERATIONS extends React.Component {
               ident_code={this.state.AcquiringReportsCriteria.ident_code}
               // onBlur={()=>{this.requestDICT_MERCHANT_SYSTEM();this.requestDICT_TERMINAL_SYSTEM()}}
             />
+            <label htmlFor="INN">РРН</label>
+            <input onChange={this.changeInput} apiName="trans_rrn" type="text" class={`form-control ${!this.state.isForm_toValidation ? "validError " : false}`} placeholder="Введіть цифри..." ></input>
             <p className="error">
               {this.state.isForm_toValidation
                 ? null
-                : "Заповніть, будь ласка, одне з 4-х значень"}
+                : "Заповніть, будь ласка, одне з 5-и значень"}
             </p>
             {/*<input onChange={this.changeInput} className="form-control" apiName="ident_code" id="INN" type="text"/>*/}
           </div>
@@ -3562,7 +3545,7 @@ class REPORT_OPERATIONS extends React.Component {
                     onChange={this.changeInputDateReport_from}
                     apiName="date_from"
                     className={`${
-                      this.state.isDate_fromValidation ? "" : "validError"
+                      this.state.isDate_fromValidation && this.state.isDate_month_Validation ? "" : "validError"
                     } customInput form-control`}
                     id="date_from"
                     type="date"
@@ -3574,7 +3557,7 @@ class REPORT_OPERATIONS extends React.Component {
                     onChange={this.changeInputDateReport_to}
                     apiName="date_to"
                     className={`${
-                      this.state.isDate_toValidation ? "" : "validError"
+                      this.state.isDate_toValidation && this.state.isDate_month_Validation ? "" : "validError"
                     } customInput form-control`}
                     id="date_to"
                     type="date"
@@ -3586,6 +3569,9 @@ class REPORT_OPERATIONS extends React.Component {
                 this.state.isDate_toValidation
                   ? null
                   : "Заповніть, будь ласка, дати!"}
+                {this.state.isDate_month_Validation
+                  ? null
+                  : "Максимальний термін 31 день!"}
               </p>
             </div>
           </div>

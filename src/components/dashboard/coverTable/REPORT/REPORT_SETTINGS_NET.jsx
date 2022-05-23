@@ -37,10 +37,13 @@ const OptionItemDICT_REPORT_PERIOD_TYPE = (props) => {
   console.log("props.report_period_type_id: ", props.report_period_type_id);
   return (
     <>
+    <label for={props.optionItem.report_period_type_id}>
       <input
         type="checkbox"
+        id={props.optionItem.report_period_type_id}
         checked={
-          props.report_period_type_id !== null
+          props.report_period_type_id !== null &&
+          props.report_period_type_id !== undefined
             ? props.report_period_type_id.includes(
                 props.optionItem.report_period_type_id
               )
@@ -48,9 +51,10 @@ const OptionItemDICT_REPORT_PERIOD_TYPE = (props) => {
         }
         value={props.optionItem.report_period_type_id}
         style={{ margin: "10px 0" }}
-      />{" "}
+      />
       {props.optionItem.report_period_type_name}
-      <br />
+    </label>
+    <br />
     </>
   );
 };
@@ -556,6 +560,9 @@ class AutocompleteInputIdentCode extends React.Component {
 class REPORT_SETTINGS_NET extends React.Component {
   constructor(props) {
     super(props);
+    this.requestTSPReportSettingsSTD_SAVE =
+      this.requestTSPReportSettingsSTD_SAVE.bind(this);
+      this.saveReport = this.saveReport.bind(this);
     this.state = {
       DICT_INSTITUTION: null,
       isShowSelectDICT_INSTITUTION: false,
@@ -702,6 +709,8 @@ class REPORT_SETTINGS_NET extends React.Component {
 
       isShowOrder_numberError: false,
       isShowBootstrapTable: true,
+
+      isShowPopupDone: false,
     };
     //console.log(this.data.sort());
   }
@@ -904,9 +913,9 @@ class REPORT_SETTINGS_NET extends React.Component {
         //this.props.store.showTable(true);
 
         // this.props.store.addTableData(true, response.data.users);
-        response.data.tsp_list = [ response.data.brand_settings]
-        response.data.record_count=response.data.tsp_list.length
-        
+        response.data.tsp_list = [response.data.brand_settings];
+        response.data.record_count = response.data.tsp_list.length;
+
         if (response.data.record_count >= 1) {
           if (response.data.brand_settings.main_settings === null) {
             response.data.tsp_list[0].main_settings =
@@ -929,7 +938,7 @@ class REPORT_SETTINGS_NET extends React.Component {
             //tsp_id: response.data.tsp_list[0].tsp_id,
             isShowTsp: true,
           });
-        } else  {
+        } else {
           this.setState({
             isShowPopupError: true,
           });
@@ -988,25 +997,14 @@ class REPORT_SETTINGS_NET extends React.Component {
         },
       })
       .then((response) => {
-        console.log(response.data);
-        //console.log(response.data.users);
-        //console.log(response.data.Table);
-
-        //this.props.store.showTable(true);
-
-        // this.props.store.addTableData(true, response.data.users);
-        // this.setState({
-        //     TSPReportSettingsSTD: response.data.standard_settings,
-        //     isShowTableTSPReportSettingsSTD: true
-        // });
         this.setState({
           isShowTsp: false,
           isShowTypeAcquiring: false,
         });
         this.search();
-
+        
         this.props.store.changeLoading(false);
-        //this.props.store.showTable(true);
+        this.setState({ isShowPopupDone: true });
       })
       .catch((error) => {
         console.log(error.response);
@@ -1015,7 +1013,7 @@ class REPORT_SETTINGS_NET extends React.Component {
         this.setState({
           isShowPopupErrorSave: true,
         });
-        this.props.store.changeLoading(false);
+        // this.props.store.changeLoading(false);
       });
   }
   changeInput = (e) => {
@@ -1133,9 +1131,11 @@ class REPORT_SETTINGS_NET extends React.Component {
             isShowTypeAcquiring: true,
           });
         } else if (item.main_settings) {
-            if (item.acquiring_type_id == 1) {
-              console.log("item.acquiring_type_id == 1");
-              //console.log(item.file_name_mask);
+          if (item.acquiring_type_id == 1) {
+            console.log("item.acquiring_type_id == 1");
+            //console.log(item.file_name_mask);
+
+            if(item.main_settings.channel_address){
               this.setState({
                 physical_acquiring_type_id: item.acquiring_type_id,
                 physical_channel_address: item.main_settings.channel_address,
@@ -1148,31 +1148,33 @@ class REPORT_SETTINGS_NET extends React.Component {
                 physical_report_period_type_id: item.main_settings.report_period_type_ids,
                 physical_report_settings_id: item.main_settings.report_setting_id,
                 //physical_standard_report: item.standard_report,
-
-                currentTsp: Number(currentTsp),
-                TSPReportSettingsSTD: null,
-                isShowTypeAcquiring: true,
-              });
-            } else if (item.acquiring_type_id == 2) {
-              console.log("item.acquiring_type_id == 2");
-              this.setState({
-                internet_acquiring_type_id: item.acquiring_type_id,
-                internet_channel_address: item.main_settings.channel_address,
-                internet_channel_type_id: item.main_settings.channel_type_id,
-                internet_file_name: item.main_settings.file_path,
-                //internet_extended_report: item.extended_report,
-                internet_file_name_mask: item.main_settings.file_name_mask,
-                //internet_installment_report: item.installment_report,
-                internet_report_format_id: item.main_settings.report_format_id,
-                internet_report_period_type_id: item.main_settings.report_period_type_ids,
-                internet_report_settings_id: item.main_settings.report_setting_id,
-                //internet_standard_report: item.standard_report,
-
+  
                 currentTsp: Number(currentTsp),
                 TSPReportSettingsSTD: null,
                 isShowTypeAcquiring: true,
               });
             }
+          } else if (item.acquiring_type_id == 2) {
+            console.log("item.acquiring_type_id == 2");
+            this.setState({
+              internet_acquiring_type_id: item.acquiring_type_id,
+              internet_channel_address: item.main_settings.channel_address,
+              internet_channel_type_id: item.main_settings.channel_type_id,
+              internet_file_name: item.main_settings.file_path,
+              //internet_extended_report: item.extended_report,
+              internet_file_name_mask: item.main_settings.file_name_mask,
+              //internet_installment_report: item.installment_report,
+              internet_report_format_id: item.main_settings.report_format_id,
+              internet_report_period_type_id:
+                item.main_settings.report_period_type_ids,
+              internet_report_settings_id: item.main_settings.report_setting_id,
+              //internet_standard_report: item.standard_report,
+
+              currentTsp: Number(currentTsp),
+              TSPReportSettingsSTD: null,
+              isShowTypeAcquiring: true,
+            });
+          }
         }
       }
     });
@@ -1244,6 +1246,7 @@ class REPORT_SETTINGS_NET extends React.Component {
     let inputValue = e.target.value;
     console.log(name_input);
     console.log(inputValue);
+    console.log("this.state[name_input]",this.state[name_input])
     if (name_input == "physical_acquiring_type_id")
       this.setState({ physical_acquiring_type_id: Number(inputValue) });
     if (name_input == "physical_channel_type_id") {
@@ -1261,8 +1264,12 @@ class REPORT_SETTINGS_NET extends React.Component {
       name_input == "internet_report_period_type_id"
     ) {
       let value;
-      if (this.state[name_input] === null) {
-        this.setState({ [name_input]: `${inputValue}` });
+      if (
+        this.state[name_input] === null ||
+        this.state[name_input] === undefined
+      ) {
+        this.setState({ physical_report_period_type_id: `${inputValue}` });
+        console.log("inputValue", inputValue)
         return;
       }
       if (this.state[name_input].includes(inputValue)) {
@@ -1442,13 +1449,14 @@ class REPORT_SETTINGS_NET extends React.Component {
 
   saveReport = () => {
     let acquiring_type = (type_acquiring) => {
+      console.log("acquiring_type: ", this.state)
       if (type_acquiring == 1) {
         return {
           acquiring_type_id: 1, //type_acquiring
           // "standard_report": true,
           // "extended_report": true,
           // "installment_report": true,
-          report_format_id: this.state.physical_report_format_id, //report_format_id
+          report_format_id: this.state.physical_report_format_id===0?1 : this.state.physical_report_format_id, //report_format_id
           report_period_type_ids: this.state.physical_report_period_type_id, //report_format_id
           // "report_format_name": "string",
           // "report_period_type_name": "string",
@@ -1482,9 +1490,11 @@ class REPORT_SETTINGS_NET extends React.Component {
         };
       }
     };
+
+    const acquiring = acquiring_type.bind(this);
     let data = {
       brand_id: this.state.currentTsp, //tsp_id
-      main_settings: acquiring_type(this.state.type_acquiring),
+      main_settings: acquiring(this.state.type_acquiring),
     };
     if (this.state.TSPReportSettingsSTD != null) {
       data.std_settings = this.state.TSPReportSettingsSTD;
@@ -2243,23 +2253,38 @@ class REPORT_SETTINGS_NET extends React.Component {
             </div>
           </>
         ) : null}
-        {this.state.isShowPopupErrorSave ? (
+        {this.state.isShowPopupDone ? (
           <>
             <div className="coverPopupError">
               <div className="innerBlock">
-                <div className="title alert alert-primary">
-                  Сталася помилка при збереженні
+                <div className="title alert alert-success">
+                Налаштування для формування виписки здійснені
                 </div>
-                <div className="msg"></div>
                 <button
                   className="btn btn-secondary"
-                  onClick={this.closePopupErrorSave}
+                  onClick={()=>this.setState({isShowPopupDone: false})}
                 >
                   Закрити
                 </button>
               </div>
             </div>
           </>
+        ) : null}
+        {this.state.isShowPopupErrorSave ? (
+          <div className="coverPopupError">
+            <div className="innerBlock">
+              <div className="title alert alert-primary">
+                Сталася помилка при збереженні
+              </div>
+              <div className="msg"></div>
+              <button
+                className="btn btn-secondary"
+                onClick={this.closePopupErrorSave}
+              >
+                Закрити
+              </button>
+            </div>
+          </div>
         ) : null}
 
         {this.state.isShowOrder_numberError ? (

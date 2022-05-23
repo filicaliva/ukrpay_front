@@ -17,7 +17,13 @@ import REPORT_SETTINGS_TSP from "./REPORT/REPORT_SETTINGS_TSP";
 import REPORT_SETTINGS_NET from "./REPORT/REPORT_SETTINGS_NET";
 import REPORTS_acquiring from "./REPORT/REPORTS_acquiring";
 import REPORTS_ACQUIRING_MONITOR from "./REPORT/REPORTS_ACQUIRING_MONITOR";
+import REPORT_FIX_COMMISSION from "./REPORT/REPORT_FIX_COMMISSION";
+import REPORT_ACQ_DETAILED_INT from "./REPORT/REPORT_ACQ_DETAILED_INT";
+import REPORT_ACQ_DETAILED from "./REPORT/REPORT_ACQ_DETAILED";
+import REPORT_GROSS_COMM from "./REPORT/REPORT_GROSS_COMM";
+import REPORT_GROSS_COMM_INTERNET from "./REPORT/REPORT_GROSS_COMM_INTERNET";
 import REPORT_OPERATIONS from "./REPORT/REPORT_OPERATIONS";
+import REPORT_CASH_OUT from "./REPORT/REPORT_CASH_OUT";
 import REPORT_OPERATIONS_INTERNET from "./REPORT/REPORT_OPERATIONS_INTERNET";
 import REPORT_OPERATIONS_NET from "./REPORT/REPORT_OPERATIONS_NET";
 import REPORT_TERMINALS_INTERNET from "./REPORT/REPORT_TERMINALS_INTERNET";
@@ -86,10 +92,22 @@ class CoverTable extends React.Component {
         return <REPORT_TERMINALS store={this.props.store} />;
       case "REPORT_OPERATIONS":
         return <REPORT_OPERATIONS store={this.props.store} />;
+      case "REPORT_ACQ_DETAILED":
+        return <REPORT_ACQ_DETAILED store={this.props.store} />;
+      case "REPORT_ACQ_DETAILED_INT":
+        return <REPORT_ACQ_DETAILED_INT store={this.props.store} />;
+      case "REPORT_FIX_COMMISSION":
+        return <REPORT_FIX_COMMISSION store={this.props.store} />;
+      case "REPORT_GROSS_COMM":
+        return <REPORT_GROSS_COMM store={this.props.store} />;
+      case "REPORT_GROSS_COMM_INTERNET":
+        return <REPORT_GROSS_COMM_INTERNET store={this.props.store} />;
       case "REPORT_OPERATIONS_INTERNET":
         return <REPORT_OPERATIONS_INTERNET store={this.props.store} />;
       case "REPORT_OPERATIONS_NET":
         return <REPORT_OPERATIONS_NET store={this.props.store} />;
+      case "REPORT_CASH_OUT":
+        return <REPORT_CASH_OUT store={this.props.store} />;
       case "DICT_PAYMENT_SYSTEM":
         return <TableBootstrapDICT store={this.props.store} />;
       case "DICT_REPORT_FORMAT":

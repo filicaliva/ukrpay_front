@@ -13,11 +13,26 @@ class REPORTS_ACQUIRING_MONITOR extends React.Component {
       isShowReportsMonitor: false,
       ReportsDates: null,
       isShowReportsDates: false,
+      selectDate: null,
     };
   }
   componentDidMount() {
     this.requestReportsMonitor(this.props.store.userState.token);
     this.requestReportsDates(this.props.store.userState.token);
+    this.timer = setInterval(() => {
+      if (window.location.pathname === "/dashboard/REPORTS_ACQUIRING_MONITOR") {
+        console.log(window.location.pathname + " test")
+        if (this.state.selectDate) {
+          this.selectDates(this.state.selectDate);
+        } else {
+          this.requestReportsMonitor(this.props.store.userState.token);
+        }
+      }
+    }, 8000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
   }
 
   async requestReportsMonitor(token) {
@@ -65,6 +80,14 @@ class REPORTS_ACQUIRING_MONITOR extends React.Component {
   }
 
   selectDates = async (e) => {
+    if(!e.target.value){
+      this.setState({
+        ReportsMonitor: []
+      });
+      return;
+    }
+    this.props.store.changeLoading(true);
+
     const baseUrl = `/api/Reports/ReportsMonitorByDate?reportGroup=REPORT_GROUP_ACQUIRING&date=${e.target.value}`;
     await axios
       .get(baseUrl, {
@@ -74,10 +97,13 @@ class REPORTS_ACQUIRING_MONITOR extends React.Component {
         this.setState({
           ReportsMonitor: response.data.reports,
           isShowReportsDates: true,
+          selectDate: e,
         });
+        this.props.store.changeLoading(false);
       })
       .catch((error) => {
         console.log(error.response);
+        this.props.store.changeLoading(false);
       });
   };
   formatDateFile = (date) => {
@@ -183,7 +209,7 @@ class REPORTS_ACQUIRING_MONITOR extends React.Component {
     };
     return (
       <div className="coverTable REPORTS_ACQUIRING_MONITOR">
-              <div className="headerTable">
+        <div className="headerTable">
           <div className="titleTable">Архів</div>
         </div>
         <div className="innerTable">
@@ -270,8 +296,6 @@ class REPORTS_ACQUIRING_MONITOR extends React.Component {
             </div>
           </>
         ) : null}
-
-    
       </div>
     );
   }

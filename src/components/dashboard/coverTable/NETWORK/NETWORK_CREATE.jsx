@@ -315,6 +315,14 @@ class NETWORK_CREATE extends React.Component {
       isShowOrder_numberError: false,
       isShowBootstrapTable: true,
 
+      errorBrand: false,
+      errorStatus: false,
+      errorManager: false,
+      errorId: false,
+      errorRu: false,
+
+      showError: false,
+
       test: [
         {
           entity_id: 545454,
@@ -863,43 +871,23 @@ class NETWORK_CREATE extends React.Component {
       manager_name: this.state.manager_name,
       manager_id: this.state.manager_id,
       institution_id: this.state.institution_id,
-
-      //twoLevelArr: this.state.twoLevelArr
     };
-    console.log(body);
+    this.setState({showError: false, errorBrand: false, errorStatus: false, errorManager: false})
+    if(!body.brand_name||!this.state.brand_status_code||!body.manager_id||!body.brand_id){
+      this.setState({
+        errorBrand: body.brand_name==="" || body.brand_name===null,
+        errorStatus: this.state.brand_status_code==="" || body.brand_status_code===null,
+        errorManager: body.manager_id==="" || body.manager_id===null,
+        showError: true
+      })
+     return 
+    }
 
-    // this.setState({
-    //     brand_name: null,
-    //     brand_id: null,
-    //     contact_person: "",
-    //     contact_phone: "",
-    //     contact_position: "",
-    //     contact_email: "",
-    //     brand_status_code: null,
-    //     brand_region: null,
-    //     manager_name: null,
-    //     manager_id: null,
-    // });
 
     this.requestDICT_NET_BRAND(this.props.store.userState.token, body);
-
-    //this.requestDICT_NET_ENTITY(this.props.store.userState.token, this.state.twoLevelArr[0]);
-    console.log(this.state.twoLevelArr != null);
-    console.log(this.state.twoLevelArr.length);
-    console.log(this.state.twoLevelArr.length != 0);
-    console.log(this.state.twoLevelArr);
-
-    // this.state.twoLevelArr.forEach(function(item, i, arr) {
-    //     // console.log( i + ": " + item + " (массив:" + arr + ")" );
-    //     console.log(item);
-    //     this.requestDICT_NET_ENTITY(this.props.store.userState.token, item);
-    // });
   };
 
   openStandardReport = () => {
-    // this.setState({
-    //     isShowTableTSPReportSettingsSTD: true
-    // });
     this.requestTSPReportSettingsSTD(this.props.store.userState.token);
   };
   closePopupTable = () => {
@@ -1060,33 +1048,6 @@ class NETWORK_CREATE extends React.Component {
       this.setState({
         contact_phone: inputValue,
       });
-      // console.log(e.target.validity);
-      // console.log(e.target.validity.valid);
-      // const valid_contact_phone = !Number(inputValue) ? inputValue : this.state.contact_phone;
-      // console.log(valid_contact_phone);
-      // console.log(typeof valid_contact_phone);
-      // this.setState({
-      //     contact_phone: valid_contact_phone
-      // });
-      // console.log(Number(inputValue));
-      // console.log(!Number(inputValue));
-      // console.log(typeof Number(inputValue));
-      // console.log(typeof inputValue);
-      // console.log(typeof Number(inputValue) === 'number');
-      // console.log(typeof inputValue === 'number');
-      // console.log(typeof inputValue === 'string');
-      // if(!Number(inputValue)){
-      //     console.log('зайшло !Number(inputValue)');
-      //     console.log(this.state.contact_phone);
-      //     this.setState({
-      //         contact_phone: this.state.contact_phone
-      //     });
-      //     return
-      // }
-      // console.log('недійшло');
-      // this.setState({
-      //     contact_phone: inputValue
-      // });
     } else if (apiName == "contact_position") {
       this.setState({
         contact_position: inputValue,
@@ -1215,15 +1176,14 @@ class NETWORK_CREATE extends React.Component {
       const manager_name = this.state.DICT_NETWORK_MANAGERS.filter(
         (item) => +item.manager_id === +e.target.value
       )[0];
-      cloneArr[indexItem]['brand_manager_name'] = manager_name.institution_name;
-      cloneArr[indexItem]['manager_id'] = manager_name.manager_id;
-      cloneArr[indexItem]['brand_region'] = manager_name.institution_id;
-
+      cloneArr[indexItem]["brand_manager_name"] = manager_name.institution_name;
+      cloneArr[indexItem]["manager_id"] = manager_name.manager_id;
+      cloneArr[indexItem]["brand_region"] = manager_name.institution_id;
     }
 
     cloneArr[indexItem][api_name] = param;
     // stateArr.push(newObj);
-    console.log(cloneArr);
+    console.log(cloneArr); 
 
     this.setState({
       twoLevelArr: cloneArr,
@@ -1256,7 +1216,9 @@ class NETWORK_CREATE extends React.Component {
               api_name="brand_name"
               id="name_netWork"
               type="text"
-              className="form-control"
+              className={`form-control ${
+                this.state.errorBrand ? "validError " : ""
+              }`}
             />
             <label htmlFor="status">Статус</label>
             <select
@@ -1264,7 +1226,9 @@ class NETWORK_CREATE extends React.Component {
               id="dropdown-basic-button"
               onChange={this.changeInput}
               api_name="brand_status_code"
-              className="form-select"
+              className={`form-select ${
+                this.state.errorStatus ? "validError " : ""
+              }`}
               title="ТВБВ"
             >
               <option>-</option>
@@ -1288,7 +1252,9 @@ class NETWORK_CREATE extends React.Component {
               id="dropdown-basic-button"
               onChange={this.changeInput}
               api_name="manager_name"
-              className="form-select"
+              className={`form-select ${
+                this.state.errorManager ? "validError " : ""
+              }`}
             >
               <option>-</option>
               {this.state.isShowSelectDICT_NETWORK_MANAGERS ? (
@@ -1305,7 +1271,12 @@ class NETWORK_CREATE extends React.Component {
                 <></>
               )}
             </select>
+
+            {this.state.showError ? (
+            <p class="error">Заповніть, будь ласка, значення</p>
+          ) : null}
           </div>
+        
           <div className="coverInputs justify-content-end">
             <label htmlFor="brand_id">ID мережі</label>
             <input
@@ -1314,7 +1285,9 @@ class NETWORK_CREATE extends React.Component {
               api_name="brand_id"
               id="brand_id"
               type="text"
-              className="form-control"
+              className={`form-control ${
+                this.state.errorId ? "validError " : ""
+              }`}
             />
             <label htmlFor="brand_name">РУ менеджера</label>
             <input
@@ -1323,9 +1296,15 @@ class NETWORK_CREATE extends React.Component {
               api_name="brand_name"
               id="brand_name"
               type="text"
-              className="form-control"
+              className={`form-control ${
+                this.state.errorRu ? "validError " : ""
+              }`}
             />
+          {this.state.showError ? (
+            <p class="error" style={{opacity: 0}}>Заповніть, будь ласка, одне з 5-и значень</p>
+          ) : null}
           </div>
+          
           <div className="coverInputs contactPerson">
             <span>Контактна особа</span>
             <div className="innerBlock">
@@ -1411,6 +1390,7 @@ class NETWORK_CREATE extends React.Component {
               </div>
             </div>
           </div>
+       
         </div>
         <div className="addBlockRadio">
           <div className="title">Додати 2-й рівень мережі</div>

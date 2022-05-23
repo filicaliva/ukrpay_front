@@ -197,6 +197,7 @@ class REPORT_OPERATIONS_NET extends React.Component {
       isMerchant_idValidation: true,
       isTerminal_type_idValidation: true,
       isDate_type_idValidation: true,
+      isDate_month_Validation: true,
       isDate_fromValidation: true,
       isDate_toValidation: true,
       isMerchant_toValidation: true,
@@ -304,15 +305,12 @@ class REPORT_OPERATIONS_NET extends React.Component {
         //this.props.store.showTable(true);
       })
       .catch((error) => {
-        // console.log(error.response);
-        // console.log(error.response.data);
-        //// console.log('error_catch');
+        console.log(error.response);
       });
   }
 
   async get_DICT_NET_BRAND(token) {
     this.props.store.changeLoading(true);
-    // console.log(token);
     const baseUrl = `/api/Dictionary/DICT_NET_BRAND`;
 
     await axios
@@ -320,9 +318,6 @@ class REPORT_OPERATIONS_NET extends React.Component {
         headers: { Token: `${token}` },
       })
       .then((response) => {
-        console.log(response.data.Table.TableRows);
-        //// console.log(response.data.Table);
-
         this.setState({
           DICT_BRAND_NAME_VALUES: response.data.Table.TableRows.map(
             (item) => item.brand_name
@@ -333,9 +328,7 @@ class REPORT_OPERATIONS_NET extends React.Component {
         this.props.store.changeLoading(false);
       })
       .catch((error) => {
-        // console.log(error.response);
-        // console.log(error.response.data);
-        //// console.log('error_catch');
+        console.log(error.response);
       });
   }
   async get_DICT_BRAND_NAME_LEVEL() {
@@ -810,9 +803,7 @@ class REPORT_OPERATIONS_NET extends React.Component {
   };
   changeInput = (e) => {
     let apiName = e.currentTarget.getAttribute("apiName");
-    // console.log(apiName);
     let inputValue = e.target.value;
-    // console.log(inputValue);
     let inputDataObj = this.state.AcquiringReportsCriteria;
 
     if (
@@ -833,7 +824,6 @@ class REPORT_OPERATIONS_NET extends React.Component {
       if (apiName == "terminal_type_id") {
         inputDataObj[apiName] = inputValue;
         if (inputValue == "") {
-          // console.log(inputValue);
           this.setState({
             AcquiringReportsCriteria: inputDataObj,
             isTerminal_type_idValidation: false,
@@ -881,18 +871,15 @@ class REPORT_OPERATIONS_NET extends React.Component {
         this.setState({
           [apiName]: inputValue,
         });
-        // console.log(this.state);
       } else {
         inputDataObj[apiName] = inputValue;
       }
     }
 
-    // console.log(inputDataObj);
     this.setState({
       AcquiringReportsCriteria: inputDataObj,
     });
-    // console.log(this.state);
-    // console.log(this.state.AcquiringReportsCriteria);
+    console.log(this.state.AcquiringReportsCriteria);
   };
 
   formatDate = (date) => {
@@ -902,20 +889,7 @@ class REPORT_OPERATIONS_NET extends React.Component {
     return year + month + day;
   };
   search = () => {
-    //this.requestTSPReportSettings(this.props.store.userState.token, this.state.TSPReportSettingsSearchObj);
-    //this.requestTSPReportSettings_test(this.props.store.userState.token, this.state.TSPReportSettingsSearchObj);
-
-    // this.setState({
-    //     settings: this.state.responseTSPReportSettings.settings,
-    //     tsp_list: this.state.responseTSPReportSettings.tsp_list,
-    //     isShowTsp: true
-    // });
-
-    //// console.log(res);
-    // console.log(this.state.AcquiringReportsCriteria);
-
     this.defineValidationInputs();
-    
   }
 
   sendOptionToServer(){
@@ -923,7 +897,8 @@ class REPORT_OPERATIONS_NET extends React.Component {
       this.state.isBrandName_toValidation &&
       this.state.isDate_type_idValidation &&
       this.state.isDate_fromValidation &&
-      this.state.isDate_toValidation
+      this.state.isDate_toValidation && 
+      this.state.isDate_month_Validation
     ) {
       
       if( this.state.DICT_BRAND_NAME_ID){
@@ -949,6 +924,11 @@ class REPORT_OPERATIONS_NET extends React.Component {
     }
   }
   defineValidationInputs = () => {
+    const date1 = new Date(this.state.date_from);
+    const date2 = new Date(this.state.date_to);
+    const diffTime = Math.abs(date2 - date1);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
     if ( this.state.DICT_BRAND_NAME_VAL == null ||  this.state.DICT_BRAND_NAME_VAL == "") {
       this.setState({ isBrandName_toValidation: false });
     }
@@ -966,6 +946,10 @@ class REPORT_OPERATIONS_NET extends React.Component {
 
     if (this.state.date_to == null || this.state.date_to == "") {
         this.setState({isDate_toValidation: false});
+    }
+
+    if (diffDays > 31) {
+      this.setState({ isDate_month_Validation: false });
     }
 
     this.setState({}, ()=>this.sendOptionToServer())
@@ -2220,58 +2204,16 @@ class REPORT_OPERATIONS_NET extends React.Component {
                   })
                 : null}
             </select>
-          </div>
-          <div className="col-2 coverInput">
-            {/*<label htmlFor="report_type_id">Назва звіту</label>*/}
-            {/*<select onChange={this.changeInput} apiName="report_type_id" id="report_type_id" className="form-select"*/}
-            {/*        title="">*/}
-            {/*    <option>-</option>*/}
-            {/*    {*/}
-            {/*        this.state.isShowSelectDICT_ACQUIRING_REPORTS*/}
-            {/*            ?*/}
-            {/*            this.state.DICT_ACQUIRING_REPORTS.map((item, index) => {*/}
-            {/*                return < OptionItemDICT_ACQUIRING_REPORTS key={index} optionItem={item}/>*/}
-            {/*            })*/}
-            {/*            : <>*/}
-            {/*            </>*/}
-            {/*    }*/}
-            {/*</select>*/}
-
-            {/* <label htmlFor="terminal_type_id">Вид термінала</label>
-            <select
-              onChange={this.changeInput}
-              apiName="terminal_type_id"
-              id="terminal_type_id"
-              className={`${
-                this.state.isTerminal_type_idValidation ? "" : "validError"
-              } form-select`}
-              title="Регіональні управління"
-            >
-              <option></option>
-              {this.state.isShowSelectDICT_ACQUIRING_TYPE ? (
-                this.state.DICT_ACQUIRING_TYPE.map((item, index) => {
-                  return (
-                    <OptionItemDICT_ACQUIRING_TYPE
-                      key={index}
-                      optionItem={item}
-                    />
-                  );
-                })
-              ) : (
-                <></>
-              )}
-            </select> */}
-
-            {/* <label htmlFor="merchant">merchant ID</label>
+            <label htmlFor="INN">РРН</label>
             <input
               onChange={this.changeInput}
-              className={`${
-                this.state.isMerchant_idValidation ? "" : "validError"
-              } form-control`}
-              apiName="merchant_id"
-              id="merchant"
+              apiName="trans_rrn"
               type="text"
-            /> */}
+              class={`form-control`}
+              placeholder="Введіть цифри..."
+            ></input>
+          </div>
+          <div className="col-2 coverInput">
             <label htmlFor="merchant">merchant ID</label>
             <select
               id="dropdown-basic-button"
@@ -2464,7 +2406,7 @@ class REPORT_OPERATIONS_NET extends React.Component {
                     onChange={this.changeInputDateReport_from}
                     apiName="date_from"
                     className={`${
-                      this.state.isDate_fromValidation ? "" : "validError"
+                      this.state.isDate_fromValidation && this.state.isDate_month_Validation ? "" : "validError"
                     } customInput form-control`}
                     id="date_from"
                     type="date"
@@ -2476,14 +2418,16 @@ class REPORT_OPERATIONS_NET extends React.Component {
                     onChange={this.changeInputDateReport_to}
                     apiName="date_to"
                     className={`${
-                      this.state.isDate_toValidation ? "" : "validError"
+                      this.state.isDate_toValidation && this.state.isDate_month_Validation ? "" : "validError"
                     } customInput form-control`}
                     id="date_to"
                     type="date"
                   />
                 </div>
               </div>
-              <p className="error">{this.state.isDate_fromValidation &&this.state.isDate_toValidation  ? null : "Заповніть, будь ласка, дати!"}</p>
+              <p className="error">{this.state.isDate_fromValidation &&this.state.isDate_toValidation  ? null : "Заповніть, будь ласка, дати!"}{this.state.isDate_month_Validation
+                  ? null
+                  : "Максимальний термін 31 день!"}</p>
             </div>
           </div>
         </div>
