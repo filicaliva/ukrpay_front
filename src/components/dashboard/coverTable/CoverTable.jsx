@@ -23,6 +23,7 @@ import REPORT_ACQ_DETAILED from "./REPORT/REPORT_ACQ_DETAILED";
 import REPORT_GROSS_COMM from "./REPORT/REPORT_GROSS_COMM";
 import REPORT_GROSS_COMM_INTERNET from "./REPORT/REPORT_GROSS_COMM_INTERNET";
 import REPORT_OPERATIONS from "./REPORT/REPORT_OPERATIONS";
+import REPORT_CASH_TIPS from "./REPORT/REPORT_CASH_TIPS";
 import REPORT_CASH_OUT from "./REPORT/REPORT_CASH_OUT";
 import REPORT_OPERATIONS_INTERNET from "./REPORT/REPORT_OPERATIONS_INTERNET";
 import REPORT_OPERATIONS_NET from "./REPORT/REPORT_OPERATIONS_NET";
@@ -92,6 +93,8 @@ class CoverTable extends React.Component {
         return <REPORT_TERMINALS store={this.props.store} />;
       case "REPORT_OPERATIONS":
         return <REPORT_OPERATIONS store={this.props.store} />;
+      case "REPORT_CASH_TIPS":
+        return <REPORT_CASH_TIPS store={this.props.store} />;
       case "REPORT_ACQ_DETAILED":
         return <REPORT_ACQ_DETAILED store={this.props.store} />;
       case "REPORT_ACQ_DETAILED_INT":
